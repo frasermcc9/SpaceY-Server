@@ -1,6 +1,7 @@
 import { MaterialCollection, IMaterialCollectionOptions } from "../../GameCollections/MaterialCollection.ts";
 import { ShipCollection, IShipCollectionOptions } from "../../GameCollections/ShipCollection.ts";
 import { AttachmentCollection, IAttachmentCollectionOptions } from "../../GameCollections/AttachmentCollection.ts";
+import { Client } from "../../../Client/Client.ts";
 
 /**
  * Represents an inventory of a player. Please @see InventoryBuilder too create an inventory.
@@ -14,11 +15,11 @@ export class PlayerInventory {
 	private tokens: number;
 
 	constructor(options: IPlayerInventoryOptions) {
-		this.materials = new MaterialCollection();
-		this.ships = new ShipCollection();
-		this.attachments = new AttachmentCollection();
-		this.credits = 0;
-		this.tokens = 0;
+		this.materials = options.materialOptions || new MaterialCollection();
+		this.ships = options.shipOptions || new ShipCollection();
+		this.attachments = options.attachmentOptions || new AttachmentCollection();
+		this.credits = options.credits || Client.Get().NewUserCreditValue;
+		this.tokens = options.tokens || 0;
 	}
 }
 
@@ -27,8 +28,8 @@ export class InventoryBuilder {
 	private ships?: IShipCollectionOptions;
 	private attachments?: IAttachmentCollectionOptions;
 
-	private credits: number = 0;
-	private tokens: number = 0;
+	private credits?: number;
+	private tokens?: number;
 
 	public SetMaterials(matOptions: IMaterialCollectionOptions): InventoryBuilder {
 		this.materials = matOptions;

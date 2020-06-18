@@ -1,35 +1,66 @@
-import { BaseMaterial } from "../GameAsset/Buildable/Material/BaseMaterial.ts";
+import { Material } from "../GameAsset/Buildable/Material/Material.ts";
 import { Client } from "../../Client/Client.ts";
+import { Collection } from "../../Extensions/Collection.ts";
+import { GameAsset } from "../GameAsset/GameAsset.ts";
 
-export class MaterialCollection {
-	private materialSet: Map<string, BaseMaterial> = Client.GetClient().Registry.MaterialRegistry;
-	private materialInventory: Map<BaseMaterial, number> = new Map();
+export class MaterialCollection extends Collection<Material, number> {
+	private materialSet: Map<string, Material> = Client.Get().Registry.MaterialRegistry;
 
-	public constructor(options: MaterialCollectionOptions) {
-		if (!(options.data || options.emptyCollection)) console.warn("A MaterialCollection was instantiated with no arguments. Defaulting to empty collection.");
-		if (options.data) {
+	public constructor(options?: IMaterialCollectionOptions) {
+		super();
+		//Create map with all empty material values, but set defined materials to the given value.
+		if (options?.data) {
+			this.materialSet.forEach((material) => {
+				this.set(material, options.data?.get(material) || 0);
+			});
+		} else {
+			this.materialSet.forEach((material) => {
+				this.set(material, 0);
+			});
 		}
-		this.materialSet.forEach((material) => {
-			this.materialInventory.set(material, 0);
-		});
 	}
 
-	public GetAmountFromName(name: string): MaterialQuantity {
+	public DataFromName(name: string): IMaterialQuantity {
 		const material = this.materialSet.get(name);
-		if (material == undefined) return { success: false, name: "None", quantity: -1, material: null };
-		const quantity = this.materialInventory.get(material);
+		if (material == undefined) return { success: false, name: name, quantity: -1, material: null, error: MAT_NOT_FOUND };
+
+		const quantity = this.get(material);
+		return { success: true, name: material.Name, quantity: quantity || 0, material: material };
+	}
+
+	public DataFromNames(names: string[]): IMaterialQuantity[] {
+		let data = new Array<IMaterialQuantity>();
+		names.forEach((name) => {
+			const material = this.materialSet.get(name);
+			if (material == undefined) {
+				data.push({ success: false, name: name, quantity: -1, material: null, error: MAT_NOT_FOUND });
+			} else {
+				const quantity = this.get(material);
+				data.push({ success: true, name: material.Name, quantity: quantity || 0, material: material });
+			}
+		});
+		return data;
+	}
+
+	public DataFromMaterial(material: Material): IMaterialQuantity {
+		const quantity = this.get(material);
+		if (quantity == undefined) {
+			return { success: false, name: material.Name, quantity: -1, material: null, error: MAT_NOT_FOUND };
+		}
 		return { success: true, name: material.Name, quantity: quantity || 0, material: material };
 	}
 }
 
-interface MaterialCollectionOptions {
-	emptyCollection?: boolean;
-	data?: Map<BaseMaterial, number>;
+interface IMaterialCollectionOptions {
+	data?: Map<Material, number>;
 }
 
-interface MaterialQuantity {
+interface IMaterialQuantity {
 	success: boolean;
 	name: string;
 	quantity: number;
-	material: BaseMaterial | null;
+	material: Material | null;
+	error?: string;
 }
+
+const MAT_NOT_FOUND = "This material does not exist in the client collection.";

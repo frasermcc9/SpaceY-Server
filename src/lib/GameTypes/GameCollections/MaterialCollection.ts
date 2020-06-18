@@ -1,7 +1,9 @@
-import { Material } from "../GameAsset/Buildable/Material/Material.ts";
 import { Client } from "../../Client/Client.ts";
 import { Collection } from "../../Extensions/Collection.ts";
 import { GameAsset } from "../GameAsset/GameAsset.ts";
+import { Material, IMaterial } from "../GameAsset/Material/Material.ts";
+import { MaterialDecoratorSellable } from "../GameAsset/Material/DecoratorSellable.ts";
+import { util } from "../../Util/util.ts";
 
 export class MaterialCollection extends Collection<Material, number> {
 	private materialSet: Map<string, Material> = Client.Get().Registry.MaterialRegistry;
@@ -49,9 +51,26 @@ export class MaterialCollection extends Collection<Material, number> {
 		}
 		return { success: true, name: material.Name, quantity: quantity || 0, material: material };
 	}
+
+	public static GenerateMineableCollection(value: number): MaterialCollection {
+		const Template = Array.from(Client.Get().Registry.MineableMaterialRegistry.values());
+		const ItemCount = Template.length;
+		const Collection = new MaterialCollection();
+		let currentPrice = 0;
+
+		do {
+			const Selected = util.chooseFrom<Material>(Template);
+            const Material: IMaterial = new MaterialDecoratorSellable(Selected.item);
+            const ExistingAmount = Collection.get(Selected.item);
+			currentPrice += Material.GetMaterialCost() || 0;
+			if (ExistingAmount) Collection.set(Selected.item, ExistingAmount + 1);
+        } while (currentPrice < value);
+        
+		return Collection;
+	}
 }
 
-interface IMaterialCollectionOptions {
+export interface IMaterialCollectionOptions {
 	data?: Map<Material, number>;
 }
 

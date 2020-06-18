@@ -7,9 +7,9 @@ export abstract class GameAsset {
 	}
 	protected description: string;
 
-	public constructor(GameAssetOptions: IGameAssetOptions) {
-		this.name = GameAssetOptions.name;
-		this.description = GameAssetOptions.description;
+	public constructor(gameAssetOptions: IGameAssetOptions) {
+		this.name = gameAssetOptions.name;
+		this.description = gameAssetOptions.description;
 	}
 
 	/** @override */
@@ -23,10 +23,20 @@ export interface Buildable {
 }
 
 export interface Sellable {
-	GetCost(): number;
+	GetCost(): ISellInfo;
 }
 
-interface IGameAssetOptions {
+export interface IGameAssetOptions {
 	name: string;
 	description: string;
+}
+
+export interface ISellInfo {
+	success: boolean;
+	cost: number | undefined;
+}
+
+export interface IBlueprintInfo {
+	success: boolean;
+	blueprint: Blueprint | undefined;
 }

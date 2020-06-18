@@ -1,4 +1,4 @@
-import { GameAsset, Buildable, Sellable } from "../../GameAsset.ts";
+import { GameAsset, Buildable, Sellable, ISellInfo } from "../../GameAsset.ts";
 import { Blueprint } from "../../Blueprint/Blueprint.ts";
 
 export class Attachment extends GameAsset implements Buildable, Sellable {
@@ -8,7 +8,7 @@ export class Attachment extends GameAsset implements Buildable, Sellable {
 		return this.Blueprint;
 	}
 
-	public GetCost(): number {
-		return 0;
+	GetCost(): ISellInfo {
+		return { cost: 0, success: true };
 	}
 }

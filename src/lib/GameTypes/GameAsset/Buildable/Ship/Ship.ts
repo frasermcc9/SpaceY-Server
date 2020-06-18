@@ -1,4 +1,4 @@
-import { GameAsset, Buildable, Sellable } from "../../GameAsset.ts";
+import { GameAsset, Buildable, Sellable, ISellInfo } from "../../GameAsset.ts";
 import { Blueprint } from "../../Blueprint/Blueprint.ts";
 
 export class Ship extends GameAsset implements Buildable, Sellable {
@@ -6,7 +6,7 @@ export class Ship extends GameAsset implements Buildable, Sellable {
 
 	public GetBlueprint = (): Blueprint => this.Blueprint;
 
-	public GetCost(): number {
-		return 0;
+	GetCost(): ISellInfo {
+		return { cost: 0, success: true };
 	}
 }

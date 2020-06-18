@@ -1,12 +1,16 @@
 import { Blueprint } from "./Blueprint/Blueprint.ts";
 
-export abstract class GameAsset {
-	protected name: string;
+export class GameAsset {
+	private name: string;
 	public get Name() {
 		return this.name;
 	}
-	protected description: string;
 
+	private description: string;
+    public get Description() {
+		return this.description;
+    }
+    
 	public constructor(gameAssetOptions: IGameAssetOptions) {
 		this.name = gameAssetOptions.name;
 		this.description = gameAssetOptions.description;

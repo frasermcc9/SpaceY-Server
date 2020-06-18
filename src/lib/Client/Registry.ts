@@ -1,7 +1,7 @@
 import { Ship } from "../GameTypes/GameAsset/Buildable/Ship/Ship.ts";
 import { Attachment } from "../GameTypes/GameAsset/Buildable/Attachment/Attachment.ts";
 import { Faction } from "../GameTypes/GameAsset/Faction/Faction.ts";
-import { Material } from "../GameTypes/GameAsset/Buildable/Material/Material.ts";
+import { Material } from "../GameTypes/GameAsset//Material/Material.ts";
 import { Collection } from "../Extensions/Collection.ts";
 import { GameAsset } from "../GameTypes/GameAsset/GameAsset.ts";
 
@@ -31,6 +31,10 @@ export class Registry {
 	public get MaterialRegistry() {
 		return this.materialRegistry;
 	}
+	private readonly mineableMaterialRegistry = new Collection<string, Material>();
+	public get MineableMaterialRegistry() {
+		return this.mineableMaterialRegistry;
+	}
 
 	public RegisterShips(data: IShips): Registry {
 		data.ships.forEach((ship) => {
@@ -52,7 +56,8 @@ export class Registry {
 	}
 	public RegisterMaterials(data: IMaterials): Registry {
 		data.materials.forEach((material) => {
-			this.materialRegistry.set(material.Name, material);
+			this.materialRegistry.set(material.Name, material); //add to complete registry
+			if (material.IsMineable()) this.mineableMaterialRegistry.set(material.Name, material); //if mineable, add to mineable registry too
 		});
 		return this;
 	}

@@ -4,13 +4,13 @@ import { PlayerInventory } from "./PlayerInventory.ts";
 import { Skin } from "./Skin.ts";
 
 export class Player {
-    private id: string
+    private id!: string
 
-    private ship: Ship
-    private skin: Skin
+    private ship!: Ship
+    private skin!: Skin
 
-    private reputation: ReputationCollection
-    private inventory: PlayerInventory
+    private reputation!: ReputationCollection
+    private inventory!: PlayerInventory
     //private location:
 
 

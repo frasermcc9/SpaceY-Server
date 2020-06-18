@@ -1,6 +1,7 @@
 import * as test from "https://deno.land/std/testing/asserts.ts";
 import { Client } from "../../lib/Client/Client.ts";
-import { BaseMaterial } from "../../lib/GameTypes/GameAsset/Buildable/Material/BaseMaterial.ts";
+import { Material, MaterialBuilder } from "../../lib/GameTypes/GameAsset/Material/Material.ts";
+
 
 Deno.test({
 	name: "Test get client before construction throws",
@@ -25,7 +26,7 @@ Deno.test({
 	fn: (): void => {
 		Client.Create({});
 		//Create material and add it to copy registry
-		const M1 = new BaseMaterial({ name: "Iron", description: "A small amount of iron" });
+		const M1 = new MaterialBuilder({});
 		const R1 = Client.Get()
 			.CopyRegistry()
 			.RegisterMaterials({ materials: [M1] });

@@ -1,7 +1,6 @@
 import { GameAsset, IGameAssetOptions } from "../GameAsset.ts";
 import { Blueprint } from "../Blueprint/Blueprint.ts";
 
-
 export class Material extends GameAsset implements IMaterial {
 	private buildable: boolean;
 	private mineable: boolean;
@@ -17,6 +16,12 @@ export class Material extends GameAsset implements IMaterial {
 
 		this.cost = materialOptions.cost;
 		this.blueprint = materialOptions.blueprint;
+	}
+	public get Name(): string {
+		return super.Name;
+	}
+	public get Description(): string {
+		return super.Description;
 	}
 
 	public IsSellable(): boolean {
@@ -85,4 +90,6 @@ interface IMaterialOptions extends IGameAssetOptions {
 	sellable: boolean;
 	cost?: number;
 	blueprint?: Blueprint;
+	name: string;
+	description: string;
 }

@@ -1,7 +1,7 @@
-import { Material, IMaterialMethods } from "./Material.ts";
-import { Blueprint } from "../../Blueprint/Blueprint.ts";
+import { Material, IMaterial } from "./Material.ts";
+import { Blueprint } from "../Blueprint/Blueprint.ts";
 
-export abstract class MaterialDecorator implements IMaterialMethods {
+export abstract class MaterialDecorator implements IMaterial {
 	protected material: Material;
 
 	public constructor(material: Material) {

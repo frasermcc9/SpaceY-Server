@@ -1,5 +1,5 @@
 import { MaterialDecorator } from "./MaterialDecorator.ts";
-import { Sellable, ISellInfo } from "../../GameAsset.ts";
+import { Sellable, ISellInfo } from "../GameAsset.ts";
 import { Material } from "./Material.ts";
 
 export class MaterialDecoratorSellable extends MaterialDecorator implements Sellable {

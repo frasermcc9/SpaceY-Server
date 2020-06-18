@@ -1,7 +1,8 @@
-import { GameAsset, Buildable, Sellable, IGameAssetOptions } from "../../GameAsset.ts";
-import { Blueprint } from "../../Blueprint/Blueprint.ts";
+import { GameAsset, IGameAssetOptions } from "../GameAsset.ts";
+import { Blueprint } from "../Blueprint/Blueprint.ts";
 
-export class Material extends GameAsset implements IMaterialMethods {
+
+export class Material extends GameAsset implements IMaterial {
 	private buildable: boolean;
 	private mineable: boolean;
 	private sellable: boolean;
@@ -35,7 +36,7 @@ export class Material extends GameAsset implements IMaterialMethods {
 		return this.blueprint;
 	}
 }
-export interface IMaterialMethods {
+export interface IMaterial {
 	IsSellable(): boolean;
 	IsMineable(): boolean;
 	IsBuildable(): boolean;

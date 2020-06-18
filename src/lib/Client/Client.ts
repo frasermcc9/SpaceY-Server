@@ -1,6 +1,12 @@
 import { Registry } from "./Registry.ts";
 
 export class Client {
+	//Section: Declared Constants
+	private readonly newUserCreditValue: number;
+	public get NewUserCreditValue(): number {
+		return this.newUserCreditValue;
+	}
+
 	//Section: Client Singleton
 	public static Client: Client;
 	public static Get() {
@@ -16,7 +22,9 @@ export class Client {
 	public static Destroy() {
 		delete this.Client;
 	}
-	private constructor(ClientSettings: IClientSettings) {}
+	private constructor(ClientSettings: IClientSettings) {
+		this.newUserCreditValue = ClientSettings.NewUserCreditValue || 0;
+	}
 
 	//Section: Registry
 	private registry: Registry = new Registry();
@@ -28,4 +36,6 @@ export class Client {
 	}
 }
 
-interface IClientSettings {}
+interface IClientSettings {
+	NewUserCreditValue?: number;
+}

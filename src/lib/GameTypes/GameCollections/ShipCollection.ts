@@ -5,7 +5,7 @@ import { Client } from "../../Client/Client.ts";
 export class ShipCollection extends Collection<Ship, number> {
 	private shipSet: Map<string, Ship> = Client.Get().Registry.ShipRegistry;
 
-	public constructor(options: IAttachmentCollectionOptions) {
+	public constructor(options?: IShipCollectionOptions) {
 		super();
 		//Create map with all empty attachment values, but set defined attachments to the given value.
 		if (options?.data) {

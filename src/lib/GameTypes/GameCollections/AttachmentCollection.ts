@@ -5,7 +5,7 @@ import { Client } from "../../Client/Client.ts";
 export class AttachmentCollection extends Collection<Attachment, number> {
 	private attachmentSet: Map<string, Attachment> = Client.Get().Registry.AttachmentRegistry;
 
-	public constructor(options: IAttachmentCollectionOptions) {
+	public constructor(options?: IAttachmentCollectionOptions) {
 		super();
 		//Create map with all empty attachment values, but set defined attachments to the given value.
 		if (options?.data) {

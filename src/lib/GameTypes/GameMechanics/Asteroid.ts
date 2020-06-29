@@ -1,4 +1,4 @@
-import { MaterialCollection, IMaterialCollectionOptions } from "../GameCollections/MaterialCollection.ts";
+import { MaterialCollection, IMaterialCollectionOptions } from "../GameCollections/MaterialCollection";
 
 class Asteroid {
 	private content: MaterialCollection;

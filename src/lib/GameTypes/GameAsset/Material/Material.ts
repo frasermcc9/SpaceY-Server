@@ -1,14 +1,14 @@
-import { GameAsset, IGameAssetOptions } from "../GameAsset.ts";
-import { Blueprint } from "../Blueprint/Blueprint.ts";
+import { GameAsset, IGameAssetOptions } from "../GameAsset";
+import { Blueprint } from "../Blueprint/Blueprint";
 
 export class Material extends GameAsset implements IMaterial {
-	private buildable: boolean;
-	private mineable: boolean;
-	private sellable: boolean;
+	private buildable: boolean = false;
+	private mineable: boolean = false;
+	private sellable: boolean = false;
 	private cost: number | undefined;
 	private blueprint: Blueprint | undefined;
 
-	constructor(materialOptions: IMaterialOptions) {
+	public constructor(materialOptions: IMaterialOptions) {
 		super({ name: materialOptions.name, description: materialOptions.description });
 		this.buildable = materialOptions.buildable;
 		this.mineable = materialOptions.mineable;
@@ -51,36 +51,49 @@ export interface IMaterial {
 }
 
 export class MaterialBuilder {
-	private options: IMaterialOptions;
+	//private options: IMaterialOptions;
+	private buildable: boolean = false;
+	private mineable: boolean = false;
+	private sellable: boolean = true;
+	private cost?: number;
+	private blueprint?: Blueprint;
+	private name: string;
+	private description: string;
 
-	public constructor(materialOptions: IMaterialOptions) {
-		this.options = materialOptions;
-		this.options.buildable = false;
-		this.options.mineable = false;
-		this.options.sellable = true;
+	public constructor({ name, description }: { name: string; description: string }) {
+		this.name = name;
+		this.description = description;
 	}
 	public EnableBuild(): MaterialBuilder {
-		this.options.buildable = true;
+		this.buildable = true;
 		return this;
 	}
 	public EnableMine(): MaterialBuilder {
-		this.options.mineable = true;
+		this.mineable = true;
 		return this;
 	}
 	public DisableSell(): MaterialBuilder {
-		this.options.sellable = false;
+		this.sellable = false;
 		return this;
 	}
 	public SetCost(cost: number): MaterialBuilder {
-		this.options.cost = cost;
+		this.cost = cost;
 		return this;
 	}
 	public SetBlueprint(blueprint: Blueprint): MaterialBuilder {
-		this.options.blueprint = blueprint;
+		this.blueprint = blueprint;
 		return this;
 	}
 	public Build(): Material {
-		return new Material(this.options);
+		return new Material({
+			buildable: this.buildable,
+			description: this.description,
+			mineable: this.mineable,
+			name: this.name,
+			sellable: this.sellable,
+			blueprint: this.blueprint,
+			cost: this.cost,
+		});
 	}
 }
 

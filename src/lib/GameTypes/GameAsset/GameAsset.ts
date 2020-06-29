@@ -1,4 +1,4 @@
-import { Blueprint } from "./Blueprint/Blueprint.ts";
+import { Blueprint } from "./Blueprint/Blueprint";
 
 export class GameAsset {
 	private name: string;

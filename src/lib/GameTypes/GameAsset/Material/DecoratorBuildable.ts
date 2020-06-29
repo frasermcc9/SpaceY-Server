@@ -1,6 +1,6 @@
-import { MaterialDecorator } from "./MaterialDecorator.ts";
-import { Material } from "./Material.ts";
-import { Buildable, IBlueprintInfo } from "../GameAsset.ts";
+import { MaterialDecorator } from "./MaterialDecorator";
+import { Material } from "./Material";
+import { Buildable, IBlueprintInfo } from "../GameAsset";
 
 export class MaterialDecoratorBuildable extends MaterialDecorator implements Buildable {
 	public constructor(material: Material) {

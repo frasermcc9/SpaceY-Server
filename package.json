@@ -1,0 +1,32 @@
+{
+	"name": "space-y",
+	"version": "0.1.0",
+	"description": "a space-rpg game in typescript",
+	"main": "example/index.js",
+	"scripts": {
+		"test": "ts-mocha src/test/*/*.test.ts",
+		"t": "ts-mocha"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/frasermcc9/SpaceY.git"
+	},
+	"author": "Fraser McCallum",
+	"license": "MIT",
+	"bugs": {
+		"url": "https://github.com/frasermcc9/SpaceY/issues"
+	},
+	"homepage": "https://github.com/frasermcc9/SpaceY#readme",
+	"dependencies": {
+		"mongoose": "^5.9.19"
+	},
+	"devDependencies": {
+		"@types/mocha": "^7.0.2",
+		"@types/mongoose": "^5.7.27",
+		"mocha": "^8.0.1",
+		"must": "^0.13.4",
+		"nyc": "^15.1.0",
+		"ts-mocha": "^7.0.0",
+		"tsconfig-paths": "^3.9.0"
+	}
+}

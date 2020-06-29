@@ -1,37 +1,63 @@
-import { Ship } from "../GameTypes/GameAsset/Buildable/Ship/Ship.ts";
-import { Attachment } from "../GameTypes/GameAsset/Buildable/Attachment/Attachment.ts";
-import { Faction } from "../GameTypes/GameAsset/Faction/Faction.ts";
-import { Material } from "../GameTypes/GameAsset//Material/Material.ts";
-import { Collection } from "../Extensions/Collection.ts";
-import { GameAsset } from "../GameTypes/GameAsset/GameAsset.ts";
+import { Ship } from "../GameTypes/GameAsset/Buildable/Ship/Ship";
+import { Attachment } from "../GameTypes/GameAsset/Buildable/Attachment/Attachment";
+import { Faction } from "../GameTypes/GameAsset/Faction/Faction";
+import { Material, MaterialBuilder } from "../GameTypes/GameAsset//Material/Material";
+import { MapCollection } from "../Extensions/Collections";
+import { GameAsset } from "../GameTypes/GameAsset/GameAsset";
 
 export class Registry {
 	public constructor(copyReg?: Registry) {
 		if (copyReg) {
-			this.shipRegistry = new Collection(copyReg.shipRegistry);
-			this.attachmentRegistry = new Collection(copyReg.attachmentRegistry);
-			this.factionRegistry = new Collection(copyReg.factionRegistry);
-			this.materialRegistry = new Collection(copyReg.materialRegistry);
+			this.shipRegistry = new MapCollection(copyReg.shipRegistry);
+			this.attachmentRegistry = new MapCollection(copyReg.attachmentRegistry);
+			this.factionRegistry = new MapCollection(copyReg.factionRegistry);
+			this.materialRegistry = new MapCollection(copyReg.materialRegistry);
 		}
 	}
 
-	private readonly shipRegistry = new Collection<string, Ship>();
+	private defaultShip = BlankShip;
+	public get DefaultShip(): Ship {
+		return this.defaultShip;
+	}
+	public set DefaultShip(value: Ship) {
+		if (this.defaultShip == BlankShip)
+			throw new Error("Default ship has already been set. It can only be set once. If this was intentional, use the 'ForceChangeDefaultShip()' method.");
+		this.defaultShip = value;
+	}
+	public set ForceChangeDefaultShip(value: Ship) {
+		this.defaultShip = value;
+	}
+
+	private defaultCredits = 0;
+	public get DefaultCredits(): number {
+		return this.defaultCredits;
+	}
+	public set DefaultCredits(value: number) {
+		if (this.defaultCredits != 0)
+			throw new Error("Default credits has already been set. It can only be set once. If this was intentional, use the 'ForceChangeDefaultCredits()' method.");
+		this.defaultCredits = value;
+	}
+	public set ForceChangeDefaultCredits(value: number) {
+		this.defaultCredits = value;
+	}
+
+	private readonly shipRegistry = new MapCollection<string, Ship>();
 	public get ShipRegistry() {
 		return this.shipRegistry;
 	}
-	private readonly attachmentRegistry = new Collection<string, Attachment>();
+	private readonly attachmentRegistry = new MapCollection<string, Attachment>();
 	public get AttachmentRegistry() {
 		return this.attachmentRegistry;
 	}
-	private readonly factionRegistry = new Collection<string, Faction>();
+	private readonly factionRegistry = new MapCollection<string, Faction>();
 	public get FactionRegistry() {
 		return this.factionRegistry;
 	}
-	private readonly materialRegistry = new Collection<string, Material>();
+	private readonly materialRegistry = new MapCollection<string, Material>();
 	public get MaterialRegistry() {
 		return this.materialRegistry;
 	}
-	private readonly mineableMaterialRegistry = new Collection<string, Material>();
+	private readonly mineableMaterialRegistry = new MapCollection<string, Material>();
 	public get MineableMaterialRegistry() {
 		return this.mineableMaterialRegistry;
 	}
@@ -87,7 +113,7 @@ export class Registry {
 	 * @param name the string name of the object
 	 * @param registry the registry to search
 	 */
-	public NameResolver<T>(name: string, registry: Collection<string, T>): T | undefined {
+	public NameResolver<T>(name: string, registry: MapCollection<string, T>): T | undefined {
 		return registry.get(name);
 	}
 }
@@ -104,3 +130,5 @@ interface IFactions {
 interface IMaterials {
 	materials: Material[];
 }
+
+const BlankShip = new Ship({ name: "No default ship", description: "There is no default ship assigned." });

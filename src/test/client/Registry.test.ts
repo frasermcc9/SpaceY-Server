@@ -1,6 +1,7 @@
-import * as test from "https://deno.land/std/testing/asserts.ts";
-import { Client } from "../../lib/Client/Client.ts";
-import { BaseMaterial } from "../../lib/GameTypes/GameAsset/Buildable/Material/BaseMaterial.ts";
+
+/*
+import { Client } from "../../lib/Client/Client";
+import { Material } from "../../lib/GameTypes/GameAsset/Material/Material";
 
 Deno.test({
 	name: "Test adding game assets to client registry",
@@ -8,8 +9,8 @@ Deno.test({
 		Client.Create({});
 		const Registry = Client.Get().Registry;
 		//Create material and add it to copy registry
-		const M1 = new BaseMaterial({ name: "Iron", description: "A small amount of iron." });
-		const M2 = new BaseMaterial({ name: "Gold", description: "A valuable but rare metal." });
+		const M1 = new Material({ name: "Iron", description: "A small amount of iron." });
+		const M2 = new Material({ name: "Gold", description: "A valuable but rare metal." });
 		Registry.RegisterMaterials({ materials: [M1, M2] });
 
 		//Request the material from the copy and main registry
@@ -22,3 +23,4 @@ Deno.test({
 		Client.Destroy();
 	},
 });
+*/

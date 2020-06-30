@@ -1,40 +1,28 @@
 import { MaterialCollection, IMaterialCollectionOptions } from "../GameCollections/MaterialCollection";
+import { Player } from "../GameAsset/Player/Player";
+import { Client } from "../../Client/Client";
 
-class Asteroid {
-	private content: MaterialCollection;
-	constructor(options: IAsteroidOptions) {
-		if (options.customContents) {
-			this.content = new MaterialCollection(options.customContents);
-		} else {
-			this.content = MaterialCollection.GenerateMineableCollection(options.maxWorth || 0);
-		}
+class Asteroid extends MaterialCollection {
+	constructor(options: IMaterialCollectionOptions) {
+		super(options);
+	}
+
+	public PlayerMine(player: Player): void {
+		player.Inventory.Materials.SumCollection(this);
+	}
+	public PlayerMineAndSave(player: Player): void {
+		player.InventorySum("materials", this);
 	}
 }
 
 export class AsteroidBuilder {
-	private content!: IMaterialCollectionOptions;
-	private totalValue: number = 0;
-	private randomized: boolean = true;
-
-	public MakeRandom({ value }: { value: number }): AsteroidBuilder {
-		this.randomized = true;
-		this.totalValue = value;
-		return this;
+	public BuildRandom({ value }: { value: number }): Asteroid {
+		if (value < 0 && Client.Get().ConsoleLogging) console.warn("Negative asteroid value passed.");
+		const collection = MaterialCollection.GenerateMineableCollection(value);
+		return new Asteroid({ data: collection });
 	}
 
-	public CustomContent(MaterialCollection: IMaterialCollectionOptions): AsteroidBuilder {
-		this.randomized = false;
-		this.content = MaterialCollection;
-		return this;
+	public BuildCustom(materialCollection: IMaterialCollectionOptions): Asteroid {
+		return new Asteroid(materialCollection);
 	}
-
-	public Build(): Asteroid {
-		if (this.randomized) return new Asteroid({ maxWorth: this.totalValue });
-		else return new Asteroid({ customContents: this.content });
-	}
-}
-
-interface IAsteroidOptions {
-	customContents?: IMaterialCollectionOptions;
-	maxWorth?: number;
 }

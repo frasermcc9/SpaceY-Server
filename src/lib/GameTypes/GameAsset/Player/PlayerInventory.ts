@@ -1,22 +1,20 @@
-import { MaterialCollection, IMaterialCollectionOptions } from "../../GameCollections/MaterialCollection";
-import { ShipCollection, IShipCollectionOptions } from "../../GameCollections/ShipCollection";
-import { AttachmentCollection, IAttachmentCollectionOptions } from "../../GameCollections/AttachmentCollection";
 import { Client } from "../../../Client/Client";
-import { ReputationCollection, IReputationCollectionOptions } from "../../GameCollections/ReputationCollection";
-import { IPlayerDocument } from "../../../GameApi/Database/Player/PlayerModel";
-import { Material } from "../Material/Material";
+import { AttachmentCollection, IAttachmentCollectionOptions } from "../../GameCollections/AttachmentCollection";
+import { IMaterialCollectionOptions, MaterialCollection } from "../../GameCollections/MaterialCollection";
+import { IReputationCollectionOptions, ReputationCollection } from "../../GameCollections/ReputationCollection";
+import { IShipCollectionOptions, ShipCollection } from "../../GameCollections/ShipCollection";
 
 /**
  * Represents an inventory of a player. Please @see InventoryBuilder too create an inventory.
  */
 export class PlayerInventory {
-	private materials: MaterialCollection;
+	private readonly materials: MaterialCollection;
 	public get Materials(): MaterialCollection {
 		return this.materials;
 	}
-	private ships: ShipCollection;
-	private attachments: AttachmentCollection;
-	private reputation: ReputationCollection;
+	private readonly ships: ShipCollection;
+	private readonly attachments: AttachmentCollection;
+	private readonly reputation: ReputationCollection;
 	private credits: number;
 	private tokens: number;
 
@@ -77,6 +75,8 @@ export class PlayerInventory {
 		};
 	}
 }
+
+export type TRegistered = "materials" | "reputation" | "attachments" | "ships";
 
 export class InventoryBuilder {
 	private materials?: IMaterialCollectionOptions;
@@ -145,9 +145,6 @@ interface IPlayerInventoryOptions {
 	tokens?: number;
 }
 
-function isDocument(object: any): object is IPlayerDocument {
-	return "inventory" in object;
-}
 function isInventory(object: any): object is IPlayerInventoryOptions {
 	return "credits" in object;
 }

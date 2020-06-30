@@ -132,3 +132,5 @@ interface IMaterials {
 }
 
 const BlankShip = new Ship({ name: "No default ship", description: "There is no default ship assigned." });
+
+export type RegistryNames = "AttachmentRegistry" | "FactionRegistry" | "MaterialRegistry" | "ShipRegistry";

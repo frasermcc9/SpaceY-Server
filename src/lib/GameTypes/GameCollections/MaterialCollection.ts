@@ -49,20 +49,30 @@ export class MaterialCollection extends GameCollectionBase {
 		return { success: true, name: material.Name, quantity: quantity || 0, material: material };
 	}
 
+	public GetCollectionValue(): number {
+		let total = 0;
+		this.forEach((amount, name) => {
+			const Material = Client.Get().Registry.MaterialRegistry.get(name)!;
+			total += (new MaterialDecoratorSellable(Material).GetCost().cost || 0) * amount;
+		});
+		return total;
+	}
+
 	public static GenerateMineableCollection(value: number): MaterialCollection {
 		const Template = Array.from(Client.Get().Registry.MineableMaterialRegistry.values());
-		const ItemCount = Template.length;
+		if (Template.length == 0) {
+			throw new Error("No Mineable Materials");
+		}
 		const MineableCollection = new MaterialCollection();
 		let currentPrice = 0;
 
 		do {
 			const Selected = util.chooseFrom<Material>(Template);
 			const Material: IMaterial = new MaterialDecoratorSellable(Selected.item);
-			const ExistingAmount = MineableCollection.get(Selected.item.Name);
+			const ExistingAmount = MineableCollection.get(Selected.item.Name) || 0;
+			MineableCollection.set(Selected.item.Name, ExistingAmount + 1);
 			currentPrice += Material.GetMaterialCost() || 0;
-			if (ExistingAmount) MineableCollection.set(Selected.item.Name, ExistingAmount + 1);
 		} while (currentPrice < value);
-
 		return MineableCollection;
 	}
 }

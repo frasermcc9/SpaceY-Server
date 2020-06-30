@@ -32,10 +32,10 @@ export function GenerateClientSet() {
  * Iron, Gold, Food, Tech
  */
 export const GENERATED_MATERIALS = [
-	new MaterialBuilder({ name: "Iron", description: "A small iron nugget." }).SetCost(100).SetBlueprint(new Blueprint()).Build(),
-	new MaterialBuilder({ name: "Gold", description: "A small gold nugget." }).SetCost(100).SetBlueprint(new Blueprint()).Build(),
-	new MaterialBuilder({ name: "Food", description: "Food for one person." }).SetCost(100).SetBlueprint(new Blueprint()).Build(),
-	new MaterialBuilder({ name: "Tech", description: "Pile of tech pieces." }).SetCost(100).SetBlueprint(new Blueprint()).Build(),
+	new MaterialBuilder({ name: "Iron", description: "A small iron nugget." }).SetCost(25).SetBlueprint(new Blueprint()).EnableMine().Build(),
+	new MaterialBuilder({ name: "Gold", description: "A small gold nugget." }).SetCost(75).SetBlueprint(new Blueprint()).EnableMine().Build(),
+	new MaterialBuilder({ name: "Food", description: "Food for one person." }).SetCost(5).SetBlueprint(new Blueprint()).Build(),
+	new MaterialBuilder({ name: "Tech", description: "Pile of tech pieces." }).SetCost(50).SetBlueprint(new Blueprint()).Build(),
 ];
 export const GENERATED_SHIPS = [
 	new Ship({ description: "A small but agile ship", name: "Shuttle" }),

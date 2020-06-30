@@ -4,8 +4,7 @@
 	"description": "a space-rpg game in typescript",
 	"main": "example/index.js",
 	"scripts": {
-		"test": "ts-mocha src/test/*/*.test.ts",
-		"t": "ts-mocha"
+		"test": "ts-mocha src/test/**/*.test.ts"
 	},
 	"repository": {
 		"type": "git",

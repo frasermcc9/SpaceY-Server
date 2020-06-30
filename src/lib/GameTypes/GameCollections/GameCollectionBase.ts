@@ -2,7 +2,7 @@ import { Collection } from "mongoose";
 
 import { MapCollection } from "../../Extensions/Collections";
 
-export class GameCollectionBase extends MapCollection<string, number> {
+export abstract class GameCollectionBase extends MapCollection<string, number> {
 	/**
 	 * Reduces a given item by the given amount. Cannot reduce below zero.
 	 * @param itemName
@@ -36,6 +36,24 @@ export class GameCollectionBase extends MapCollection<string, number> {
 		}
 		this.set(itemName, amountOwned + quantity);
 		return { success: true, code: 1, amount: amountOwned + quantity };
+	}
+
+	public SufficientToDecrease(itemName: string, quantity: number): boolean {
+		if (quantity > 0) return true;
+		const amountOwned = this.get(itemName);
+		if (amountOwned != undefined && amountOwned > Math.abs(quantity)) return true;
+		return false;
+	}
+
+	public SumCollection(gameCollection: Map<string, number>): void {
+		gameCollection.forEach((val, key) => {
+			if (val < 0) throw new Error(`Negative number '${val}' used in SumCollection function.`);
+			if (this.get(key) == undefined) throw new Error(`Item with name ${key} does not exist when used in SumCollection function.`);
+		});
+		gameCollection.forEach((val, key) => {
+			const InputValue = this.get(key)!;
+			this.set(key, val + InputValue);
+		});
 	}
 }
 

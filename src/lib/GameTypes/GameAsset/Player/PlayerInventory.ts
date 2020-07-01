@@ -36,12 +36,12 @@ export class PlayerInventory {
 
 	public constructor(options: IPlayerInventoryOptions) {
 		if (isInventory(options)) {
-			this.materials = options.materialOptions || new MaterialCollection();
-			this.ships = options.shipOptions || new ShipCollection();
-			this.attachments = options.attachmentOptions || new AttachmentCollection();
-			this.reputation = options.reputationOptions || new ReputationCollection();
-			this.credits = options.credits || Client.Get().Registry.DefaultCredits;
-			this.tokens = options.tokens || 0;
+			this.materials = options.materialOptions ?? new MaterialCollection();
+			this.ships = options.shipOptions ?? new ShipCollection();
+			this.attachments = options.attachmentOptions ?? new AttachmentCollection();
+			this.reputation = options.reputationOptions ?? new ReputationCollection();
+			this.credits = options.credits ?? Client.Get().Registry.DefaultCredits;
+			this.tokens = options.tokens ?? 0;
 		} else {
 			throw new Error("Invalid inventory creation.");
 		}

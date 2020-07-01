@@ -6,6 +6,7 @@ export class Material extends GameAsset implements IMaterial {
 	private mineable: boolean = false;
 	private sellable: boolean = false;
 	private cost: number | undefined;
+	private rarity: number;
 	private blueprint: Blueprint | undefined;
 
 	public constructor(materialOptions: IMaterialOptions) {
@@ -16,6 +17,7 @@ export class Material extends GameAsset implements IMaterial {
 
 		this.cost = materialOptions.cost;
 		this.blueprint = materialOptions.blueprint;
+		this.rarity = materialOptions.rarity || 1;
 	}
 	public get Name(): string {
 		return super.Name;
@@ -40,6 +42,9 @@ export class Material extends GameAsset implements IMaterial {
 	public GetMaterialBlueprint(): Blueprint | undefined {
 		return this.blueprint;
 	}
+	public GetMaterialRarity(): number {
+		return this.rarity;
+	}
 }
 export interface IMaterial {
 	IsSellable(): boolean;
@@ -48,6 +53,7 @@ export interface IMaterial {
 
 	GetMaterialCost(): number | undefined;
 	GetMaterialBlueprint(): Blueprint | undefined;
+	GetMaterialRarity(): number;
 }
 
 export class MaterialBuilder {
@@ -59,6 +65,7 @@ export class MaterialBuilder {
 	private blueprint?: Blueprint;
 	private name: string;
 	private description: string;
+	private rarity?: number;
 
 	public constructor({ name, description }: { name: string; description: string }) {
 		this.name = name;
@@ -84,6 +91,10 @@ export class MaterialBuilder {
 		this.blueprint = blueprint;
 		return this;
 	}
+	public SetRarity(level: number): MaterialBuilder {
+		this.rarity = level;
+		return this;
+	}
 	public Build(): Material {
 		return new Material({
 			buildable: this.buildable,
@@ -93,6 +104,7 @@ export class MaterialBuilder {
 			sellable: this.sellable,
 			blueprint: this.blueprint,
 			cost: this.cost,
+			rarity: this.rarity,
 		});
 	}
 }
@@ -105,4 +117,5 @@ interface IMaterialOptions extends IGameAssetOptions {
 	blueprint?: Blueprint;
 	name: string;
 	description: string;
+	rarity?: number;
 }

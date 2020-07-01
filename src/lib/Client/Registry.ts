@@ -14,6 +14,15 @@ export class Registry {
 			this.materialRegistry = new MapCollection(copyReg.materialRegistry);
 		}
 	}
+	private maxRarity: number = 1;
+	public get MaxRarity() {
+		return this.maxRarity;
+	}
+	public set MaxRarity(v: number) {
+		this.maxRarity = v;
+	}
+
+	//#region - Defaults
 
 	private defaultShip = BlankShip;
 	public get DefaultShip(): Ship {
@@ -41,6 +50,10 @@ export class Registry {
 		this.defaultCredits = value;
 	}
 
+	//#endregion - Defaults
+
+	//#region - Registries
+
 	private readonly shipRegistry = new MapCollection<string, Ship>();
 	public get ShipRegistry() {
 		return this.shipRegistry;
@@ -61,6 +74,14 @@ export class Registry {
 	public get MineableMaterialRegistry() {
 		return this.mineableMaterialRegistry;
 	}
+	private readonly sellableMaterialRegistry = new MapCollection<string, Material>();
+	public get SellableMaterialRegistry() {
+		return this.sellableMaterialRegistry;
+	}
+
+	//#endregion - Registries
+
+	//#region - Register Methods
 
 	public RegisterShips(data: IShips): Registry {
 		data.ships.forEach((ship) => {
@@ -84,9 +105,14 @@ export class Registry {
 		data.materials.forEach((material) => {
 			this.materialRegistry.set(material.Name, material); //add to complete registry
 			if (material.IsMineable()) this.mineableMaterialRegistry.set(material.Name, material); //if mineable, add to mineable registry too
+			if (material.IsSellable()) this.sellableMaterialRegistry.set(material.Name, material); //if sellable, add to mineable registry too
 		});
 		return this;
 	}
+
+	//#endregion - Register Methods
+
+	//#region - Resolution Methods
 
 	public ResolveShipFromName(name: string): Ship | undefined {
 		const result = this.NameResolver<Ship>(name, this.ShipRegistry);
@@ -116,6 +142,8 @@ export class Registry {
 	public NameResolver<T>(name: string, registry: MapCollection<string, T>): T | undefined {
 		return registry.get(name);
 	}
+
+	//#endregion - Resolution Methods
 }
 
 interface IShips {

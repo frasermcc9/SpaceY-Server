@@ -1,6 +1,8 @@
 import { Collection } from "mongoose";
 
 import { MapCollection } from "../../Extensions/Collections";
+import { Client } from "../../main";
+import { SellableDecorator } from "../GameAsset/AssetDecorators";
 
 export abstract class GameCollectionBase extends MapCollection<string, number> {
 	/**
@@ -38,17 +40,31 @@ export abstract class GameCollectionBase extends MapCollection<string, number> {
 		return { success: true, code: 1, amount: amountOwned + quantity };
 	}
 
+	/**
+	 * Checks if this inventory can handle the operation without going negative. Input quantity MUST be negative.
+	 * @param itemName
+	 * @param quantity amount to see if reduction is possible. **MUST BE NEGATIVE FOR REDUCTION**
+	 */
 	public SufficientToDecrease(itemName: string, quantity: number): boolean {
 		if (quantity > 0) return true;
 		const amountOwned = this.get(itemName);
-		if (amountOwned != undefined && amountOwned > Math.abs(quantity)) return true;
+		if (amountOwned != undefined && amountOwned >= Math.abs(quantity)) return true;
 		return false;
 	}
-
-	public SumCollection(gameCollection: Map<string, number>): void {
+	public StrictSumCollection(gameCollection: Map<string, number>): void {
 		gameCollection.forEach((val, key) => {
 			if (val < 0) throw new Error(`Negative number '${val}' used in SumCollection function.`);
 			if (this.get(key) == undefined) throw new Error(`Item with name ${key} does not exist when used in SumCollection function.`);
+		});
+		gameCollection.forEach((val, key) => {
+			const InputValue = this.get(key)!;
+			this.set(key, val + InputValue);
+		});
+	}
+	public SumCollection(gameCollection: Map<string, number>): void {
+		gameCollection.forEach((val, key) => {
+			if (val < 0) throw new Error(`Negative number '${val}' used in SumCollection function.`);
+			if (this.get(key) == undefined) this.set(key, 0);
 		});
 		gameCollection.forEach((val, key) => {
 			const InputValue = this.get(key)!;
@@ -59,7 +75,12 @@ export abstract class GameCollectionBase extends MapCollection<string, number> {
 	 * @virtual default implementation returns 0.
 	 */
 	public GetCollectionValue(): number {
-		return 0;
+		let total = 0;
+		this.forEach((amount, name) => {
+			const Item = Client.Get().Registry.AnyResolve(name);
+			if (Item != undefined) total += (new SellableDecorator(Item).PriceData.cost || 0) * amount;
+		});
+		return total;
 	}
 }
 

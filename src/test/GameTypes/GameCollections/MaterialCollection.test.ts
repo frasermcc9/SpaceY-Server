@@ -1,8 +1,9 @@
-import * as test from "https://deno.land/std/testing/asserts.ts";
-import { Client } from "../../../lib/Client/Client.ts";
-import { MaterialCollection } from "../../../lib/GameTypes/GameCollections/MaterialCollection.ts";
-import { BaseMaterial } from "../../../lib/GameTypes/GameAsset/Buildable/Material/BaseMaterial.ts";
-import { GenerateMaterialsForActiveClient, GENERATED_MATERIALS } from "../../TestUtil.ts";
+/*
+import * as test from "https://deno.land/std/testing/asserts";
+import { Client } from "../../../lib/Client/Client";
+import { MaterialCollection } from "../../../lib/GameTypes/GameCollections/MaterialCollection";
+import { BaseMaterial } from "../../../lib/GameTypes/GameAsset/Buildable/Material/BaseMaterial";
+import { GenerateMaterialsForActiveClient, GENERATED_MATERIALS } from "../../TestUtil.test";
 
 Deno.test({
 	name: "Test empty constructor",
@@ -37,3 +38,4 @@ Deno.test({
 		Client.Destroy();
 	},
 });
+*/

@@ -1,6 +1,8 @@
-import * as test from "https://deno.land/std/testing/asserts.ts";
-import { Client } from "../../lib/Client/Client.ts";
-import { Material, MaterialBuilder } from "../../lib/GameTypes/GameAsset/Material/Material.ts";
+/*
+import * as test from "https://deno.land/std/testing/asserts";
+
+import { Client } from "../../lib/Client/Client";
+import { Material, MaterialBuilder } from "../../lib/GameTypes/GameAsset/Material/Material";
 
 
 Deno.test({
@@ -41,3 +43,4 @@ Deno.test({
 		Client.Destroy();
 	},
 });
+*/

@@ -14,6 +14,7 @@ before(async () => {
 		databaseUri: "mongodb://localhost:27017",
 		defaultCredits: DEFAULT_CREDITS,
 		consoleLogging: false,
+		maximumRarity: 12,
 	});
 	GenerateClientSet();
 	connect();
@@ -30,9 +31,9 @@ after(async () => {
 describe("Player Database", () => {
 	describe("Creating Players", () => {
 		it("Should add three users to the database", async () => {
-            await PlayerModel.findOneOrCreate({ uId: "123" });
-            await PlayerModel.findOneOrCreate({ uId: "23" });
-            await PlayerModel.findOneOrCreate({ uId: "3" });
+			await PlayerModel.findOneOrCreate({ uId: "123" });
+			await PlayerModel.findOneOrCreate({ uId: "23" });
+			await PlayerModel.findOneOrCreate({ uId: "3" });
 			PlayerModel.find().must.eventually.have.length(3);
 		});
 

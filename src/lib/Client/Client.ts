@@ -15,7 +15,7 @@ export class Client {
 	}
 
 	public static Create(ClientSettings: IClientSettings) {
-		if (this.Client) throw new Error("A client has already been made. Please use Client.Get() to access it.");
+		if (this.Client) return; //throw new Error("A client has already been made. Please use Client.Get() to access it.");
 		this.Client = new Client(ClientSettings);
 	}
 	public static Destroy() {
@@ -26,6 +26,7 @@ export class Client {
 		this.dbName = clientSettings.databaseName;
 		this.ConsoleLogging = clientSettings.consoleLogging || false;
 		this.registry.DefaultCredits = clientSettings.defaultCredits || 0;
+		this.registry.MaxRarity = clientSettings.maximumRarity;
 	}
 
 	//Section: Registry
@@ -56,4 +57,5 @@ interface IClientSettings {
 	databaseUri: string;
 	consoleLogging?: boolean;
 	defaultCredits?: number;
+	maximumRarity: number;
 }

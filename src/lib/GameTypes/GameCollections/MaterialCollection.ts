@@ -1,8 +1,8 @@
 import { Client } from "../../Client/Client";
 import { util } from "../../Util/util";
-import { MaterialDecoratorSellable } from "../GameAsset/Material/DecoratorSellable";
 import { IMaterial, Material } from "../GameAsset/Material/Material";
 import { GameCollectionBase } from "./GameCollectionBase";
+import { SellableDecorator } from "../GameAsset/AssetDecorators";
 
 export class MaterialCollection extends GameCollectionBase {
 	public constructor(options?: IMaterialCollectionOptions) {
@@ -53,7 +53,7 @@ export class MaterialCollection extends GameCollectionBase {
 		let total = 0;
 		this.forEach((amount, name) => {
 			const Material = Client.Get().Registry.MaterialRegistry.get(name)!;
-			total += (new MaterialDecoratorSellable(Material).GetCost().cost || 0) * amount;
+			total += (new SellableDecorator(Material).PriceData.cost || 0) * amount;
 		});
 		return total;
 	}
@@ -68,10 +68,10 @@ export class MaterialCollection extends GameCollectionBase {
 
 		do {
 			const Selected = util.chooseFrom<Material>(Template);
-			const Material: IMaterial = new MaterialDecoratorSellable(Selected.item);
-			const ExistingAmount = MineableCollection.get(Selected.item.Name) || 0;
+			const Material = new SellableDecorator(Selected.item);
+			const ExistingAmount = MineableCollection.get(Selected.item.Name) ?? 0;
 			MineableCollection.set(Selected.item.Name, ExistingAmount + 1);
-			currentPrice += Material.GetMaterialCost() || 0;
+			currentPrice += Material.PriceData.cost ?? 0;
 		} while (currentPrice < value);
 		return MineableCollection;
 	}

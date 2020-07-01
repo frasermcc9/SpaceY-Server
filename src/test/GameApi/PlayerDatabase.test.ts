@@ -181,7 +181,7 @@ describe("Player Database", () => {
 			const Player = await PlayerModel.findOneOrCreate({ uId: "1" });
 			const Increments = new Map().set("Iron", 5).set("Gold", 3).set("Food", 2).set("Unknown", 10);
 			throws(() => {
-				Player.Inventory.Materials.SumCollection(Increments);
+				Player.Inventory.Materials.StrictSumCollection(Increments);
 			});
 		});
 		it("Should not work with sum collection with negative values", async () => {

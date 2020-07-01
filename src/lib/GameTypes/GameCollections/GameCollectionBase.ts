@@ -55,6 +55,12 @@ export abstract class GameCollectionBase extends MapCollection<string, number> {
 			this.set(key, val + InputValue);
 		});
 	}
+	/**
+	 * @virtual default implementation returns 0.
+	 */
+	public GetCollectionValue(): number {
+		return 0;
+	}
 }
 
 interface ReduceToNonNegativeOutput {

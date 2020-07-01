@@ -3,6 +3,7 @@ import { Attachment } from "../GameTypes/GameAsset/Buildable/Attachment/Attachme
 import { Faction } from "../GameTypes/GameAsset/Faction/Faction";
 import { Material } from "../GameTypes/GameAsset//Material/Material";
 import { MapCollection } from "../Extensions/Collections";
+import { GameAsset } from "../GameTypes/GameAsset/GameAsset";
 export declare class Registry {
     constructor(copyReg?: Registry);
     private maxRarity;
@@ -41,7 +42,8 @@ export declare class Registry {
      * @param name the string name of the object
      * @param registry the registry to search
      */
-    NameResolver<T>(name: string, registry: MapCollection<string, T>): T | undefined;
+    private NameResolver;
+    AnyResolve(name: string): GameAsset | undefined;
 }
 interface IShips {
     ships: Ship[];

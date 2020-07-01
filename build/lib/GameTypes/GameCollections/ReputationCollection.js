@@ -7,10 +7,9 @@ class ReputationCollection extends GameCollectionBase_1.GameCollectionBase {
     constructor(options) {
         super();
         this.factionSet = Client_1.Client.Get().Registry.FactionRegistry;
-        if (options === null || options === void 0 ? void 0 : options.data) {
+        if (options?.data) {
             this.factionSet.forEach((faction) => {
-                var _a;
-                this.set(faction.Name, ((_a = options.data) === null || _a === void 0 ? void 0 : _a.get(faction.Name)) || 0);
+                this.set(faction.Name, options.data?.get(faction.Name) || 0);
             });
         }
         else {

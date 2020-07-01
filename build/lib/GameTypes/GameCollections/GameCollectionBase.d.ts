@@ -14,7 +14,13 @@ export declare abstract class GameCollectionBase extends MapCollection<string, n
      * @returns codes: 1-Success, 2-Item Not Found
      */
     Increase(itemName: string, quantity: number): IncreaseOutput;
+    /**
+     * Checks if this inventory can handle the operation without going negative. Input quantity MUST be negative.
+     * @param itemName
+     * @param quantity amount to see if reduction is possible. **MUST BE NEGATIVE FOR REDUCTION**
+     */
     SufficientToDecrease(itemName: string, quantity: number): boolean;
+    StrictSumCollection(gameCollection: Map<string, number>): void;
     SumCollection(gameCollection: Map<string, number>): void;
     /**
      * @virtual default implementation returns 0.

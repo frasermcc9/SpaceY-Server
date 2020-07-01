@@ -26,7 +26,7 @@ class Player {
     }
     //private location:
     //#region - Credits
-    async CreditsIncrement({ amount, noImplicitSave }) {
+    async CreditsIncrement({ amount, noImplicitSave = false }) {
         if (amount < 0)
             throw new Error("Only positive values can be passed to the incrementCredits method. Consider using decrement to remove credits.");
         const success = this.inventory.AddCredits({ amount: amount });
@@ -35,7 +35,7 @@ class Player {
         }
         return success;
     }
-    async CreditsDecrement({ amount, noImplicitSave }) {
+    async CreditsDecrement({ amount, noImplicitSave = false }) {
         if (amount < 0)
             throw new Error("Only positive values can be passed to the decrementCredits method. Consider using increment to add credits.");
         const success = this.inventory.AddCredits({ amount: -amount });

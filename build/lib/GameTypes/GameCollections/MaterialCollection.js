@@ -3,16 +3,15 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.MaterialCollection = void 0;
 const Client_1 = require("../../Client/Client");
 const util_1 = require("../../Util/util");
-const DecoratorSellable_1 = require("../GameAsset/Material/DecoratorSellable");
 const GameCollectionBase_1 = require("./GameCollectionBase");
+const AssetDecorators_1 = require("../GameAsset/AssetDecorators");
 class MaterialCollection extends GameCollectionBase_1.GameCollectionBase {
     constructor(options) {
         super();
         //Create map with all empty material values, but set defined materials to the given value.
-        if (options === null || options === void 0 ? void 0 : options.data) {
+        if (options?.data) {
             Client_1.Client.Get().Registry.MaterialRegistry.forEach((material) => {
-                var _a;
-                this.set(material.Name, ((_a = options.data) === null || _a === void 0 ? void 0 : _a.get(material.Name)) || 0);
+                this.set(material.Name, options.data?.get(material.Name) || 0);
             });
         }
         else {
@@ -53,7 +52,7 @@ class MaterialCollection extends GameCollectionBase_1.GameCollectionBase {
         let total = 0;
         this.forEach((amount, name) => {
             const Material = Client_1.Client.Get().Registry.MaterialRegistry.get(name);
-            total += (new DecoratorSellable_1.MaterialDecoratorSellable(Material).GetCost().cost || 0) * amount;
+            total += (new AssetDecorators_1.SellableDecorator(Material).PriceData.cost || 0) * amount;
         });
         return total;
     }
@@ -66,10 +65,10 @@ class MaterialCollection extends GameCollectionBase_1.GameCollectionBase {
         let currentPrice = 0;
         do {
             const Selected = util_1.util.chooseFrom(Template);
-            const Material = new DecoratorSellable_1.MaterialDecoratorSellable(Selected.item);
-            const ExistingAmount = MineableCollection.get(Selected.item.Name) || 0;
+            const Material = new AssetDecorators_1.SellableDecorator(Selected.item);
+            const ExistingAmount = MineableCollection.get(Selected.item.Name) ?? 0;
             MineableCollection.set(Selected.item.Name, ExistingAmount + 1);
-            currentPrice += Material.GetMaterialCost() || 0;
+            currentPrice += Material.PriceData.cost ?? 0;
         } while (currentPrice < value);
         return MineableCollection;
     }

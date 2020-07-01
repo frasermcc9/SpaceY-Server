@@ -2,6 +2,8 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.GameCollectionBase = void 0;
 const Collections_1 = require("../../Extensions/Collections");
+const main_1 = require("../../main");
+const AssetDecorators_1 = require("../GameAsset/AssetDecorators");
 class GameCollectionBase extends Collections_1.MapCollection {
     /**
      * Reduces a given item by the given amount. Cannot reduce below zero.
@@ -38,15 +40,20 @@ class GameCollectionBase extends Collections_1.MapCollection {
         this.set(itemName, amountOwned + quantity);
         return { success: true, code: 1, amount: amountOwned + quantity };
     }
+    /**
+     * Checks if this inventory can handle the operation without going negative. Input quantity MUST be negative.
+     * @param itemName
+     * @param quantity amount to see if reduction is possible. **MUST BE NEGATIVE FOR REDUCTION**
+     */
     SufficientToDecrease(itemName, quantity) {
         if (quantity > 0)
             return true;
         const amountOwned = this.get(itemName);
-        if (amountOwned != undefined && amountOwned > Math.abs(quantity))
+        if (amountOwned != undefined && amountOwned >= Math.abs(quantity))
             return true;
         return false;
     }
-    SumCollection(gameCollection) {
+    StrictSumCollection(gameCollection) {
         gameCollection.forEach((val, key) => {
             if (val < 0)
                 throw new Error(`Negative number '${val}' used in SumCollection function.`);
@@ -58,11 +65,29 @@ class GameCollectionBase extends Collections_1.MapCollection {
             this.set(key, val + InputValue);
         });
     }
+    SumCollection(gameCollection) {
+        gameCollection.forEach((val, key) => {
+            if (val < 0)
+                throw new Error(`Negative number '${val}' used in SumCollection function.`);
+            if (this.get(key) == undefined)
+                this.set(key, 0);
+        });
+        gameCollection.forEach((val, key) => {
+            const InputValue = this.get(key);
+            this.set(key, val + InputValue);
+        });
+    }
     /**
      * @virtual default implementation returns 0.
      */
     GetCollectionValue() {
-        return 0;
+        let total = 0;
+        this.forEach((amount, name) => {
+            const Item = main_1.Client.Get().Registry.AnyResolve(name);
+            if (Item != undefined)
+                total += (new AssetDecorators_1.SellableDecorator(Item).PriceData.cost || 0) * amount;
+        });
+        return total;
     }
 }
 exports.GameCollectionBase = GameCollectionBase;

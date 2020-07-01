@@ -95,8 +95,6 @@ class Registry {
             this.materialRegistry.set(material.Name, material); //add to complete registry
             if (material.IsMineable())
                 this.mineableMaterialRegistry.set(material.Name, material); //if mineable, add to mineable registry too
-            if (material.IsSellable())
-                this.sellableMaterialRegistry.set(material.Name, material); //if sellable, add to mineable registry too
         });
         return this;
     }
@@ -133,6 +131,9 @@ class Registry {
      */
     NameResolver(name, registry) {
         return registry.get(name);
+    }
+    AnyResolve(name) {
+        return this.materialRegistry.get(name) ?? this.attachmentRegistry.get(name) ?? this.factionRegistry.get(name) ?? this.shipRegistry.get(name);
     }
 }
 exports.Registry = Registry;

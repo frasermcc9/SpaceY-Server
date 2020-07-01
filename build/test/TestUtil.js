@@ -3,7 +3,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.GENERATED_ATTACHMENTS = exports.GENERATED_FACTIONS = exports.GENERATED_SHIPS = exports.GENERATED_MATERIALS = exports.GenerateClientSet = exports.GenerateAttachmentsForActiveClient = exports.GenerateFactionsForActiveClient = exports.GenerateShipsForActiveClient = exports.GenerateMaterialsForActiveClient = void 0;
 const Client_1 = require("../lib/Client/Client");
 const Material_1 = require("../lib/GameTypes/GameAsset/Material/Material");
-const Blueprint_1 = require("../lib/GameTypes/GameAsset/Blueprint/Blueprint");
 const Ship_1 = require("../lib/GameTypes/GameAsset/Buildable/Ship/Ship");
 const Faction_1 = require("../lib/GameTypes/GameAsset/Faction/Faction");
 const Attachment_1 = require("../lib/GameTypes/GameAsset/Buildable/Attachment/Attachment");
@@ -38,10 +37,10 @@ exports.GenerateClientSet = GenerateClientSet;
  * Iron, Gold, Food, Tech
  */
 exports.GENERATED_MATERIALS = [
-    new Material_1.MaterialBuilder({ name: "Iron", description: "A small iron nugget." }).SetCost(25).SetBlueprint(new Blueprint_1.Blueprint()).EnableMine().SetRarity(4).Build(),
-    new Material_1.MaterialBuilder({ name: "Gold", description: "A small gold nugget." }).SetCost(75).SetBlueprint(new Blueprint_1.Blueprint()).EnableMine().SetRarity(10).Build(),
-    new Material_1.MaterialBuilder({ name: "Food", description: "Food for one person." }).SetCost(5).SetBlueprint(new Blueprint_1.Blueprint()).SetRarity(1).Build(),
-    new Material_1.MaterialBuilder({ name: "Tech", description: "Pile of tech pieces." }).SetCost(50).SetBlueprint(new Blueprint_1.Blueprint()).SetRarity(6).Build(),
+    new Material_1.MaterialBuilder({ name: "Iron", description: "A small iron nugget." }).EnableSell(25).EnableMine().SetRarity(4).Build(),
+    new Material_1.MaterialBuilder({ name: "Gold", description: "A small gold nugget." }).EnableSell(75).EnableMine().SetRarity(10).Build(),
+    new Material_1.MaterialBuilder({ name: "Food", description: "Food for one person." }).EnableSell(5).SetRarity(1).Build(),
+    new Material_1.MaterialBuilder({ name: "Tech", description: "Pile of tech pieces." }).EnableSell(50).SetRarity(6).Build(),
 ];
 exports.GENERATED_SHIPS = [
     new Ship_1.Ship({ description: "A small but agile ship", name: "Shuttle" }),

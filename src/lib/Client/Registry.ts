@@ -1,7 +1,7 @@
 import { Ship } from "../GameTypes/GameAsset/Buildable/Ship/Ship";
 import { Attachment } from "../GameTypes/GameAsset/Buildable/Attachment/Attachment";
 import { Faction } from "../GameTypes/GameAsset/Faction/Faction";
-import { Material, MaterialBuilder } from "../GameTypes/GameAsset//Material/Material";
+import { Material } from "../GameTypes/GameAsset//Material/Material";
 import { MapCollection } from "../Extensions/Collections";
 import { GameAsset } from "../GameTypes/GameAsset/GameAsset";
 
@@ -105,7 +105,6 @@ export class Registry {
 		data.materials.forEach((material) => {
 			this.materialRegistry.set(material.Name, material); //add to complete registry
 			if (material.IsMineable()) this.mineableMaterialRegistry.set(material.Name, material); //if mineable, add to mineable registry too
-			if (material.IsSellable()) this.sellableMaterialRegistry.set(material.Name, material); //if sellable, add to mineable registry too
 		});
 		return this;
 	}
@@ -139,8 +138,12 @@ export class Registry {
 	 * @param name the string name of the object
 	 * @param registry the registry to search
 	 */
-	public NameResolver<T>(name: string, registry: MapCollection<string, T>): T | undefined {
+	private NameResolver<T>(name: string, registry: MapCollection<string, T>): T | undefined {
 		return registry.get(name);
+	}
+
+	public AnyResolve(name: string): GameAsset | undefined {
+		return this.materialRegistry.get(name) ?? this.attachmentRegistry.get(name) ?? this.factionRegistry.get(name) ?? this.shipRegistry.get(name);
 	}
 
 	//#endregion - Resolution Methods

@@ -22,18 +22,18 @@ export class Player {
 
 	//#region - Credits
 
-	public async CreditsIncrement({ amount, noImplicitSave }: { amount: number; noImplicitSave?: boolean }): Promise<boolean> {
+	public async CreditsIncrement({ amount, implicitSave = true }: { amount: number; implicitSave?: boolean }): Promise<boolean> {
 		if (amount < 0) throw new Error("Only positive values can be passed to the incrementCredits method. Consider using decrement to remove credits.");
 		const success: boolean = this.inventory.AddCredits({ amount: amount });
-		if (success && !noImplicitSave) {
+		if (success && !implicitSave) {
 			await this.save();
 		}
 		return success;
 	}
-	public async CreditsDecrement({ amount, noImplicitSave }: { amount: number; noImplicitSave?: boolean }): Promise<boolean> {
+	public async CreditsDecrement({ amount, implicitSave = true }: { amount: number; implicitSave?: boolean }): Promise<boolean> {
 		if (amount < 0) throw new Error("Only positive values can be passed to the decrementCredits method. Consider using increment to add credits.");
 		const success: boolean = this.inventory.AddCredits({ amount: -amount });
-		if (success && !noImplicitSave) {
+		if (success && implicitSave) {
 			await this.save();
 		}
 		return success;

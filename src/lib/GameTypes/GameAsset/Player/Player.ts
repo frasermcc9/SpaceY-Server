@@ -25,7 +25,7 @@ export class Player {
 	public async CreditsIncrement({ amount, implicitSave = true }: { amount: number; implicitSave?: boolean }): Promise<boolean> {
 		if (amount < 0) throw new Error("Only positive values can be passed to the incrementCredits method. Consider using decrement to remove credits.");
 		const success: boolean = this.inventory.AddCredits({ amount: amount });
-		if (success && !implicitSave) {
+		if (success && implicitSave) {
 			await this.save();
 		}
 		return success;

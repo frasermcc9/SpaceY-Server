@@ -8,17 +8,30 @@ export abstract class MaterialDecorator implements IMaterial {
 		this.material = material;
 	}
 
-	public IsSellable = (): boolean => this.material.IsSellable();
-	public IsMineable = (): boolean => this.material.IsMineable();
-	public IsBuildable = (): boolean => this.material.IsBuildable();
-
-	public GetMaterialCost(): number | undefined {
-		const cost = this.material.GetMaterialCost();
-		return cost;
+	public get Name(): string {
+		return this.material.Name;
+	}
+	public get Description(): string {
+		return this.material.Description;
 	}
 
+	public IsSellable(): boolean {
+		return this.material.IsSellable();
+	}
+	public IsMineable(): boolean {
+		return this.material.IsMineable();
+	}
+	public IsBuildable(): boolean {
+		return this.material.IsBuildable();
+	}
+
+	public GetMaterialCost(): number | undefined {
+		return this.material.GetMaterialCost();
+	}
 	public GetMaterialBlueprint(): Blueprint | undefined {
-		const blueprint = this.material.GetMaterialBlueprint();
-		return blueprint;
+		return this.material.GetMaterialBlueprint();
+	}
+	public GetMaterialRarity(): number {
+		return this.material.GetMaterialRarity();
 	}
 }

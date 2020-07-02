@@ -12,8 +12,21 @@ export abstract class BaseStore<K extends GameAsset> extends GameCollectionBase 
 		super();
 		this.credits = credits;
 	}
-	public abstract SetInventory(data: GameCollectionBase): void;
-	public abstract SetInventory(data: MapCollection<K, number>): void;
+	/**
+	 * Adds the given data to this inventory. For a newly refreshed store, this is identical behaviour to SetInventory
+	 * @param data the inventory to add
+	 */
+	public AddToStore(data: Map<string, number>): void {
+		return this.SumCollection(data);
+	}
+	/**
+	 * Clears the inventory, then sets it to the given data.
+	 * @param data
+	 */
+	public SetStore(data: Map<string, number>): void {
+		this.clear();
+		return this.SumCollection(data);
+	}
 
 	public async Buy({ buyer, item, quantity }: { buyer: Player; item: string; quantity: number }): Promise<IBuyResult> {
 		//Check valid quantity
@@ -42,6 +55,8 @@ export abstract class BaseStore<K extends GameAsset> extends GameCollectionBase 
 	 */
 	public abstract GetItem(itemName: string): GameAsset | undefined;
 	public abstract GetCostOfItem(item: GameAsset): number | undefined;
+
+	public abstract GenerateInventory(): void;
 
 	public abstract Sell(): void;
 	public abstract Update(): void;

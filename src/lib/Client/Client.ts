@@ -13,6 +13,9 @@ export class Client {
 		}
 		return this.Client;
 	}
+	public static get Reg(): Registry {
+		return this.Get().Registry;
+	}
 
 	public static Create(ClientSettings: IClientSettings) {
 		if (this.Client) return; //throw new Error("A client has already been made. Please use Client.Get() to access it.");

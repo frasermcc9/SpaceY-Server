@@ -1,8 +1,7 @@
-import { Collection } from "mongoose";
-
 import { MapCollection } from "../../Extensions/Collections";
 import { Client } from "../../main";
 import { SellableDecorator } from "../GameAsset/AssetDecorators";
+import { GameAsset } from "../GameAsset/GameAsset";
 
 export abstract class GameCollectionBase extends MapCollection<string, number> {
 	/**
@@ -63,7 +62,7 @@ export abstract class GameCollectionBase extends MapCollection<string, number> {
 	}
 	public SumCollection(gameCollection: Map<string, number>): void {
 		gameCollection.forEach((val, key) => {
-			if (val < 0) throw new Error(`Negative number '${val}' used in SumCollection function.`);
+			if (val < 0) throw new Error(`Negative number '${val}' used in SumCollection function for ${key}.`);
 			if (this.get(key) == undefined) this.set(key, 0);
 		});
 		gameCollection.forEach((val, key) => {
@@ -72,8 +71,43 @@ export abstract class GameCollectionBase extends MapCollection<string, number> {
 		});
 	}
 	/**
-	 * @virtual default implementation returns 0.
+	 * @param gameCollection
+	 * @returns codes: 200-Success, 403-Insufficient resources
 	 */
+	public StrictSubtractCollection(gameCollection: Map<string, number>): { code: number; failures: string[] } {
+		const Failed: string[] = new Array();
+		gameCollection.forEach((val, key) => {
+			if (val < 0) throw new Error(`Negative number '${val}' used in SubtractCollection function for ${key}.`);
+			if (this.get(key) == undefined) throw new Error(`Item with name ${key} does not exist when used in SumCollection function.`);
+			if (this.get(key)! < val) Failed.push(key);
+		});
+		if (Failed.length > 0) return { code: 403, failures: Failed };
+		gameCollection.forEach((val, key) => {
+			const InputValue = this.get(key)!;
+			this.set(key, InputValue - val);
+		});
+		return { code: 200, failures: Failed };
+	}
+	/**
+	 * @param gameCollection
+	 * @returns codes: 200-Success, 403-Insufficient resources
+	 */
+	public SubtractCollection(gameCollection: Map<string, number>): { code: number; failures: string[] } {
+		const Failed: string[] = new Array();
+		gameCollection.forEach((val, key) => {
+			if (val < 0) throw new Error(`Negative number '${val}' used in SubtractCollection function for ${key}.`);
+			if (this.get(key) == undefined) this.set(key, 0);
+			if (this.get(key)! < val) Failed.push(key);
+		});
+		if (Failed.length > 0) return { code: 403, failures: Failed };
+		gameCollection.forEach((val, key) => {
+			const InputValue = this.get(key)!;
+			this.set(key, InputValue - val);
+		});
+		return { code: 200, failures: Failed };
+	}
+
+	/** @virtual */
 	public GetCollectionValue(): number {
 		let total = 0;
 		this.forEach((amount, name) => {
@@ -82,6 +116,86 @@ export abstract class GameCollectionBase extends MapCollection<string, number> {
 		});
 		return total;
 	}
+
+	/**
+	 * @param name the name(s) of the items.
+	 * @returns an array/single IGetResult. Codes: 200-Success, 404-Item not found
+	 */
+	public DetailedGet(name: GameAsset): IGetResult;
+	public DetailedGet(name: GameAsset[]): IGetResult[];
+	public DetailedGet(name: string): IGetResult;
+	public DetailedGet(name: string[]): IGetResult[];
+	public DetailedGet(name: string | string[] | GameAsset | GameAsset[]): IGetResult[] | IGetResult {
+		if (name instanceof GameAsset) return this.DetailGetHelper([name.Name])[0];
+		else if (typeof name == "string") return this.DetailGetHelper([name])[0];
+		else if (name.every((el: any) => typeof el == "string")) return this.DetailGetHelper(name as string[]);
+		else return this.DetailGetHelper((name as GameAsset[]).map((el) => el.Name));
+	}
+
+	private DetailGetHelper(names: string[]): IGetResult[] {
+		let data = new Array<IGetResult>();
+		names.forEach((name) => {
+			const Item = Client.Reg.AnyResolve(name);
+			if (Item == undefined) {
+				data.push({ success: false, code: 404 });
+			} else {
+				const Quantity = this.get(Item.Name);
+				data.push({ success: true, quantity: Quantity ?? 0, item: Item, code: 200 });
+			}
+		});
+		return data;
+	}
+
+	/**
+	 * Generate a random collection for this class. Template method.
+	 */
+	public GenerateCollection(options: IGenerationOptions): GameCollectionBase {
+		let intermediatePrice = 0;
+		const CompatibleItems = this.GetCompatibleItems(options.minRarity, options.maxRarity);
+		const ItemNames = CompatibleItems.array();
+		const Weights = this.GenerateWeights(ItemNames, options.centralRarity, options.minRarity, options.maxRarity);
+		let FlatArray = new Array<GameAsset>();
+		//Generates the flat array of probabilities. See benchmarks for why this method was used
+		if (options.rarity) for (let i = 0; i < ItemNames.length; ++i) for (let j = 0; j < Weights[i]; ++j) FlatArray.push(ItemNames[i]);
+		else FlatArray = CompatibleItems.array();
+		//Generate the collection
+		do {
+			const Selected = FlatArray[~~(Math.random() * FlatArray.length)];
+			const Material = new SellableDecorator(Selected);
+			const ExistingAmount = this.get(Selected.Name) ?? 0;
+			this.set(Selected.Name, ExistingAmount + 1);
+			intermediatePrice += Material.PriceData.cost ?? 0;
+		} while (intermediatePrice < options.value);
+		return this;
+	}
+	/**
+	 * Required method for GenerateCollection
+	 * @param minRarity the minimum rarity that a valid item can be
+	 * @param maxRarity the maximum rarity that a valid item can be
+	 */
+	public abstract GetCompatibleItems(minRarity: number, maxRarity: number): MapCollection<string, GameAsset>;
+	/**
+	 * Required method for GenerateCollection
+	 * @param items array of input items
+	 * @param centralRarity the rarity that should be most common
+	 * @returns should return an array with the weights of each GameAsset, such that the weight
+	 *          of a GameAsset at position *i* is in position *i* of the returned array.
+	 */
+	public abstract GenerateWeights(items: GameAsset[], centralRarity: number, minRarity: number, maxRarity: number): number[];
+}
+
+export interface IGenerationOptions {
+	/**The minimum value of the collection*/
+	value: number;
+	/**If item rarity should effect the inventory generation frequencies*/
+	rarity: boolean;
+	/**The minimum rarity an item must be to appear (independent from rarity property)*/
+	minRarity: number;
+	/**The maximum rarity an item can be to appear (independent from rarity property)*/
+	maxRarity: number;
+	/**The most common rarity to generate (i.e. if this is 5, then 5 will be the most common generation).
+	 * Only used if rarity is enabled.*/
+	centralRarity: number;
 }
 
 interface ReduceToNonNegativeOutput {
@@ -96,4 +210,10 @@ interface IncreaseOutput {
 	amount: number;
 	code: 1 | 2;
 	error?: string;
+}
+interface IGetResult {
+	success: boolean;
+	code: number;
+	quantity?: number;
+	item?: GameAsset | null;
 }

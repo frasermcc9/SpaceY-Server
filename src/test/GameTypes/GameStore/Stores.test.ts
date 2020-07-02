@@ -13,25 +13,6 @@ require("must/register");
 
 const DEFAULT_CREDITS = 10000;
 
-before(async () => {
-	Client.Create({
-		databaseName: "testSpaceY",
-		databaseUri: "mongodb://localhost:27017",
-		defaultCredits: DEFAULT_CREDITS,
-		consoleLogging: true,
-		maximumRarity: 12,
-	});
-	connect();
-});
-
-beforeEach(async () => {
-	await PlayerModel.deleteMany({});
-});
-
-after(async () => {
-	disconnect();
-});
-
 describe("Store Testing", async () => {
 	describe("Store Updater Testing", async () => {
 		xit("Should run the events", () => {
@@ -60,7 +41,7 @@ describe("Store Testing", async () => {
 		it("Should be set with the given inventory", async () => {
 			const store: BaseStore<Material> = new MaterialStore({});
 			const setInventory: GameCollectionBase = new MaterialCollection().set("Iron", 23).set("Gold", 3);
-			store.SetInventory(setInventory);
+			store.AddToInventory(setInventory);
 			const cost =
 				new SellableDecorator(Client.Get().Registry.ResolveMaterialFromName("Iron")).PriceData.cost * 23 +
 				new SellableDecorator(Client.Get().Registry.ResolveMaterialFromName("Gold")).PriceData.cost * 3;
@@ -76,7 +57,7 @@ describe("Store Testing", async () => {
 			const Player = await PlayerModel.findOneOrCreate({ uId: "1" });
 			const store = new MaterialStore({ credits: 100 });
 			const setInventory: GameCollectionBase = new MaterialCollection().set("Iron", 10).set("Gold", 5);
-			store.SetInventory(setInventory);
+			store.AddToInventory(setInventory);
 			//Assert intermediate tests
 			Player.Credits.must.equal(DEFAULT_CREDITS);
 			store.get("Iron").must.equal(10);
@@ -105,7 +86,7 @@ describe("Store Testing", async () => {
 			await Player.CreditsDecrement({ amount: DEFAULT_CREDITS - 25 });
 			const store = new MaterialStore({ credits: 100 });
 			const setInventory: GameCollectionBase = new MaterialCollection().set("Iron", 10).set("Gold", 5);
-			store.SetInventory(setInventory);
+			store.AddToInventory(setInventory);
 			//Assert intermediate tests
 			Player.Credits.must.equal(25);
 			store.get("Iron").must.equal(10);
@@ -134,7 +115,7 @@ describe("Store Testing", async () => {
 			Player.CreditsDecrement({ amount: 9900 });
 			const store = new MaterialStore({ credits: 100 });
 			const setInventory: GameCollectionBase = new MaterialCollection().set("Tech", 100);
-			store.SetInventory(setInventory);
+			store.AddToInventory(setInventory);
 			//Assert intermediate tests
 			Player.Credits.must.equal(DEFAULT_CREDITS - 9900);
 			store.get("Tech").must.equal(100);
@@ -161,7 +142,7 @@ describe("Store Testing", async () => {
 			const Player = await PlayerModel.findOneOrCreate({ uId: "1" });
 			const store = new MaterialStore({ credits: 100 });
 			const setInventory: GameCollectionBase = new MaterialCollection().set("Food", 1);
-			store.SetInventory(setInventory);
+			store.AddToInventory(setInventory);
 			//Assert intermediate tests
 			Player.Credits.must.equal(DEFAULT_CREDITS);
 			store.get("Food").must.equal(1);
@@ -188,7 +169,7 @@ describe("Store Testing", async () => {
 			const Player = await PlayerModel.findOneOrCreate({ uId: "1" });
 			const store = new MaterialStore({ credits: 100 });
 			const setInventory: GameCollectionBase = new MaterialCollection().set("Food", 1);
-			store.SetInventory(setInventory);
+			store.AddToInventory(setInventory);
 			//Assert intermediate tests
 			Player.Credits.must.equal(DEFAULT_CREDITS);
 			store.get("Food").must.equal(1);

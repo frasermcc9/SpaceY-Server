@@ -7,25 +7,6 @@ require("must/register");
 
 const DEFAULT_CREDITS = 10000;
 
-before(async () => {
-	Client.Create({
-		databaseName: "testSpaceY",
-		databaseUri: "mongodb://localhost:27017",
-		defaultCredits: DEFAULT_CREDITS,
-		consoleLogging: true,
-		maximumRarity: 12,
-	});
-	connect();
-});
-
-beforeEach(async () => {
-	await PlayerModel.deleteMany({});
-});
-
-after(async () => {
-	disconnect();
-});
-
 describe("Asteroid Tests (in memory)", async () => {
 	describe("Asteroid Tests", async () => {
 		it("Should add the asteroid collection to the player that mines it", async () => {

@@ -14,7 +14,7 @@ before(async () => {
 		databaseUri: "mongodb://localhost:27017",
 		defaultCredits: DEFAULT_CREDITS,
 		consoleLogging: false,
-		maximumRarity: 12,
+		maximumRarity: 10,
 	});
 	GenerateClientSet();
 	connect();

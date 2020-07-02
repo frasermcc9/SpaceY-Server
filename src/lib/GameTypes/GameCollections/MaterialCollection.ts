@@ -3,6 +3,7 @@ import { util } from "../../Util/util";
 import { IMaterial, Material } from "../GameAsset/Material/Material";
 import { GameCollectionBase } from "./GameCollectionBase";
 import { SellableDecorator } from "../GameAsset/AssetDecorators";
+import { MapCollection } from "../../Extensions/Collections";
 
 export class MaterialCollection extends GameCollectionBase {
 	public constructor(options?: IMaterialCollectionOptions) {
@@ -18,7 +19,7 @@ export class MaterialCollection extends GameCollectionBase {
 			});
 		}
 	}
-
+	/**@deprecated*/
 	public DataFromName(name: string): IMaterialQuantity {
 		const material = Client.Get().Registry.MaterialRegistry.get(name);
 		if (material == undefined) return { success: false, name: name, quantity: -1, material: null, error: MAT_NOT_FOUND };
@@ -26,7 +27,7 @@ export class MaterialCollection extends GameCollectionBase {
 		const quantity = this.get(material.Name);
 		return { success: true, name: material.Name, quantity: quantity || 0, material: material };
 	}
-
+	/**@deprecated*/
 	public DataFromNames(names: string[]): IMaterialQuantity[] {
 		let data = new Array<IMaterialQuantity>();
 		names.forEach((name) => {
@@ -40,7 +41,7 @@ export class MaterialCollection extends GameCollectionBase {
 		});
 		return data;
 	}
-
+	/**@deprecated*/
 	public DataFromMaterial(material: Material): IMaterialQuantity {
 		const quantity = this.get(material.Name);
 		if (quantity == undefined) {
@@ -74,6 +75,16 @@ export class MaterialCollection extends GameCollectionBase {
 			currentPrice += Material.PriceData.cost ?? 0;
 		} while (currentPrice < value);
 		return MineableCollection;
+	}
+
+	/** @override */
+	public GetCompatibleItems(minRarity: number, maxRarity: number): MapCollection<string, Material> {
+		return Client.Reg.MaterialRegistry.filter((val) => val.Cost != undefined && val.GetMaterialRarity() <= maxRarity && val.GetMaterialRarity() >= minRarity);
+	}
+
+	/** @override */
+	public GenerateWeights(items: Material[], centralRarity: number, minRarity: number, maxRarity: number): number[] {
+		return items.map((val) => maxRarity - minRarity - Math.abs(centralRarity - val.GetMaterialRarity()) + 1);
 	}
 }
 

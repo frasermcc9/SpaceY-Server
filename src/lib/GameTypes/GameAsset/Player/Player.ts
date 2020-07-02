@@ -219,6 +219,12 @@ export class Player {
 		}
 	}
 
+	public async InventorySubtract(inventoryName: TRegistered, gameCollection: Map<string, number>): Promise<{ code: number; failures: string[] }> {
+		const result = this.inventory[inventoryName].SubtractCollection(gameCollection);
+		await this.save();
+		return result;
+	}
+
 	/**
 	 * Will change the user's quantity of the given item by the given amount. This function requires no duplicate
 	 * entries to work properly (i.e. there cannot be a faction and a material with the same name). This is the

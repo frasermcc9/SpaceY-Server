@@ -13,6 +13,7 @@ export async function setLastUpdated(this: IPlayerDocument): Promise<void> {
 		await this.save();
 	}
 }
+/** @deprecated */
 export async function incrementCredits(this: IPlayerDocument, { amount }: { amount: number }): Promise<boolean> {
 	if (amount < 0) {
 		throw new Error("Only positive values can be passed to the incrementCredits method. Consider using decrement to remove credits.");
@@ -23,6 +24,7 @@ export async function incrementCredits(this: IPlayerDocument, { amount }: { amou
 	await this.setLastUpdated();
 	return true;
 }
+/** @deprecated */
 export async function decrementCredits(this: IPlayerDocument, { amount }: { amount: number }): Promise<boolean> {
 	if (amount < 0) {
 		throw new Error("Only positive values can be passed to the decrementCredits method. Consider using increment to add credits.");
@@ -38,6 +40,7 @@ export async function decrementCredits(this: IPlayerDocument, { amount }: { amou
 		return false;
 	}
 }
+/** @deprecated */
 export async function getCredits(this: IPlayerDocument): Promise<Number> {
 	return this.inventory.credits;
 }

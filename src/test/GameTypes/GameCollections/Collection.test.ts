@@ -11,7 +11,6 @@ import { SellableDecorator } from "../../../lib/GameTypes/GameAsset/AssetDecorat
 import { GenerateClientSet } from "../../TestUtil";
 require("must/register");
 
-
 describe("Collection Testing", async () => {
 	describe("Base Collection Testing", async () => {
 		it("Material collection should have the specified materials.", () => {
@@ -87,9 +86,10 @@ describe("Collection Testing", async () => {
 			MC.DetailedGet("This doesn't exist").code.must.eql(404);
 		});
 
-		it("Generator function should properly work", () => {
+		it("Generator function should properly work (low chance to fail)", () => {
 			const MC = new MaterialCollection();
-			MC.GenerateCollection({ value: 10000, centralRarity: 6, maxRarity: 10, minRarity:0, rarity: true });
+			MC.GenerateCollection({ value: 10000, centralRarity: 1, maxRarity: 6, minRarity: 1, rarity: true });
+            MC.get("Food").must.be.gt(MC.get("Tech"));                      
 		});
 	});
 });

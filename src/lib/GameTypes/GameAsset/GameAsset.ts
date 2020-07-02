@@ -1,4 +1,5 @@
 import { Blueprint } from "./Blueprint/Blueprint";
+import { Player } from "./Player/Player";
 
 export class GameAsset implements IGameAsset {
 	private name: string;
@@ -41,11 +42,12 @@ export interface IGameAsset {
 }
 
 export interface Buildable {
-	Blueprint: IBlueprintInfo;
+    Blueprint: IBlueprintInfo;
+    Build(player:Player): Promise<{ code: number; failures: string[] }>;
 }
 
 export interface Sellable {
-	PriceData: ISellInfo;
+	PriceData: ISellInfo; 
 }
 
 export interface IGameAssetOptions {

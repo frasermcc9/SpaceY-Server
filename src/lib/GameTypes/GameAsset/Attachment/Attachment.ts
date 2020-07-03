@@ -5,21 +5,39 @@ import { Ship } from "../Ship/Ship";
 export class Attachment extends GameAsset implements IAttachment {
 	protected techLevel: number;
 
-	public onBattleStart?: (friendly: Ship, opponent: Ship) => AttachmentReport;
+	private onBattleStart?: BattleFunction;
+	private onBattlePreTurn?: BattleFunction;
+	private onBattlePostTurn?: BattleFunction;
+	private onBattleInvoked?: BattleFunction;
 
 	constructor(options: AttachmentOptions) {
 		super(options);
 		this.techLevel = options.techLevel ?? 0;
 		this.onBattleStart = options.onBattleStart;
+		this.onBattlePreTurn = options.onBattlePreTurn;
+		this.onBattlePostTurn = options.onBattlePostTurn;
+		this.onBattleInvoked = options.onBattleInvoked;
 	}
 
 	public BattleStart(friendly: Ship, opponent: Ship): AttachmentReport | undefined {
-		if (this.onBattleStart) return this.onBattleStart?.apply(this, [friendly, opponent]);
+		if (this.onBattleStart) return this.onBattleStart.apply(this, [friendly, opponent]);
+	}
+	public BattlePreTurn(friendly: Ship, opponent: Ship): AttachmentReport | undefined {
+		if (this.onBattlePreTurn) return this.onBattlePreTurn.apply(this, [friendly, opponent]);
+	}
+	public BattlePostTurn(friendly: Ship, opponent: Ship): AttachmentReport | undefined {
+		if (this.onBattlePostTurn) return this.onBattlePostTurn.apply(this, [friendly, opponent]);
+	}
+	public BattleInvoked(friendly: Ship, opponent: Ship): AttachmentReport | undefined {
+		if (this.onBattleInvoked) return this.onBattleInvoked.apply(this, [friendly, opponent]);
 	}
 }
 
 export interface IAttachment {
-	BattleStart(friendly: Ship, opponent: Ship): void;
+	BattleStart(friendly: Ship, opponent: Ship): AttachmentReport | undefined;
+	BattlePreTurn(friendly: Ship, opponent: Ship): AttachmentReport | undefined;
+	BattlePostTurn(friendly: Ship, opponent: Ship): AttachmentReport | undefined;
+	BattleInvoked(friendly: Ship, opponent: Ship): AttachmentReport | undefined;
 }
 
 export class AttachmentBuilder {
@@ -29,7 +47,10 @@ export class AttachmentBuilder {
 	private blueprint?: Blueprint;
 	private techLevel?: number;
 
-	private onBattleStart?: (friendly: Ship, opponent: Ship) => AttachmentReport;
+	private onBattleStart?: BattleFunction;
+	private onBattlePreTurn?: BattleFunction;
+	private onBattlePostTurn?: BattleFunction;
+	private onBattleInvoked?: BattleFunction;
 
 	public constructor({ name, description, techLevel }: { name: string; description: string; techLevel?: number }) {
 		this.name = name;
@@ -44,8 +65,20 @@ export class AttachmentBuilder {
 		this.blueprint = blueprint;
 		return this;
 	}
-	public BattleStartFn(fn: (friendly: Ship, opponent: Ship) => AttachmentReport): AttachmentBuilder {
+	public BattleStartFn(fn: BattleFunction): AttachmentBuilder {
 		this.onBattleStart = fn;
+		return this;
+    }
+    public BattlePreTurnFn(fn: BattleFunction): AttachmentBuilder {
+		this.onBattlePreTurn = fn;
+		return this;
+    }
+    public BattlePostTurnFn(fn: BattleFunction): AttachmentBuilder {
+		this.onBattlePostTurn = fn;
+		return this;
+    }
+    public BattleInvokeFn(fn: BattleFunction): AttachmentBuilder {
+		this.onBattleInvoked = fn;
 		return this;
 	}
 	public Build(): Attachment {
@@ -57,6 +90,9 @@ export class AttachmentBuilder {
 			techLevel: this.techLevel,
 
 			onBattleStart: this.onBattleStart,
+			onBattlePreTurn: this.onBattlePreTurn,
+			onBattlePostTurn: this.onBattlePostTurn,
+			onBattleInvoked: this.onBattleInvoked,
 		});
 	}
 }
@@ -68,9 +104,14 @@ type AttachmentOptions = {
 	techLevel?: number;
 	blueprint?: Blueprint;
 
-	onBattleStart?: (friendly: Ship, opponent: Ship) => AttachmentReport;
+	onBattleStart?: BattleFunction;
+	onBattlePreTurn?: BattleFunction;
+	onBattlePostTurn?: BattleFunction;
+	onBattleInvoked?: BattleFunction;
 };
 
 export type AttachmentReport = {
 	message: string;
 };
+
+export type BattleFunction = (friendly: Ship, opponent: Ship) => AttachmentReport;

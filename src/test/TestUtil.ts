@@ -1,9 +1,9 @@
 import { Client } from "../lib/Client/Client";
 import { Material, MaterialBuilder } from "../lib/GameTypes/GameAsset/Material/Material";
 import { Blueprint, BlueprintBuilder } from "../lib/GameTypes/GameAsset/Blueprint/Blueprint";
-import { Ship } from "../lib/GameTypes/GameAsset/Buildable/Ship/Ship";
+import { Ship } from "../lib/GameTypes/GameAsset/Ship/Ship";
 import { Faction } from "../lib/GameTypes/GameAsset/Faction/Faction";
-import { Attachment } from "../lib/GameTypes/GameAsset/Buildable/Attachment/Attachment";
+import { Attachment } from "../lib/GameTypes/GameAsset/Attachment/Attachment";
 
 export function GenerateMaterialsForActiveClient() {
 	const client = Client.Get();
@@ -53,9 +53,9 @@ export function GENERATED_SHIPS() {
 }
 export function GENERATED_FACTIONS() {
 	return [
-		new Faction({ description: "Like you. And me.", name: "Humans" }),
-		new Faction({ description: "The great alliance of the galaxy", name: "Alliance" }),
-		new Faction({ description: "The sentient robotic race", name: "Cyborgs" }),
+		new Faction({ description: "Like you. And me.", name: "Humans", techLevel: 4 }),
+		new Faction({ description: "The great alliance of the galaxy", name: "Alliance", techLevel: 7 }),
+		new Faction({ description: "The sentient robotic race", name: "Cyborgs", techLevel: 10 }),
 	];
 }
 export function GENERATED_ATTACHMENTS() {

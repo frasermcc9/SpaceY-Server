@@ -9,9 +9,9 @@ import { BuildableDecorator } from "../../../lib/GameTypes/GameAsset/AssetDecora
 import { Attachment, AttachmentBuilder, AttachmentReport } from "../../../lib/GameTypes/GameAsset/Attachment/Attachment";
 require("must/register");
 
-describe("Blueprint Tests", async () => {
-	describe("General Blueprint Tests", async () => {
-		it.only("Should reject since the player cannot afford the materials.", async () => {
+describe("Attachment Tests", async () => {
+	describe("General Attachment Tests", async () => {
+		it.only("Declaring the attachments function and invoking it will work", async () => {
 			const S1 = new Ship({
 				description: "A small but agile ship",
 				name: "Shuttle",

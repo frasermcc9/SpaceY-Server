@@ -1,5 +1,7 @@
 import { Client } from "../../Client/Client";
 import { GameCollectionBase } from "./GameCollectionBase";
+import { MapCollection } from "../../Extensions/Collections";
+import { Ship } from "../GameAsset/Ship/Ship";
 
 export class ShipCollection extends GameCollectionBase {
 	public constructor(options?: IShipCollectionOptions) {
@@ -14,6 +16,16 @@ export class ShipCollection extends GameCollectionBase {
 				this.set(ship.Name, 0);
 			});
 		}
+	}
+
+	/** @override */
+	public GetCompatibleItems(minRarity: number, maxRarity: number): MapCollection<string, Ship> {
+		return Client.Reg.ShipRegistry.filter((val) => val.Cost != undefined && val.TechLevel <= maxRarity && val.TechLevel >= minRarity);
+	}
+
+	/** @override */
+	public GenerateWeights(items: Ship[], centralRarity: number, minRarity: number, maxRarity: number): number[] {
+		return items.map((val) => maxRarity - minRarity - Math.abs(centralRarity - val.TechLevel) + 1);
 	}
 }
 export interface IShipCollectionOptions {

@@ -160,7 +160,7 @@ export abstract class GameCollectionBase extends MapCollection<string, number> {
 		else FlatArray = CompatibleItems.array();
 		//Generate the collection
 		do {
-			const Selected = FlatArray[~~(Math.random() * FlatArray.length)];
+			const Selected = FlatArray[~~(this.RandomNumber() * FlatArray.length)];
 			const Material = new SellableDecorator(Selected);
 			const ExistingAmount = this.get(Selected.Name) ?? 0;
 			this.set(Selected.Name, ExistingAmount + 1);
@@ -182,6 +182,12 @@ export abstract class GameCollectionBase extends MapCollection<string, number> {
 	 *          of a GameAsset at position *i* is in position *i* of the returned array.
 	 */
 	public abstract GenerateWeights(items: GameAsset[], centralRarity: number, minRarity: number, maxRarity: number): number[];
+	/**
+	 * Optional method for GenerateCollection. Can be overridden if different behaviour is desired
+	 */
+	public RandomNumber() {
+		return Math.random();
+	}
 }
 
 export interface IGenerationOptions {

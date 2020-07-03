@@ -1,5 +1,5 @@
 import { Client } from "../../Client/Client";
-import { Attachment } from "../GameAsset/Buildable/Attachment/Attachment";
+import { Attachment } from "../GameAsset/Attachment/Attachment";
 import { GameCollectionBase } from "./GameCollectionBase";
 
 export class AttachmentCollection extends GameCollectionBase {

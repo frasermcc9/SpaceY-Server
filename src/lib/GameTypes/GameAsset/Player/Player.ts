@@ -1,5 +1,5 @@
 import { IPlayerDocument, PlayerModel } from "../../../GameApi/Database/Player/PlayerModel";
-import { Ship } from "../Buildable/Ship/Ship";
+import { Ship } from "../Ship/Ship";
 import { InventoryBuilder, PlayerInventory, TRegistered } from "./PlayerInventory";
 import { Skin } from "./Skin";
 import { Client } from "../../../Client/Client";

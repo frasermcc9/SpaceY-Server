@@ -1,5 +1,5 @@
 import { Registry } from "./Registry";
-import { Ship } from "../GameTypes/GameAsset/Buildable/Ship/Ship";
+import { Ship } from "../GameTypes/GameAsset/Ship/Ship";
 import { connect } from "../GameApi/Database/Database";
 
 export class Client {

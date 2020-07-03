@@ -1,7 +1,7 @@
 import { Document, model, Model } from "mongoose";
 import { Skin } from "../../../GameTypes/GameAsset/Player/Skin";
 import { PlayerInventory } from "../../../GameTypes/GameAsset/Player/PlayerInventory";
-import { Ship } from "../../../GameTypes/GameAsset/Buildable/Ship/Ship";
+import { Ship } from "../../../GameTypes/GameAsset/Ship/Ship";
 import PlayerSchema from "./playerSchema";
 import { Player } from "../../../GameTypes/GameAsset/Player/Player";
 import { Material } from "../../../GameTypes/GameAsset/Material/Material";

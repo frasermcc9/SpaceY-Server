@@ -50,24 +50,55 @@ export abstract class GameCollectionBase extends MapCollection<string, number> {
 		if (amountOwned != undefined && amountOwned >= Math.abs(quantity)) return true;
 		return false;
 	}
-	public StrictSumCollection(gameCollection: Map<string, number>): void {
+
+	/**
+	 * Adds all elements of the parameter collection to this one.
+	 *
+	 * StrictSum will throw if an unknown value is found, rather than creating a new key for it
+	 * (like SumCollection would).
+	 *
+	 * @param gameCollection either a map of elements, with key as name and value as amount or an
+	 * array with strings, implicit increment of 1.
+	 */
+	public StrictSumCollection(gameCollection: Map<string, number>): void;
+	public StrictSumCollection(gameCollection: Array<string>): void;
+	public StrictSumCollection(gameCollection: Map<string, number> | Array<string>): void {
+		if (Array.isArray(gameCollection)) {
+			gameCollection.forEach((el) => {
+				if (this.get(el) == undefined) throw new Error(`Item with name ${el} does not exist when used in StrictSumCollection function.`);
+			});
+			gameCollection.forEach((el) => {
+				const StartValue = this.get(el)!;
+				this.set(el, StartValue + 1);
+			});
+			return;
+		}
 		gameCollection.forEach((val, key) => {
 			if (val < 0) throw new Error(`Negative number '${val}' used in SumCollection function.`);
-			if (this.get(key) == undefined) throw new Error(`Item with name ${key} does not exist when used in SumCollection function.`);
+			if (this.get(key) == undefined) throw new Error(`Item with name ${key} does not exist when used in StrictSumCollection function.`);
 		});
 		gameCollection.forEach((val, key) => {
-			const InputValue = this.get(key)!;
-			this.set(key, val + InputValue);
+			const StartValue = this.get(key)!;
+			this.set(key, val + StartValue);
 		});
 	}
-	public SumCollection(gameCollection: Map<string, number>): void {
+	public SumCollection(gameCollection: Map<string, number>): void;
+	public SumCollection(gameCollection: Array<string>): void;
+	public SumCollection(gameCollection: Map<string, number> | Array<string>): void {
+		if (Array.isArray(gameCollection)) {
+			gameCollection.forEach((el) => {
+				const StartValue = this.get(el);
+				this.set(el, (StartValue ?? 0) + 1);
+            });
+            return;
+		}
 		gameCollection.forEach((val, key) => {
 			if (val < 0) throw new Error(`Negative number '${val}' used in SumCollection function for ${key}.`);
 			if (this.get(key) == undefined) this.set(key, 0);
 		});
 		gameCollection.forEach((val, key) => {
-			const InputValue = this.get(key)!;
-			this.set(key, val + InputValue);
+			const StartValue = this.get(key)!;
+			this.set(key, val + StartValue);
 		});
 	}
 	/**

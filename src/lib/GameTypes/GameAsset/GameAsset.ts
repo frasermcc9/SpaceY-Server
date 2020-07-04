@@ -30,7 +30,6 @@ export class GameAsset implements IGameAsset {
 		this.blueprint = gameAssetOptions.blueprint;
 	}
 
-	/** @override */
 	public toString(): string {
 		return this.name + ": " + this.description;
 	}

@@ -1,9 +1,10 @@
 import { Client } from "../lib/Client/Client";
 import { Material, MaterialBuilder } from "../lib/GameTypes/GameAsset/Material/Material";
 import { Blueprint, BlueprintBuilder } from "../lib/GameTypes/GameAsset/Blueprint/Blueprint";
-import { Ship } from "../lib/GameTypes/GameAsset/Ship/Ship";
-import { Faction } from "../lib/GameTypes/GameAsset/Faction/Faction";
-import { Attachment } from "../lib/GameTypes/GameAsset/Attachment/Attachment";
+import { Ship, ShipBuilder } from "../lib/GameTypes/GameAsset/Ship/Ship";
+import { Faction, FactionBuilder } from "../lib/GameTypes/GameAsset/Faction/Faction";
+import { Attachment, AttachmentBuilder, AttachmentType, AttachmentReport } from "../lib/GameTypes/GameAsset/Attachment/Attachment";
+import { ShipWrapper } from "../lib/GameTypes/GameAsset/Ship/ShipWrapper";
 
 export function GenerateMaterialsForActiveClient() {
 	const client = Client.Get();
@@ -41,27 +42,47 @@ export function GENERATED_MATERIALS() {
 }
 export function GENERATED_SHIPS() {
 	return [
-		new Ship({
-			description: "A small but agile ship",
-			name: "Shuttle",
-			blueprint: new BlueprintBuilder().AutoBuild({ value: 1000, rarity: true, minRarity: 0, maxRarity: 10, centralRarity: 3 }),
-			cost: 1500,
-		}),
-		new Ship({ description: "A medium sized vehicle", name: "Warship" }),
-		new Ship({ description: "A flagship destroyer", name: "Destroyer" }),
+		new ShipBuilder({ name: "Shuttle", description: "A small but agile ship" })
+			.EnableSell(1500)
+			.EnableBuildable(new BlueprintBuilder().AutoBuild({ value: 1000, rarity: true, minRarity: 0, maxRarity: 10, centralRarity: 3 }))
+			.SetStats({ baseHp: 100, baseShield: 50 })
+			.SetWeapons({ heavyCap: 3, primaryCap: 3, generalCap: 2 })
+			.Build(),
+		new ShipBuilder({ name: "Warship", description: "A medium sized vehicle" })
+			.EnableSell(3000)
+			.EnableBuildable(new BlueprintBuilder().AutoBuild({ value: 2550, rarity: true, minRarity: 0, maxRarity: 10, centralRarity: 5 }))
+			.SetStats({ baseHp: 150, baseShield: 90 })
+			.Build(),
+		new ShipBuilder({ name: "Destroyer", description: "A flagship destroyer" })
+			.EnableSell(4500)
+			.EnableBuildable(new BlueprintBuilder().AutoBuild({ value: 4000, rarity: true, minRarity: 0, maxRarity: 10, centralRarity: 7 }))
+			.SetStats({ baseHp: 200, baseShield: 170 })
+			.Build(),
 	];
 }
 export function GENERATED_FACTIONS() {
 	return [
-		new Faction({ description: "Like you. And me.", name: "Humans", techLevel: 4 }),
-		new Faction({ description: "The great alliance of the galaxy", name: "Alliance", techLevel: 7 }),
-		new Faction({ description: "The sentient robotic race", name: "Cyborgs", techLevel: 10 }),
+		new FactionBuilder("Humans", "Like you and me", 4).Build(),
+		new FactionBuilder("Alliance", "The great alliance of the galaxy", 7).Build(),
+		new FactionBuilder("Cyborgs", "The sentient robotic race", 10).Build(),
 	];
 }
 export function GENERATED_ATTACHMENTS() {
+	const PlatingEquip: (friendly: ShipWrapper) => AttachmentReport = (friendly) => {
+		friendly.incrementStatistics({ hp: 20 });
+		return { message: `New Health: ${friendly.ShipStatistics.totalHp}` };
+	};
+	const PlatingUnequip: (friendly: ShipWrapper) => AttachmentReport = (friendly) => {
+		friendly.decrementStatistics({ hp: 20 });
+		return { message: `New Health: ${friendly.ShipStatistics.totalHp}` };
+	};
 	return [
-		new Attachment({ name: "Blaster", description: "Standard Issue Blaster" }),
-		new Attachment({ name: "Space Sword", description: "Not very practical" }),
-		new Attachment({ name: "Obliterator", description: "Quite scary, really" }),
+		new AttachmentBuilder({ name: "Blaster", description: "Standard issue blaster", type: AttachmentType.PRIMARY, techLevel: 2 }).Build(),
+		new AttachmentBuilder({ name: "Space Sword", description: "Not very practical", type: AttachmentType.HEAVY, techLevel: 1 }).Build(),
+		new AttachmentBuilder({ name: "Obliterator", description: "This one will hurt", type: AttachmentType.HEAVY, techLevel: 6 }).Build(),
+		new AttachmentBuilder({ name: "Iron Plating", description: "Tough metal", techLevel: 2, type: AttachmentType.GENERAL })
+			.EquipFn(PlatingEquip)
+			.UnequipFn(PlatingUnequip)
+			.Build(),
 	];
 }

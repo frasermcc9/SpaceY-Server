@@ -123,7 +123,14 @@ export class InventoryBuilder {
 		});
 	}
 
-	public GenericBuild(): { credits: number; tokens: number; materials: {}; ships: {}; attachments: {}; reputation: {} } {
+	public GenericBuild(): {
+		credits: number;
+		tokens: number;
+		materials: Map<string, number>;
+		ships: Map<string, number>;
+		attachments: Map<string, number>;
+		reputation: Map<string, number>;
+	} {
 		return {
 			attachments: new AttachmentCollection(),
 			credits: Client.Get().Registry.DefaultCredits,

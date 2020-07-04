@@ -1,30 +1,60 @@
-import { Client, connect, disconnect } from "../../../lib/main";
-import { GenerateClientSet, GENERATED_SHIPS } from "../../TestUtil";
 import { PlayerModel } from "../../../lib/GameApi/Database/Player/PlayerModel";
-import { AsteroidBuilder } from "../../../lib/GameTypes/GameMechanics/Asteroid";
-import { default as must } from "must";
+import { AttachmentBuilder, AttachmentReport, AttachmentType, BattleEvent } from "../../../lib/GameTypes/GameAsset/Attachment/Attachment";
 import { Ship } from "../../../lib/GameTypes/GameAsset/Ship/Ship";
-import { BlueprintBuilder } from "../../../lib/GameTypes/GameAsset/Blueprint/Blueprint";
-import { BuildableDecorator } from "../../../lib/GameTypes/GameAsset/AssetDecorators";
-import { Attachment, AttachmentBuilder, AttachmentReport } from "../../../lib/GameTypes/GameAsset/Attachment/Attachment";
+import { ShipWrapper } from "../../../lib/GameTypes/GameAsset/Ship/ShipWrapper";
+import { default as must } from "must";
 require("must/register");
 
 describe("Attachment Tests", async () => {
 	describe("General Attachment Tests", async () => {
-		it.only("Declaring the attachments function and invoking it will work", async () => {
-			const S1 = new Ship({
-				description: "A small but agile ship",
-				name: "Shuttle",
-				blueprint: new BlueprintBuilder().AutoBuild({ value: 1000, rarity: true, minRarity: 0, maxRarity: 10, centralRarity: 3 }),
-				cost: 1500,
-			});
-			const S2 = new Ship({ description: "A medium sized vehicle", name: "Warship" });
+		it("Declaring the attachments function and invoking it will work", async () => {
+			const P1 = await PlayerModel.findOneOrCreate({ uId: "22" });
+			const P2 = await PlayerModel.findOneOrCreate({ uId: "33" });
+			await P1.setShip("Shuttle");
+			await P2.setShip("Warship");
 
-			const fn: (friendly: Ship, opponent: Ship) => AttachmentReport = (S1, S2) => {
-				return { message: "Test Successful!" };
+			const fn: (friendly: ShipWrapper, opponent: ShipWrapper) => AttachmentReport = (friend, opponent) => {
+				return { message: friend.ShipStatistics.totalHp + opponent.ShipStatistics.totalShield + "" };
 			};
-			const attachment = new AttachmentBuilder({ name: "Blaster", description: "A really cool blaster", techLevel: 2 }).BattleStartFn(fn).Build();
-			attachment.BattleStart(S1, S2).message.must.eql("Test Successful!");
+			const attachment = new AttachmentBuilder({ name: "Blaster", description: "A really cool blaster", techLevel: 2, type: AttachmentType.PRIMARY })
+				.BattleStartFn(fn)
+				.Build();
+			attachment.BattleUpdate(BattleEvent.BATTLE_START, { friendly: P1.getShipWrapper(), opponent: P2.getShipWrapper() }).message.must.eql("190");
+		});
+
+		it("Changing one players ship doesn't result in changes for another player with the same ship", async () => {
+			const S1 = new Ship({ description: "A small but agile ship", name: "Shuttle" });
+			const preSaveP1 = await PlayerModel.findOneOrCreate({ uId: "22" });
+			const preSaveP2 = await PlayerModel.findOneOrCreate({ uId: "33" });
+			await preSaveP1.setShip(S1);
+			await preSaveP2.setShip(S1);
+			const P1 = await PlayerModel.findOneOrCreate({ uId: "22" });
+			const P2 = await PlayerModel.findOneOrCreate({ uId: "33" });
+
+			await P1.addAttachmentToShip("Blaster");
+			P1.getShipWrapper().stringifyAttachments().length.must.equal(1);
+			P2.getShipWrapper().stringifyAttachments().length.must.equal(0);
+		});
+
+		it("Database correctly saves attachments that are equipped to a user", async () => {
+			const S1 = new Ship({ description: "A small but agile ship", name: "Shuttle", primaryCap: 1 });
+			const preSaveP1 = await PlayerModel.findOneOrCreate({ uId: "22" });
+			await preSaveP1.setShip(S1);
+			preSaveP1.addAttachmentToShip("Blaster");
+			const P1 = await PlayerModel.findOneOrCreate({ uId: "22" });
+			P1.getShipWrapper().stringifyAttachments().length.must.equal(1);
+		});
+
+		it("Should update ship statistics when passive components are added", async () => {
+            const preSaveP1 = await PlayerModel.findOneOrCreate({ uId: "22" });
+            await preSaveP1.setShip("Shuttle");
+            
+            await preSaveP1.addAttachmentToShip("Iron Plating");
+            preSaveP1.getShipWrapper().ShipStatistics.totalHp.must.eql(120);
+            
+			await preSaveP1.removeAttachmentFromShip("Iron Plating");
+			preSaveP1.getShipWrapper().ShipStatistics.totalHp.must.eql(100);
+			preSaveP1.AutoInventoryRetrieve("Iron Plating").amount.must.eql(1);
 		});
 	});
 });

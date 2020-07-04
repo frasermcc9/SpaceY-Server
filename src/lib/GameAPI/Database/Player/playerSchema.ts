@@ -3,7 +3,10 @@ import { findOneOrCreate, setLastUpdated, incrementCredits, decrementCredits, ge
 
 const PlayerSchema = new Schema({
 	uId: String,
-	ship: {},
+	ship: {
+		name: String,
+		equipped: [String],
+	},
 	skin: {},
 	inventory: {
 		credits: Number,

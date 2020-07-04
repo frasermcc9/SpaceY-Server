@@ -1,15 +1,17 @@
 import { Client } from "../../../Client/Client";
 import { AttachmentCollection, IAttachmentCollectionOptions } from "../../GameCollections/AttachmentCollection";
-import { IMaterialCollectionOptions, MaterialCollection } from "../../GameCollections/MaterialCollection";
+import { IMaterialCollectionOptions } from "../../GameCollections/MaterialCollection";
 import { IReputationCollectionOptions, ReputationCollection } from "../../GameCollections/ReputationCollection";
 import { IShipCollectionOptions, ShipCollection } from "../../GameCollections/ShipCollection";
+import { PlayerMaterialCollection } from "../../GameCollections/PlayerMaterialCollection";
+import { Player } from "./Player";
 
 /**
  * Represents an inventory of a player. Please @see InventoryBuilder too create an inventory.
  */
 export class PlayerInventory {
-	private readonly materials: MaterialCollection;
-	public get Materials(): MaterialCollection {
+	private readonly materials: PlayerMaterialCollection;
+	public get Materials(): PlayerMaterialCollection {
 		return this.materials;
 	}
 	private readonly ships: ShipCollection;
@@ -36,11 +38,11 @@ export class PlayerInventory {
 
 	public constructor(options: IPlayerInventoryOptions) {
 		if (isInventory(options)) {
-			this.materials = options.materialOptions ?? new MaterialCollection();
-			this.ships = options.shipOptions ?? new ShipCollection();
-			this.attachments = options.attachmentOptions ?? new AttachmentCollection();
-			this.reputation = options.reputationOptions ?? new ReputationCollection();
-			this.credits = options.credits ?? Client.Get().Registry.DefaultCredits;
+			this.materials = options.materialOptions;
+			this.ships = options.shipOptions;
+			this.attachments = options.attachmentOptions;
+			this.reputation = options.reputationOptions;
+			this.credits = options.credits ?? Client.Reg.DefaultCredits;
 			this.tokens = options.tokens ?? 0;
 		} else {
 			throw new Error("Invalid inventory creation.");
@@ -87,6 +89,8 @@ export class InventoryBuilder {
 	private credits?: number;
 	private tokens?: number;
 
+	public constructor() {}
+
 	public SetMaterials(matOptions: IMaterialCollectionOptions): InventoryBuilder {
 		this.materials = matOptions;
 		return this;
@@ -115,7 +119,7 @@ export class InventoryBuilder {
 	public Build(): PlayerInventory {
 		return new PlayerInventory({
 			attachmentOptions: new AttachmentCollection({ data: this.attachments?.data }),
-			materialOptions: new MaterialCollection({ data: this.materials?.data }),
+			materialOptions: new PlayerMaterialCollection({ data: this.materials?.data }),
 			shipOptions: new ShipCollection({ data: this.ships?.data }),
 			reputationOptions: new ReputationCollection({ data: this.reputation?.data }),
 			credits: this.credits,
@@ -134,7 +138,7 @@ export class InventoryBuilder {
 		return {
 			attachments: new AttachmentCollection(),
 			credits: Client.Get().Registry.DefaultCredits,
-			materials: new MaterialCollection(),
+			materials: new PlayerMaterialCollection(),
 			reputation: new ReputationCollection(),
 			ships: new ShipCollection(),
 			tokens: 0,
@@ -143,10 +147,10 @@ export class InventoryBuilder {
 }
 
 interface IPlayerInventoryOptions {
-	materialOptions?: MaterialCollection;
-	shipOptions?: ShipCollection;
-	attachmentOptions?: AttachmentCollection;
-	reputationOptions?: ReputationCollection;
+	materialOptions: PlayerMaterialCollection;
+	shipOptions: ShipCollection;
+	attachmentOptions: AttachmentCollection;
+	reputationOptions: ReputationCollection;
 
 	credits?: number;
 	tokens?: number;

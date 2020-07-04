@@ -89,8 +89,8 @@ export abstract class GameCollectionBase extends MapCollection<string, number> {
 			gameCollection.forEach((el) => {
 				const StartValue = this.get(el);
 				this.set(el, (StartValue ?? 0) + 1);
-            });
-            return;
+			});
+			return;
 		}
 		gameCollection.forEach((val, key) => {
 			if (val < 0) throw new Error(`Negative number '${val}' used in SumCollection function for ${key}.`);
@@ -199,6 +199,14 @@ export abstract class GameCollectionBase extends MapCollection<string, number> {
 		} while (intermediatePrice < options.value);
 		return this;
 	}
+
+	/**
+	 * Gets the size of the collection (the sum of all the values)
+	 */
+	public get CollectionSize(): number {
+		return [...this.values()].reduce((acc, cur) => acc + cur, 0);
+	}
+
 	/**
 	 * Required method for GenerateCollection
 	 * @param minRarity the minimum rarity that a valid item can be

@@ -1,5 +1,6 @@
-import { GameAsset } from "../GameAsset";
+import { GameAsset, IGameAsset } from "../GameAsset";
 import { Blueprint } from "../Blueprint/Blueprint";
+import { AttachmentType } from "../Attachment/Attachment";
 
 export class Ship extends GameAsset implements IShip {
 	//Inherited: Name, Description, Cost, Blueprint
@@ -13,11 +14,7 @@ export class Ship extends GameAsset implements IShip {
 	private baseCargo: number;
 	private baseHandling: number;
 
-	private generalCap: number;
-	private primaryCap: number;
-	private heavyCap: number;
-	private shieldCap: number;
-	private minerCap: number;
+	private AttachmentCaps: Map<AttachmentType, number> = new Map();
 
 	private imageUri: string;
 
@@ -30,21 +27,43 @@ export class Ship extends GameAsset implements IShip {
 		this.baseEnergy = options.baseEnergy ?? [0, 0, 0];
 		this.baseCargo = options.baseCargo ?? 0;
 		this.baseHandling = options.baseHandling ?? 0;
-		this.primaryCap = options.primaryCap ?? 0;
-		this.shieldCap = options.shieldCap ?? 0;
-		this.heavyCap = options.heavyCap ?? 0;
-		this.minerCap = options.minerCap ?? 0;
-		this.generalCap = options.generalCap ?? 0;
+
+		this.AttachmentCaps.set(AttachmentType.GENERAL, options.generalCap ?? 0)
+			.set(AttachmentType.HEAVY, options.heavyCap ?? 0)
+			.set(AttachmentType.MINER, options.minerCap ?? 0)
+			.set(AttachmentType.PRIMARY, options.primaryCap ?? 0)
+			.set(AttachmentType.SHIELD, options.shieldCap ?? 0);
+
 		this.imageUri = options.imageUri ?? "";
+	}
+
+	public stringify(): string {
+		return JSON.stringify(this);
 	}
 
 	public get TechLevel(): number {
 		return this.techLevel;
 	}
+	public get ImageUri(): string {
+		return this.imageUri;
+	}
+	public get Subclass(): string {
+		return this.subclass;
+	}
+	public get WeaponCapacities(): Map<AttachmentType, number> {
+		return new Map(this.AttachmentCaps);
+	}
+	public get ShipStatistics(): { baseHp: number; baseShield: number; baseEnergy: number[]; baseCargo: number; baseHandling: number } {
+		return { baseHp: this.baseHp, baseShield: this.baseShield, baseEnergy: this.baseEnergy.slice(), baseCargo: this.baseCargo, baseHandling: this.baseHandling };
+	}
 }
 
-export interface IShip {
+export interface IShip extends IGameAsset {
+	Subclass: string;
 	TechLevel: number;
+	ImageUri: string;
+	WeaponCapacities: Map<AttachmentType, number>;
+	ShipStatistics: { baseHp: number; baseShield: number; baseEnergy: number[]; baseCargo: number; baseHandling: number };
 }
 
 export class ShipBuilder {

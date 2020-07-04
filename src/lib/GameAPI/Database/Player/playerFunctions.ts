@@ -55,7 +55,7 @@ export async function findOneOrCreate(this: IPlayerModel, { uId }: { uId: string
 		const record = await this.create({
 			uId: uId,
 			inventory: new InventoryBuilder().GenericBuild(),
-			ship: Client.Get().Registry.DefaultShip,
+			ship: { name: Client.Get().Registry.DefaultShip.Name, equipped: [] },
 			skin: new Skin(),
 		});
 		return new Player(record);

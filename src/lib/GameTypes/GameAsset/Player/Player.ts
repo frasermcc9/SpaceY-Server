@@ -4,6 +4,8 @@ import { InventoryBuilder, PlayerInventory, TRegistered } from "./PlayerInventor
 import { Skin } from "./Skin";
 import { Client } from "../../../Client/Client";
 import { RegistryNames } from "../../../Client/Registry";
+import { ShipWrapper } from "../Ship/ShipWrapper";
+import { Attachment } from "../Attachment/Attachment";
 
 export class Player {
 	private uId!: string;
@@ -11,7 +13,7 @@ export class Player {
 		return this.uId;
 	}
 
-	private ship!: Ship;
+	private ship!: ShipWrapper;
 	private skin!: Skin;
 
 	private inventory!: PlayerInventory;
@@ -19,6 +21,8 @@ export class Player {
 		return this.inventory;
 	}
 	//private location:
+
+	//#region INVENTORY
 
 	//#region - Credits
 
@@ -111,6 +115,7 @@ export class Player {
 		else result = this.ShipDecrement(name, Math.abs(quantity));
 		return result;
 	}
+
 	//#endregion - Ships
 
 	//#region - Attachments
@@ -231,7 +236,11 @@ export class Player {
 	 * easiest method of inventory manipulation.
 	 * @param name the name of the item
 	 * @param quantity the amount to change by (positive or negative)
-	 * @return codes: 1-Success, 2-Item Not Found, 3-Not enough items, 4-Registry Not Found.
+	 * @return codes: <br />  \
+	 * 1 - Success <br />  \
+	 * 2 - Item Not Found <br />  \
+	 * 3 - Not enough items <br />  \
+	 * 4 - Registry Not Found.
 	 */
 	public async AutoInventoryEdit(name: string, quantity: number): Promise<{ success: boolean; amount?: number; code: 1 | 2 | 3 | 4; error?: string }> {
 		const Reg = Client.Get().Registry;
@@ -351,13 +360,62 @@ export class Player {
 
 	//#endregion - General Inventory
 
+	//#endregion INVENTORY
+
+	//#region SHIP
+
+	public async setShip(ship: Ship | string): Promise<void> {
+		if (typeof ship == "string") {
+			const candidate = Client.Reg.ResolveShipFromName(ship);
+			if (candidate == undefined) throw new TypeError(`Ship with name ${ship} does not exist in registry, despite trying to set it`);
+			ship = candidate;
+		}
+		const oldItems = this.ship.changeShip(ship);
+		const Attachments = oldItems.attachments.map((attachment) => attachment.Name);
+		this.inventory.Attachments.StrictSumCollection(Attachments);
+		this.inventory.Ships.StrictSumCollection([oldItems.oldShip.Name]);
+		await this.save();
+	}
+	/**@internal */
+	public getShipWrapper() {
+		return this.ship;
+	}
+
+	public async addAttachmentToShip(attachment: Attachment | string): Promise<{ code: 200 | 403 | 404 }> {
+		const Result = this.ship.addAttachment(attachment);
+		await this.save();
+		return Result;
+	}
+
+	public async removeAttachmentFromShip(attachment: Attachment | string): Promise<{ code: 200 | 404 }> {
+		const Result = this.ship.removeAttachment(attachment);
+		if (Result.code == 200 && Result.removedAttachment != undefined) {
+			this.inventory.Attachments.StrictSumCollection([Result.removedAttachment.Name]);
+			await this.save();
+			return { code: 200 };
+		}
+		return { code: 404 };
+	}
+
+	//#endregion SHIP
+
 	public async save(): Promise<void> {
-		await PlayerModel.updateOne({ uId: this.uId }, { uId: this.uId, inventory: this.inventory.GetGeneric(), ship: this.ship, skin: this.skin });
+		await PlayerModel.updateOne(
+			{ uId: this.uId },
+			{ uId: this.uId, inventory: this.inventory.GetGeneric(), ship: { name: this.ship.stringifyName(), equipped: this.ship.stringifyAttachments() }, skin: this.skin }
+		);
 	}
 
 	public constructor(data: IPlayerDocument) {
 		this.uId = data.uId;
-		this.ship = data.ship;
+		const Ship = Client.Reg.ResolveShipFromName(data.ship.name);
+		if (Ship == undefined) throw new Error(`Mismatch between database and server. No such item ${this.ship} exists despite existing in database for id ${this.uId}.`);
+		this.ship = new ShipWrapper(Ship, this);
+		data.ship.equipped.forEach((attachmentName) => {
+			const result = this.ship.addAttachment(attachmentName);
+			if (result.code == 404) throw new Error(`Mismatch between database and server. No such item ${attachmentName} exists despite existing in database for id ${this.uId}.`);
+			if (result.code == 403) throw new Error(`Mismatch between database and server. Player '${this.uId}' has more items equipped in database than possible on ship.`);
+		});
 		this.skin = data.skin;
 		this.inventory = new InventoryBuilder()
 			.SetCredits(data.inventory.credits)

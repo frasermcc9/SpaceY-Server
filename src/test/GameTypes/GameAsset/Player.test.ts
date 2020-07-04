@@ -19,8 +19,20 @@ describe("Player Tests", async () => {
 			const ship = GENERATED_SHIPS()[0];
 			const Player = await PlayerModel.findOneOrCreate({ uId: "1" });
 			const MaterialsToAdd = new Map<string, number>().set("Iron", 1000).set("Gold", 1000).set("Tech", 1000).set("Food", 1000);
+			Player.setShip("Destroyer");
 			Player.InventorySum("materials", MaterialsToAdd);
 			(await new BuildableDecorator(ship).Build(Player)).code.must.eql(200);
-        });
+		});
+	});
+	describe("Player Ship Tests", async () => {
+		it("Should cap player materials at their ship's cargo limit", async () => {
+			const Player = await PlayerModel.findOneOrCreate({ uId: "1" });
+			await Player.setShip("Warship");
+			const cargo = Client.Reg.ResolveShipFromName("Warship").ShipStatistics.baseCargo;
+			(await Player.MaterialIncrement("Iron", cargo + 100)).code.must.eql(1);
+
+			const savedPlayer = await PlayerModel.findOneOrCreate({ uId: "1" });
+			savedPlayer.AutoInventoryRetrieve("Iron").amount.must.eql(cargo);
+		});
 	});
 });

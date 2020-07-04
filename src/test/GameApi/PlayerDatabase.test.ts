@@ -143,6 +143,7 @@ describe("Player Database", () => {
 			Player.Inventory.Materials.DataFromName("Iron").quantity.must.equal(0);
 			Player.Inventory.Materials.Increase("Iron", 30);
 			const result = Player.Inventory.Materials.ReduceToNonNegative("Iron", 10);
+			await Player.save();
 			//Assert
 			result.success.must.equal(true);
 			result.amount.must.equal(20);

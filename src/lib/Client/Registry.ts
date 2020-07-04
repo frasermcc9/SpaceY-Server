@@ -167,7 +167,7 @@ interface IMaterials {
 
 const BlankShip = new ShipBuilder({ name: "Default Ship", description: "There is no default ship" })
 	.EnableSell(15000)
-	.SetStats({ baseShield: 15, baseCargo: 125, baseEnergy: [3, 5, 1], baseHandling: 1, baseHp: 50 })
+	.SetStats({ baseShield: 15, baseCargo: 100, baseEnergy: [3, 5, 1], baseHandling: 1, baseHp: 50 })
 	.SetWeapons({ generalCap: 1, heavyCap: 0, minerCap: 1, primaryCap: 1, shieldCap: 0 })
 	.SetSubclass("Scrap Ship")
 	.SetTechLevel(1)

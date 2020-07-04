@@ -1,9 +1,10 @@
-import { Ship } from "../GameTypes/GameAsset/Ship/Ship";
+import { Ship, ShipBuilder } from "../GameTypes/GameAsset/Ship/Ship";
 import { Attachment } from "../GameTypes/GameAsset/Attachment/Attachment";
 import { Faction } from "../GameTypes/GameAsset/Faction/Faction";
 import { Material } from "../GameTypes/GameAsset//Material/Material";
 import { MapCollection } from "../Extensions/Collections";
 import { GameAsset } from "../GameTypes/GameAsset/GameAsset";
+import { BlueprintBuilder } from "../GameTypes/GameAsset/Blueprint/Blueprint";
 
 export class Registry {
 	public constructor(copyReg?: Registry) {
@@ -13,6 +14,8 @@ export class Registry {
 			this.factionRegistry = new MapCollection(copyReg.factionRegistry);
 			this.materialRegistry = new MapCollection(copyReg.materialRegistry);
 		}
+		this.RegisterShips({ ships: [BlankShip] });
+		this.defaultShip = BlankShip;
 	}
 	private maxRarity: number = 1;
 	public get MaxRarity() {
@@ -24,12 +27,12 @@ export class Registry {
 
 	//#region - Defaults
 
-	private defaultShip = BlankShip;
+	private defaultShip: Ship;
 	public get DefaultShip(): Ship {
 		return this.defaultShip;
 	}
 	public set DefaultShip(value: Ship) {
-		if (this.defaultShip == BlankShip)
+		if (this.defaultShip != BlankShip)
 			throw new Error("Default ship has already been set. It can only be set once. If this was intentional, use the 'ForceChangeDefaultShip()' method.");
 		this.defaultShip = value;
 	}
@@ -162,6 +165,13 @@ interface IMaterials {
 	materials: Material[];
 }
 
-const BlankShip = new Ship({ name: "No default ship", description: "There is no default ship assigned." });
+const BlankShip = new ShipBuilder({ name: "Default Ship", description: "There is no default ship" })
+	.EnableSell(15000)
+	.SetStats({ baseShield: 15, baseCargo: 125, baseEnergy: [3, 5, 1], baseHandling: 1, baseHp: 50 })
+	.SetWeapons({ generalCap: 1, heavyCap: 0, minerCap: 1, primaryCap: 1, shieldCap: 0 })
+	.SetSubclass("Scrap Ship")
+	.SetTechLevel(1)
+	.SetImageUri("No Image")
+	.Build();
 
 export type RegistryNames = "AttachmentRegistry" | "FactionRegistry" | "MaterialRegistry" | "ShipRegistry";

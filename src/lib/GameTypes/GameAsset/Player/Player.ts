@@ -425,6 +425,7 @@ export class Player {
 			.SetShips({ data: data.inventory.ships })
 			.SetTokens(data.inventory.tokens)
 			.Build();
+		this.inventory.Materials.Owner = this;
 	}
 
 	private static readonly RegistryTypes: RegistryNames[] = ["MaterialRegistry", "FactionRegistry", "AttachmentRegistry", "ShipRegistry"];

@@ -51,12 +51,12 @@ export function GENERATED_SHIPS() {
 		new ShipBuilder({ name: "Warship", description: "A medium sized vehicle" })
 			.EnableSell(3000)
 			.EnableBuildable(new BlueprintBuilder().AutoBuild({ value: 2550, rarity: true, minRarity: 0, maxRarity: 10, centralRarity: 5 }))
-			.SetStats({ baseHp: 150, baseShield: 90 })
+			.SetStats({ baseHp: 150, baseShield: 90, baseCargo: 750 })
 			.Build(),
 		new ShipBuilder({ name: "Destroyer", description: "A flagship destroyer" })
 			.EnableSell(4500)
 			.EnableBuildable(new BlueprintBuilder().AutoBuild({ value: 4000, rarity: true, minRarity: 0, maxRarity: 10, centralRarity: 7 }))
-			.SetStats({ baseHp: 200, baseShield: 170 })
+			.SetStats({ baseHp: 200, baseShield: 170, baseCargo: 8000 })
 			.Build(),
 	];
 }

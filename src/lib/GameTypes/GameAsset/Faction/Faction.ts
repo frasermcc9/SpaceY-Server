@@ -4,8 +4,12 @@ export class Faction extends GameAsset {
 	private techLevel: number;
 
 	public constructor(options: FactionOptions) {
-		super({ name: options.description, description: options.description });
+		super({ name: options.name, description: options.description });
 		this.techLevel = options.techLevel ?? 0;
+	}
+
+	public get TechLevel(): number {
+		return this.techLevel;
 	}
 }
 

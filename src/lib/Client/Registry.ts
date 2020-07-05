@@ -33,7 +33,9 @@ export class Registry {
 	}
 	public set DefaultShip(value: Ship) {
 		if (this.defaultShip != BlankShip)
-			throw new Error("Default ship has already been set. It can only be set once. If this was intentional, use the 'ForceChangeDefaultShip()' method.");
+			throw new Error(
+				"Default ship has already been set. It can only be set once. If this was intentional, use the 'ForceChangeDefaultShip()' method."
+			);
 		this.defaultShip = value;
 	}
 	public set ForceChangeDefaultShip(value: Ship) {
@@ -46,11 +48,21 @@ export class Registry {
 	}
 	public set DefaultCredits(value: number) {
 		if (this.defaultCredits != 0)
-			throw new Error("Default credits has already been set. It can only be set once. If this was intentional, use the 'ForceChangeDefaultCredits()' method.");
+			throw new Error(
+				"Default credits has already been set. It can only be set once. If this was intentional, use the 'ForceChangeDefaultCredits()' method."
+			);
 		this.defaultCredits = value;
 	}
 	public set ForceChangeDefaultCredits(value: number) {
 		this.defaultCredits = value;
+	}
+
+	private defaultAsteroidCooldown: number = 0;
+	public get DefaultAsteroidCooldown(): number {
+		return this.defaultAsteroidCooldown;
+	}
+	public set DefaultAsteroidCooldown(seconds: number) {
+		this.defaultAsteroidCooldown = seconds;
 	}
 
 	//#endregion - Defaults
@@ -146,7 +158,12 @@ export class Registry {
 	}
 
 	public AnyResolve(name: string): GameAsset | undefined {
-		return this.materialRegistry.get(name) ?? this.attachmentRegistry.get(name) ?? this.factionRegistry.get(name) ?? this.shipRegistry.get(name);
+		return (
+			this.materialRegistry.get(name) ??
+			this.attachmentRegistry.get(name) ??
+			this.factionRegistry.get(name) ??
+			this.shipRegistry.get(name)
+		);
 	}
 
 	//#endregion - Resolution Methods

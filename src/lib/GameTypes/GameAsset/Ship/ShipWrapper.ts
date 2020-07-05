@@ -1,7 +1,8 @@
 import { Ship, IShip } from "./Ship";
-import { Attachment, AttachmentType, BattleEvent, NonBattleEvent } from "../Attachment/Attachment";
+import { Attachment, AttachmentType, BattleEvent, ShipEvent, AttachmentReport } from "../Attachment/Attachment";
 import { Player } from "../Player/Player";
 import { Client } from "../../../Client/Client";
+import { Asteroid } from "../../GameMechanics/Asteroid";
 
 export class ShipWrapper {
 	private ship: Ship;
@@ -42,7 +43,13 @@ export class ShipWrapper {
 	public get WeaponCapacities(): Map<AttachmentType, number> {
 		return this.ship.WeaponCapacities;
 	}
-	public get ShipStatistics(): { totalHp: number; totalShield: number; totalEnergy: number[]; totalCargo: number; totalHandling: number } {
+	public get ShipStatistics(): {
+		totalHp: number;
+		totalShield: number;
+		totalEnergy: number[];
+		totalCargo: number;
+		totalHandling: number;
+	} {
 		const Base = this.ship.ShipStatistics;
 		return {
 			totalHp: Base.baseHp + this.bonusHp,
@@ -103,11 +110,13 @@ export class ShipWrapper {
 		const NumEquipped = this.Slots.get(Type);
 		const MaxEquipped = this.ship.WeaponCapacities.get(Type);
 		if (NumEquipped == undefined || MaxEquipped == undefined)
-			throw new TypeError(`Unsupported attachment type ${Type}. It could not be found. NumEquipped:${NumEquipped}, MaxEquipped${MaxEquipped}`);
+			throw new TypeError(
+				`Unsupported attachment type ${Type}. It could not be found. NumEquipped:${NumEquipped}, MaxEquipped${MaxEquipped}`
+			);
 		if (NumEquipped >= MaxEquipped) return { code: 403 };
 		this.Slots.set(Type, NumEquipped + 1);
 		this.attachments.push(attachment);
-		attachment.NonBattleUpdate(NonBattleEvent.EQUIP, { friendly: this });
+		attachment.NonBattleUpdate(ShipEvent.EQUIP, { friendly: this });
 		return { code: 200 };
 	}
 
@@ -121,15 +130,35 @@ export class ShipWrapper {
 		const idxAttachment = this.attachments.findIndex((val) => val.Name == attachment);
 		if (idxAttachment == undefined) return { code: 404 };
 		const Attachment = this.attachments.splice(idxAttachment, 1);
-		Attachment[0].NonBattleUpdate(NonBattleEvent.UNEQUIP, { friendly: this });
+		Attachment[0].NonBattleUpdate(ShipEvent.UNEQUIP, { friendly: this });
 		return { code: 200, removedAttachment: Attachment[0] };
 	}
 
-	public fireBattleEvent(event: BattleEvent, opponentShip: ShipWrapper): void {
-		this.attachments.forEach((attachment) => attachment.BattleUpdate(event, { friendly: this, opponent: opponentShip }));
+	public fireBattleEvent(event: BattleEvent, opponentShip: ShipWrapper): AttachmentReport[] {
+		const reports: AttachmentReport[] = [];
+		this.attachments.forEach((attachment) => {
+			const report = attachment.BattleUpdate(event, { friendly: this, opponent: opponentShip });
+			if (report != undefined) reports.push(report);
+		});
+		return reports;
 	}
-	public fireNonBattleEvent(event: NonBattleEvent) {
-		this.attachments.forEach((attachment) => attachment.NonBattleUpdate(event, { friendly: this }));
+	public fireNonBattleEvent(event: ShipEvent): AttachmentReport[] {
+		const reports: AttachmentReport[] = [];
+		this.attachments.forEach((attachment) => {
+			const report = attachment.NonBattleUpdate(event, { friendly: this });
+			if (report != undefined) reports.push(report);
+		});
+		return reports;
+	}
+	public fireMineEvent(asteroid: Asteroid): AttachmentReport {
+		for (const attachment of this.attachments) {
+			if (attachment.Type == AttachmentType.MINER) {
+				const mineResult = attachment.MineEvent({ collection: asteroid });
+				if (mineResult == undefined) break;
+				return mineResult;
+			}
+		}
+		return { message: "No mining laser, so no enhancements." };
 	}
 }
 

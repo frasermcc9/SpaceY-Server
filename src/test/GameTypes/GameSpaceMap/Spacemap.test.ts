@@ -5,7 +5,7 @@ import { default as must } from "must";
 import { FactionBuilder } from "../../../lib/GameTypes/GameAsset/Faction/Faction";
 require("must/register");
 
-describe.only("Spacemap Tests", async () => {
+describe("Spacemap Tests", async () => {
 	describe("SpacemapNode tests", async () => {
 		it("Should return the proper data", async () => {
 			const FN1 = new FactionBuilder("Kalen", "The fragile Kalen alliance", 2).Build();

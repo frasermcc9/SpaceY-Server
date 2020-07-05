@@ -7,7 +7,7 @@ import { GameCollectionBase } from "../GameCollections/GameCollectionBase";
 import { GameAsset } from "../GameAsset/GameAsset";
 import { SellableDecorator } from "../GameAsset/AssetDecorators";
 
-export class MaterialStore extends BaseStore<Material> {
+export class MaterialStore extends BaseStore {
 	private value: number;
 	private rarity: boolean;
 	private maxRarity: number;
@@ -38,16 +38,25 @@ export class MaterialStore extends BaseStore<Material> {
 	}
 
 	public GenerateInventory() {
-		return super.GenerateCollection({ value: this.value, rarity: this.rarity, minRarity: this.minRarity, maxRarity: this.maxRarity, centralRarity: this.centralRarity });
+		return super.GenerateCollection({
+			value: this.value,
+			rarity: this.rarity,
+			minRarity: this.minRarity,
+			maxRarity: this.maxRarity,
+			centralRarity: this.centralRarity,
+		});
 	}
 	/** @override */
 	public GetCompatibleItems(minRarity: number, maxRarity: number): MapCollection<string, Material> {
-		return Client.Reg.MaterialRegistry.filter((val) => val.Cost != undefined && val.GetMaterialRarity() <= maxRarity && val.GetMaterialRarity() >= minRarity);
+		return Client.Reg.MaterialRegistry.filter(
+			(val) =>
+				val.Cost != undefined && val.GetMaterialRarity() <= maxRarity && val.GetMaterialRarity() >= minRarity
+		);
 	}
 
 	/** @override */
 	public GenerateWeights(items: Material[], centralRarity: number, minRarity: number, maxRarity: number): number[] {
-		return items.map((val) => (maxRarity-minRarity+1) - Math.abs(centralRarity - val.GetMaterialRarity()) + 1);
+		return items.map((val) => maxRarity - minRarity + 1 - Math.abs(centralRarity - val.GetMaterialRarity()) + 1);
 	}
 
 	public GetItem(itemName: string): Material | undefined {

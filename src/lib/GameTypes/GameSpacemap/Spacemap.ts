@@ -41,7 +41,10 @@ export class Spacemap implements ISpacemap, ISpacemapPrivileged {
 		if (node instanceof SpacemapNode) {
 			node = node.Name;
 		}
-		if (!this.registry.has(node)) throw new TypeError(`Nodes: ${node} does not exist, cannot get connected nodes of node that does not exist.`);
+		if (!this.registry.has(node))
+			throw new TypeError(
+				`Nodes: ${node} does not exist, cannot get connected nodes of node that does not exist.`
+			);
 		const nodes = this.graph.get(node)!;
 		const output: SpacemapNode[] = [];
 		nodes.forEach((val) => output.push(this.registry.get(val)!));
@@ -50,7 +53,8 @@ export class Spacemap implements ISpacemap, ISpacemapPrivileged {
 
 	public canTravel(node: SpacemapNode | string, warp: WarpPower): boolean {
 		const MapNode = this.resolveNodeFromName(node);
-		if (MapNode == undefined) throw new TypeError(`Cannot query node warp requirements when node "${node}" does not exist.`);
+		if (MapNode == undefined)
+			throw new TypeError(`Cannot query node warp requirements when node "${node}" does not exist.`);
 		return warp >= MapNode.RequiredWarp;
 	}
 

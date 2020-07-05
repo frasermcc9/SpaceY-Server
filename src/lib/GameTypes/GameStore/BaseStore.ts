@@ -3,7 +3,7 @@ import { MapCollection } from "../../Extensions/Collections";
 import { GameAsset } from "../GameAsset/GameAsset";
 import { Player } from "../GameAsset/Player/Player";
 
-export abstract class BaseStore<K extends GameAsset> extends GameCollectionBase {
+export abstract class BaseStore extends GameCollectionBase {
 	protected credits: number;
 	public get Credits(): number {
 		return this.credits;

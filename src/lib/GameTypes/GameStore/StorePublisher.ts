@@ -19,7 +19,7 @@ export class StorePublisher extends EventEmitter {
 		return this.intervals.delete(loopName);
 	}
 
-	public RegisterStore<K extends GameAsset>(baseStore: BaseStore<K>, updateInterval: number, storeName: string) {
+	public RegisterStore(baseStore: BaseStore, updateInterval: number, storeName: string) {
 		this.on("Update", () => {
 			baseStore.Update();
 		});

@@ -39,6 +39,9 @@ export class Asteroid extends MaterialCollection {
 		if (started == now) return 0;
 		return Math.floor(this.cooldown - inMap);
 	}
+	public isAvailableForUser(player: Player): boolean {
+		return this.remainingCooldown(player) == 0;
+	}
 	/**
 	 *
 	 * @param player

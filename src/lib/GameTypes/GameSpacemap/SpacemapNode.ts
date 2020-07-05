@@ -1,6 +1,7 @@
 import { Faction } from "../GameAsset/Faction/Faction";
-import { BaseStore } from "../GameStore/BaseStore";
+import { BaseStore, StoreType } from "../GameStore/BaseStore";
 import { Asteroid, AsteroidBuilder } from "../GameMechanics/Asteroid";
+import { Player } from "../GameAsset/Player/Player";
 
 export class SpacemapNode {
 	private name: string;
@@ -20,9 +21,12 @@ export class SpacemapNode {
 		this.techLevel = techLevel ?? 0;
 		this.asteroids = asteroids;
 	}
+
 	public toString(): string {
 		return `${this.faction.Name}: ${this.name}`;
 	}
+
+	//#region - Gets
 	public get Name(): string {
 		return this.name;
 	}
@@ -32,6 +36,37 @@ export class SpacemapNode {
 	public get RequiredWarp(): WarpPower {
 		return this.requiredWarp;
 	}
+	public get TechLevel(): number {
+		return this.techLevel;
+	}
+	//#endregion - Gets
+
+	//#region - Asteroids
+	public get Asteroids(): Asteroid[] {
+		return this.asteroids;
+	}
+	public availableAsteroids(player: Player): Asteroid[] {
+		return this.asteroids.filter((val) => val.isAvailableForUser(player));
+	}
+	//#endregion - Asteroids
+
+	//#region - Stores
+
+	public storeDisplayNames(): string[] {
+		return this.stores.map((el) => el.displayName());
+	}
+
+	public nodeMaterialStores(): BaseStore[] {
+		return this.stores.filter((el) => el.isStoreType(StoreType.MATERIAL_STORE));
+	}
+	public nodeShipStores(): BaseStore[] {
+		return this.stores.filter((el) => el.isStoreType(StoreType.SHIP_STORE));
+	}
+	public nodeAttachmentStores(): BaseStore[] {
+		return this.stores.filter((el) => el.isStoreType(StoreType.ATTACHMENT_STORE));
+	}
+
+	//#endregion
 }
 
 export class SpacemapNodeBuilder {
@@ -49,6 +84,7 @@ export class SpacemapNodeBuilder {
 	}
 
 	public addStore(store: BaseStore) {
+		store.StoreName = name;
 		this.stores.push(store);
 	}
 

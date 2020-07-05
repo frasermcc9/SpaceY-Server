@@ -4,13 +4,20 @@ import { GameAsset } from "../GameAsset/GameAsset";
 import { Player } from "../GameAsset/Player/Player";
 
 export abstract class BaseStore extends GameCollectionBase {
+	public constructor(credits: number, type: StoreType) {
+		super();
+		this.credits = credits;
+		this.storeType = type;
+	}
+
+	protected storeType: StoreType;
+	public isStoreType(type: StoreType): boolean {
+		return this.storeType == type;
+	}
+
 	protected credits: number;
 	public get Credits(): number {
 		return this.credits;
-	}
-	constructor(credits: number) {
-		super();
-		this.credits = credits;
 	}
 	/**
 	 * Adds the given data to this inventory. For a newly refreshed store, this is identical behaviour to SetInventory
@@ -28,7 +35,15 @@ export abstract class BaseStore extends GameCollectionBase {
 		return this.SumCollection(data);
 	}
 
-	public async Buy({ buyer, item, quantity }: { buyer: Player; item: string; quantity: number }): Promise<IBuyResult> {
+	public async Buy({
+		buyer,
+		item,
+		quantity,
+	}: {
+		buyer: Player;
+		item: string;
+		quantity: number;
+	}): Promise<IBuyResult> {
 		//Check valid quantity
 		if (quantity < 0) return { success: false, amount: 0, code: 6, error: "Negative quantity" };
 		//Check if material exists in game
@@ -38,9 +53,11 @@ export abstract class BaseStore extends GameCollectionBase {
 		const cpi = this.GetCostOfItem(Item);
 		if (cpi == undefined) return { success: false, amount: 0, code: 5, error: "Invalid item" };
 		//Check if this store has enough resources to sell
-		if (!this.SufficientToDecrease(item, -quantity)) return { success: false, amount: 0, code: 3, error: "Insufficient amount of item at store" };
+		if (!this.SufficientToDecrease(item, -quantity))
+			return { success: false, amount: 0, code: 3, error: "Insufficient amount of item at store" };
 		//Check if the user has enough credits
-		if (buyer.Credits < cpi * quantity) return { success: false, amount: 0, code: 4, error: "Insufficient credits owned by player" };
+		if (buyer.Credits < cpi * quantity)
+			return { success: false, amount: 0, code: 4, error: "Insufficient credits owned by player" };
 		const storeResult = this.ReduceToNonNegative(item, quantity);
 		if (!storeResult.success) return { success: false, amount: 0, code: 7, error: "Unknown error occurred." };
 		buyer.CreditsDecrement({ amount: cpi * quantity });
@@ -60,10 +77,26 @@ export abstract class BaseStore extends GameCollectionBase {
 
 	public abstract Sell(): void;
 	public abstract Update(): void;
+
+	public abstract displayName(): string;
+	public identity(): string {
+		return `${this.storeName}: ${this.displayName()}`;
+	}
+	private storeName?: string;
+	public set StoreName(name: string) {
+		this.storeName = name;
+	}
 }
 export interface IBuyResult {
 	success: boolean;
 	amount: number;
 	code: 1 | 2 | 3 | 4 | 5 | 6 | 7;
 	error?: string | undefined;
+}
+
+export enum StoreType {
+	BASE,
+	MATERIAL_STORE,
+	SHIP_STORE,
+	ATTACHMENT_STORE,
 }

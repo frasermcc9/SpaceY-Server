@@ -1,4 +1,4 @@
-import { BaseStore } from "./BaseStore";
+import { BaseStore, StoreType } from "./BaseStore";
 import { Material } from "../GameAsset/Material/Material";
 import { MaterialCollection } from "../GameCollections/MaterialCollection";
 import { Client } from "../../main";
@@ -29,7 +29,7 @@ export class MaterialStore extends BaseStore {
 		credits?: number;
 		centralRarity?: number;
 	}) {
-		super(credits ?? 0);
+		super(credits ?? 0, StoreType.MATERIAL_STORE);
 		this.value = value ?? 0;
 		this.rarity = rarity ?? false;
 		this.maxRarity = maxRarity ?? Client.Get().Registry.MaxRarity;
@@ -71,5 +71,9 @@ export class MaterialStore extends BaseStore {
 	public Update(): void {
 		this.clear();
 		this.GenerateInventory();
+	}
+
+	public displayName(): string {
+		return "Spaceport";
 	}
 }

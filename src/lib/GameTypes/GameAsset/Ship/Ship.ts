@@ -1,12 +1,13 @@
-import { GameAsset, IGameAsset } from "../GameAsset";
+import { GameAsset, IGameAsset, IGameAssetOptions, IStrengthOptions } from "../GameAsset";
 import { Blueprint } from "../Blueprint/Blueprint";
 import { AttachmentType } from "../Attachment/Attachment";
+import { StrengthComparable } from "../AssetDecorators";
+import { MapCollection } from "../../../Extensions/Collections";
 
-export class Ship extends GameAsset implements IShip {
-	//Inherited: Name, Description, Cost, Blueprint
+export class Ship extends GameAsset implements IShip, StrengthComparable {
+	//Inherited: Name, Description, Cost, Blueprint, TechLevel
 
 	private subclass: string;
-	private techLevel: number;
 
 	private baseHp: number;
 	private baseShield: number;
@@ -14,14 +15,16 @@ export class Ship extends GameAsset implements IShip {
 	private baseCargo: number;
 	private baseHandling: number;
 
-	private AttachmentCaps: Map<AttachmentType, number> = new Map();
+	private strength: number;
+	private maxTech: number;
+
+	private AttachmentCaps: MapCollection<AttachmentType, number> = new MapCollection();
 
 	private imageUri: string;
 
 	public constructor(options: ShipOptions) {
-		super({ name: options.name, description: options.description, blueprint: options.blueprint, cost: options.cost });
+		super(options);
 		this.subclass = options.subclass ?? "";
-		this.techLevel = options.techLevel ?? 0;
 		this.baseHp = options.baseHp ?? 0;
 		this.baseShield = options.baseShield ?? 0;
 		this.baseEnergy = options.baseEnergy ?? [0, 0, 0];
@@ -35,15 +38,38 @@ export class Ship extends GameAsset implements IShip {
 			.set(AttachmentType.SHIELD, options.shieldCap ?? 0);
 
 		this.imageUri = options.imageUri ?? "";
+		this.maxTech = [...this.AttachmentCaps.values()].reduce((acc, cur) => acc + cur, 0) * this.TechLevel + 3;
+
+		this.strength = Math.round(
+			(16000 * this.TechLevel +
+				575 * this.baseHp +
+				450 * this.baseShield +
+				1500 * this.baseEnergy[0] +
+				1500 * this.baseEnergy[1] +
+				1500 * this.baseEnergy[2] +
+				50 * this.baseCargo +
+				12000 * this.baseHandling +
+				25000 * (options.primaryCap ?? 0) +
+				20000 * (options.shieldCap ?? 0) +
+				15000 * (options.heavyCap ?? 0) +
+				7000 * (options.minerCap ?? 0) +
+				15000 * (options.generalCap ?? 0) +
+				1000 * ([...this.AttachmentCaps.values()].reduce((acc, cur) => acc + cur, 0) * this.TechLevel + 3)) /
+				1000
+		);
 	}
 
 	public stringify(): string {
 		return JSON.stringify(this);
 	}
 
-	public get TechLevel(): number {
-		return this.techLevel;
+	public get Strength(): number {
+		return this.strength;
 	}
+	public get MaxTech(): number {
+		return this.maxTech;
+	}
+
 	public get ImageUri(): string {
 		return this.imageUri;
 	}
@@ -53,8 +79,20 @@ export class Ship extends GameAsset implements IShip {
 	public get WeaponCapacities(): Map<AttachmentType, number> {
 		return new Map(this.AttachmentCaps);
 	}
-	public get ShipStatistics(): { baseHp: number; baseShield: number; baseEnergy: number[]; baseCargo: number; baseHandling: number } {
-		return { baseHp: this.baseHp, baseShield: this.baseShield, baseEnergy: this.baseEnergy.slice(), baseCargo: this.baseCargo, baseHandling: this.baseHandling };
+	public get ShipStatistics(): {
+		baseHp: number;
+		baseShield: number;
+		baseEnergy: number[];
+		baseCargo: number;
+		baseHandling: number;
+	} {
+		return {
+			baseHp: this.baseHp,
+			baseShield: this.baseShield,
+			baseEnergy: this.baseEnergy.slice(),
+			baseCargo: this.baseCargo,
+			baseHandling: this.baseHandling,
+		};
 	}
 }
 
@@ -63,126 +101,76 @@ export interface IShip extends IGameAsset {
 	TechLevel: number;
 	ImageUri: string;
 	WeaponCapacities: Map<AttachmentType, number>;
-	ShipStatistics: { baseHp: number; baseShield: number; baseEnergy: number[]; baseCargo: number; baseHandling: number };
+	ShipStatistics: {
+		baseHp: number;
+		baseShield: number;
+		baseEnergy: number[];
+		baseCargo: number;
+		baseHandling: number;
+	};
 }
 
 export class ShipBuilder {
-	private name: string;
-	private description: string;
-	private cost?: number;
-	private blueprint?: Blueprint;
-	private subclass?: string;
-	private techLevel?: number;
-	private baseHp?: number;
-	private baseShield?: number;
-	private baseEnergy?: number[];
-	private baseCargo?: number;
-	private baseHandling?: number;
-	private generalCap?: number;
-	private primaryCap?: number;
-	private heavyCap?: number;
-	private shieldCap?: number;
-	private minerCap?: number;
-	private imageUri?: string;
-
-	public constructor({ name, description }: { name: string; description: string }) {
-		this.name = name;
-		this.description = description;
-	}
+	public constructor(private readonly options: ShipOptions) {}
 
 	public EnableSell(price: number): ShipBuilder {
-		this.cost = price;
+		this.options.cost = price;
+		return this;
+	}
+	public SetMisc({ uri, subclass }: { uri?: string; subclass?: string }): this {
+		this.options.imageUri = uri;
+		this.options.subclass = subclass;
 		return this;
 	}
 
 	public EnableBuildable(blueprint: Blueprint): ShipBuilder {
-		this.blueprint = blueprint;
+		this.options.blueprint = blueprint;
 		return this;
 	}
-	public SetSubclass(subclass: string): ShipBuilder {
-		this.subclass = subclass;
+
+	/* 	public SetTechLevel(techLevel: number): ShipBuilder {
+		this.options.techLevel = techLevel;
 		return this;
-	}
-	public SetTechLevel(techLevel: number): ShipBuilder {
-		this.techLevel = techLevel;
-		return this;
-	}
+	} */
 	public SetStats(stats: ShipStats): ShipBuilder {
-		this.baseHp = stats.baseHp;
-		this.baseShield = stats.baseShield;
-		this.baseEnergy = stats.baseEnergy;
-		this.baseCargo = stats.baseCargo;
-		this.baseHandling = stats.baseHandling;
+		this.options.baseHp = stats.baseHp;
+		this.options.baseShield = stats.baseShield;
+		this.options.baseEnergy = stats.baseEnergy;
+		this.options.baseCargo = stats.baseCargo;
+		this.options.baseHandling = stats.baseHandling;
 		return this;
 	}
 	public SetWeapons(weapons: WeaponOptions): ShipBuilder {
-		this.primaryCap = weapons.primaryCap;
-		this.shieldCap = weapons.shieldCap;
-		this.heavyCap = weapons.heavyCap;
-		this.minerCap = weapons.minerCap;
-		this.generalCap = weapons.generalCap;
-		return this;
-	}
-	public SetImageUri(uri: string): ShipBuilder {
-		this.imageUri = uri;
+		this.options.primaryCap = weapons.primaryCap;
+		this.options.shieldCap = weapons.shieldCap;
+		this.options.heavyCap = weapons.heavyCap;
+		this.options.minerCap = weapons.minerCap;
+		this.options.generalCap = weapons.generalCap;
 		return this;
 	}
 
 	public Build(): Ship {
-		return new Ship({
-			name: this.name,
-			description: this.description,
-			cost: this.cost,
-			blueprint: this.blueprint,
-			subclass: this.subclass,
-			techLevel: this.techLevel,
-			baseHp: this.baseHp,
-			baseShield: this.baseShield,
-			baseEnergy: this.baseEnergy,
-			baseCargo: this.baseCargo,
-			baseHandling: this.baseHandling,
-			generalCap: this.generalCap,
-			primaryCap: this.primaryCap,
-			heavyCap: this.heavyCap,
-			shieldCap: this.shieldCap,
-			minerCap: this.minerCap,
-			imageUri: this.imageUri,
-		});
+		return new Ship(this.options);
 	}
 }
 
-type ShipOptions = {
-	name: string;
-	description: string;
-	cost?: number;
-	blueprint?: Blueprint;
+interface ShipOptions extends IGameAssetOptions, ShipStats, WeaponOptions {
 	subclass?: string;
-	techLevel?: number;
-	baseHp?: number;
-	baseShield?: number;
-	baseEnergy?: number[];
-	baseCargo?: number;
-	baseHandling?: number;
-	generalCap?: number;
-	primaryCap?: number;
-	heavyCap?: number;
-	shieldCap?: number;
-	minerCap?: number;
 	imageUri?: string;
-};
+}
 
-type ShipStats = {
+interface ShipStats {
 	baseHp?: number;
 	baseShield?: number;
 	baseEnergy?: number[];
 	baseCargo?: number;
 	baseHandling?: number;
-};
+}
 
-type WeaponOptions = {
+interface WeaponOptions {
 	primaryCap?: number;
 	shieldCap?: number;
 	heavyCap?: number;
 	minerCap?: number;
 	generalCap?: number;
-};
+}

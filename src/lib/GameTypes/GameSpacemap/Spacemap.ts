@@ -58,8 +58,12 @@ export class Spacemap implements ISpacemap, ISpacemapPrivileged {
 		return warp >= MapNode.RequiredWarp;
 	}
 
+	public updateMap(): void {
+		this.MapRegister.forEach((node) => node.nodeAllStores().forEach((store) => store.update()));
+	}
+
 	/**@internal */
-	public get Registry(): Map<string, SpacemapNode> {
+	public get MapRegister(): Map<string, SpacemapNode> {
 		return this.registry;
 	}
 	/**@internal */
@@ -81,6 +85,6 @@ export interface ISpacemapPrivileged {
 	addLink(a: SpacemapNode | string, b: SpacemapNode | string): this;
 	addNode(node: SpacemapNode): this;
 	resolveNodeFromName(name: string | SpacemapNode): SpacemapNode | undefined;
-	Registry: Map<string, SpacemapNode>;
+	MapRegister: Map<string, SpacemapNode>;
 	Graph: Map<string, Set<string>>;
 }

@@ -2,6 +2,9 @@ import { Faction } from "../GameAsset/Faction/Faction";
 import { BaseStore, StoreType } from "../GameStore/BaseStore";
 import { Asteroid, AsteroidBuilder } from "../GameMechanics/Asteroid";
 import { Player } from "../GameAsset/Player/Player";
+import { MaterialStore } from "../GameStore/MaterialStore";
+import { ShipStore } from "../GameStore/ShipStore";
+import { AttachmentStore } from "../GameStore/AttachmentStore";
 
 export class SpacemapNode {
 	private name: string;
@@ -56,14 +59,18 @@ export class SpacemapNode {
 		return this.stores.map((el) => el.identity());
 	}
 
-	public nodeMaterialStores(): BaseStore[] {
-		return this.stores.filter((el) => el.isType(StoreType.MATERIAL_STORE));
+	public nodeAllStores(): BaseStore[] {
+		return this.stores;
 	}
-	public nodeShipStores(): BaseStore[] {
-		return this.stores.filter((el) => el.isType(StoreType.SHIP_STORE));
+
+	public nodeMaterialStores(): MaterialStore[] {
+		return this.stores.filter((el) => el.isType(StoreType.MATERIAL_STORE)) as MaterialStore[];
 	}
-	public nodeAttachmentStores(): BaseStore[] {
-		return this.stores.filter((el) => el.isType(StoreType.ATTACHMENT_STORE));
+	public nodeShipStores(): ShipStore[] {
+		return this.stores.filter((el) => el.isType(StoreType.SHIP_STORE)) as ShipStore[];
+	}
+	public nodeAttachmentStores(): AttachmentStore[] {
+		return this.stores.filter((el) => el.isType(StoreType.ATTACHMENT_STORE)) as AttachmentStore[];
 	}
 
 	//#endregion

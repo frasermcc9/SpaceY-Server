@@ -277,6 +277,7 @@ describe("Store Testing", async () => {
 			S1.update();
 			S2.update();
 			const cost = S1.getCostPerItem("Tech");
+
 			const purchase = await S1.buyFromStore({ trader: Player, item: "Tech", quantity: 1 });
 			purchase.code.must.eql(200);
 			purchase.itemAmount.must.eql(1);

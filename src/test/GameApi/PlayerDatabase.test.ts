@@ -8,26 +8,6 @@ require("must/register");
 
 const DEFAULT_CREDITS = 10000;
 
-before(async () => {
-	Client.Create({
-		databaseName: "testSpaceY",
-		databaseUri: "mongodb://localhost:27017",
-		defaultCredits: DEFAULT_CREDITS,
-		consoleLogging: false,
-		maximumRarity: 10,
-	});
-	GenerateClientSet();
-	connect();
-});
-
-beforeEach(async () => {
-	await PlayerModel.deleteMany({});
-});
-
-after(async () => {
-	disconnect();
-});
-
 describe("Player Database", () => {
 	describe("Creating Players", () => {
 		it("Should add three users to the database", async () => {

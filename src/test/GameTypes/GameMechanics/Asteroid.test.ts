@@ -43,6 +43,7 @@ describe("Asteroid Tests (in memory)", async () => {
 	describe("Asteroid Tests (in database)", async () => {
 		it("Should add two asteroids properly to same player.", async () => {
 			const Player = await PlayerModel.findOneOrCreate({ uId: "1" });
+			await Player.setShip("Destroyer");
 			const asteroid1 = new AsteroidBuilder().BuildRandom({ value: 1000 });
 			const asteroid2 = new AsteroidBuilder().BuildRandom({ value: 1500 });
 			asteroid1.PlayerMineAndSave(Player);

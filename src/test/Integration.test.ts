@@ -8,7 +8,7 @@ require("must/register");
 
 const DEFAULT_CREDITS = 10000;
 
-/* before(async () => {
+before(async () => {
 	Client.Create({
 		databaseName: "testSpaceY",
 		databaseUri: "mongodb://localhost:27017",
@@ -19,7 +19,7 @@ const DEFAULT_CREDITS = 10000;
 	});
 	GenerateClientSet();
 	connect();
-}); */
+});
 
 beforeEach(async () => {
 	await PlayerModel.deleteMany({});
@@ -29,7 +29,7 @@ after(async () => {
 	disconnect();
 });
 
-it.only("Should run the integration test", () => {
+xit("Should run the integration test", () => {
 	Client.Destroy();
 	Client.Create({
 		databaseName: "testSpaceY",
@@ -41,5 +41,5 @@ it.only("Should run the integration test", () => {
 	});
 	generateIntegrationSet();
 
-	Client.Reg.ShipRegistry.forEach((el) => console.log(el));
+	//Client.Reg.ShipRegistry.forEach((el) => console.log(el));
 });

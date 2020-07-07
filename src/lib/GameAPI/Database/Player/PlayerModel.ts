@@ -12,7 +12,15 @@ export interface IPlayer {
 	uId: string;
 	ship: { name: string; equipped: string[] };
 	skin: Skin;
-	inventory: { credits: number; tokens: number; materials: Map<string, number>; ships: Map<string, number>; attachments: Map<string, number>; reputation: Map<string, number> };
+	inventory: {
+		credits: number;
+		tokens: number;
+		materials: Map<string, number>;
+		ships: Map<string, number>;
+		attachments: Map<string, number>;
+		reputation: Map<string, number>;
+	};
+	location: string;
 	dateOfEntry?: Date;
 	lastUpdated?: Date;
 }

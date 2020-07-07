@@ -16,7 +16,9 @@ export async function setLastUpdated(this: IPlayerDocument): Promise<void> {
 /** @deprecated */
 export async function incrementCredits(this: IPlayerDocument, { amount }: { amount: number }): Promise<boolean> {
 	if (amount < 0) {
-		throw new Error("Only positive values can be passed to the incrementCredits method. Consider using decrement to remove credits.");
+		throw new Error(
+			"Only positive values can be passed to the incrementCredits method. Consider using decrement to remove credits."
+		);
 	}
 	this.inventory.credits += amount;
 	this.markModified("inventory");
@@ -27,7 +29,9 @@ export async function incrementCredits(this: IPlayerDocument, { amount }: { amou
 /** @deprecated */
 export async function decrementCredits(this: IPlayerDocument, { amount }: { amount: number }): Promise<boolean> {
 	if (amount < 0) {
-		throw new Error("Only positive values can be passed to the decrementCredits method. Consider using increment to add credits.");
+		throw new Error(
+			"Only positive values can be passed to the decrementCredits method. Consider using increment to add credits."
+		);
 	}
 	const success = this.inventory.credits - amount > 0;
 	if (success) {
@@ -57,6 +61,7 @@ export async function findOneOrCreate(this: IPlayerModel, { uId }: { uId: string
 			inventory: new InventoryBuilder().GenericBuild(),
 			ship: { name: Client.Get().Registry.DefaultShip.Name, equipped: [] },
 			skin: new Skin(),
+			location: Client.Reg.DefaultLocation.Name,
 		});
 		return new Player(record);
 	}

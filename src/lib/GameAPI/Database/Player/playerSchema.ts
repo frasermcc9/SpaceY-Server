@@ -8,6 +8,7 @@ const PlayerSchema = new Schema({
 		equipped: [String],
 	},
 	skin: {},
+	location: String,
 	inventory: {
 		credits: Number,
 		tokens: Number,

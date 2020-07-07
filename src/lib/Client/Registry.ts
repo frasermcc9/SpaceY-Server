@@ -7,6 +7,7 @@ import { GameAsset } from "../GameTypes/GameAsset/GameAsset";
 import { BlueprintBuilder } from "../GameTypes/GameAsset/Blueprint/Blueprint";
 import { Spacemap } from "../GameTypes/GameSpacemap/Spacemap";
 import { util } from "../Util/util";
+import { SpacemapNode } from "../GameTypes/GameSpacemap/SpacemapNode";
 
 export class Registry {
 	public constructor(copyReg?: Registry) {
@@ -85,6 +86,14 @@ export class Registry {
 	}
 	public set DefaultAsteroidCooldown(seconds: number) {
 		this.defaultAsteroidCooldown = seconds;
+	}
+
+	private defaultLocation?: SpacemapNode;
+	public get DefaultLocation(): SpacemapNode {
+		return util.throwUndefined(this.defaultLocation);
+	}
+	public registerDefaultLocation(node: SpacemapNode): void {
+		this.defaultLocation = node;
 	}
 
 	//#endregion - Defaults
@@ -205,15 +214,14 @@ interface IMaterials {
 }
 
 const BlankShip = new ShipBuilder({
-    name: "Recovered Shuttle",
-    description:
-        "A small recovered shuttle that was found crashed on some planet. Not worth much but it can fly... a bit.",
-    techLevel: 0,
+	name: "Recovered Shuttle",
+	description: "A small recovered shuttle that was found crashed on some planet. Not worth much but it can fly... a bit.",
+	techLevel: 0,
 })
-    .SetStats({ baseHp: 35, baseShield: 8, baseEnergy: [2, 2, 6], baseCargo: 30, baseHandling: 4 })
-    .SetWeapons({ primaryCap: 0, shieldCap: 0, heavyCap: 1, minerCap: 0, generalCap: 1 })
-    .EnableSell(59000)
-    .SetMisc({ uri: "", subclass: "Shuttle" })
-    .Build();
+	.SetStats({ baseHp: 35, baseShield: 8, baseEnergy: [2, 2, 6], baseCargo: 30, baseHandling: 4 })
+	.SetWeapons({ primaryCap: 0, shieldCap: 0, heavyCap: 1, minerCap: 0, generalCap: 1 })
+	.EnableSell(59000)
+	.SetMisc({ uri: "", subclass: "Shuttle" })
+	.Build();
 
 export type RegistryNames = "AttachmentRegistry" | "FactionRegistry" | "MaterialRegistry" | "ShipRegistry";

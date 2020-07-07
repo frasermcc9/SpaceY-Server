@@ -5,7 +5,9 @@ import { Skin } from "./Skin";
 import { Client } from "../../../Client/Client";
 import { RegistryNames } from "../../../Client/Registry";
 import { ShipWrapper } from "../Ship/ShipWrapper";
-import { Attachment } from "../Attachment/Attachment";
+import { Attachment, GameEvent } from "../Attachment/Attachment";
+import { SpacemapNode, SpacemapNodeBuilder } from "../../GameSpacemap/SpacemapNode";
+import { util } from "../../../Util/util";
 
 export class Player {
 	private uId!: string;
@@ -20,22 +22,40 @@ export class Player {
 	public get Inventory(): PlayerInventory {
 		return this.inventory;
 	}
-	//private location:
+	private location: SpacemapNode = Client.Reg.DefaultLocation;
 
 	//#region INVENTORY
 
 	//#region - Credits
 
-	public async CreditsIncrement({ amount, implicitSave = true }: { amount: number; implicitSave?: boolean }): Promise<boolean> {
-		if (amount < 0) throw new Error("Only positive values can be passed to the incrementCredits method. Consider using decrement to remove credits.");
+	public async CreditsIncrement({
+		amount,
+		implicitSave = true,
+	}: {
+		amount: number;
+		implicitSave?: boolean;
+	}): Promise<boolean> {
+		if (amount < 0)
+			throw new Error(
+				"Only positive values can be passed to the incrementCredits method. Consider using decrement to remove credits."
+			);
 		const success: boolean = this.inventory.AddCredits({ amount: amount });
 		if (success && implicitSave) {
 			await this.save();
 		}
 		return success;
 	}
-	public async CreditsDecrement({ amount, implicitSave = true }: { amount: number; implicitSave?: boolean }): Promise<boolean> {
-		if (amount < 0) throw new Error("Only positive values can be passed to the decrementCredits method. Consider using increment to add credits.");
+	public async CreditsDecrement({
+		amount,
+		implicitSave = true,
+	}: {
+		amount: number;
+		implicitSave?: boolean;
+	}): Promise<boolean> {
+		if (amount < 0)
+			throw new Error(
+				"Only positive values can be passed to the decrementCredits method. Consider using increment to add credits."
+			);
 		const success: boolean = this.inventory.AddCredits({ amount: -amount });
 		if (success && implicitSave) {
 			await this.save();
@@ -55,7 +75,10 @@ export class Player {
 	 * @param quantity
 	 * @returns codes: 1-Success, 2-Item Not Found, 4-Registry not found
 	 */
-	public async MaterialIncrement(name: string, quantity: number): Promise<{ success: boolean; amount: number; code: 1 | 2 | 3 | 4; error?: string }> {
+	public async MaterialIncrement(
+		name: string,
+		quantity: number
+	): Promise<{ success: boolean; amount: number; code: 1 | 2 | 3 | 4; error?: string }> {
 		return this.InventoryIncrement("materials", name, quantity);
 	}
 
@@ -65,7 +88,10 @@ export class Player {
 	 * @param quantity
 	 * @returns codes: 1-Success, 2-Item Not Found, 3-Not Enough Resources, 4-Registry not found
 	 */
-	public async MaterialDecrement(name: string, quantity: number): Promise<{ success: boolean; amount: number; code: 1 | 2 | 3 | 4; error?: string }> {
+	public async MaterialDecrement(
+		name: string,
+		quantity: number
+	): Promise<{ success: boolean; amount: number; code: 1 | 2 | 3 | 4; error?: string }> {
 		return this.InventoryDecrement("materials", name, quantity);
 	}
 	/**
@@ -74,7 +100,10 @@ export class Player {
 	 * @param quantity
 	 * @returns codes: 1-Success, 2-Item Not Found, 3-Not Enough Resources, 4-Registry not found
 	 */
-	public async MaterialEdit(name: string, quantity: number): Promise<{ success: boolean; amount: number; code: 1 | 2 | 3 | 4; error?: string }> {
+	public async MaterialEdit(
+		name: string,
+		quantity: number
+	): Promise<{ success: boolean; amount: number; code: 1 | 2 | 3 | 4; error?: string }> {
 		let result;
 		if (quantity >= 0) result = this.MaterialIncrement(name, quantity);
 		else result = this.MaterialDecrement(name, Math.abs(quantity));
@@ -90,7 +119,10 @@ export class Player {
 	 * @param quantity
 	 * @returns codes: 1-Success, 2-Item Not Found, 4-Registry not found
 	 */
-	public async ShipIncrement(name: string, quantity: number): Promise<{ success: boolean; amount: number; code: 1 | 2 | 3 | 4; error?: string }> {
+	public async ShipIncrement(
+		name: string,
+		quantity: number
+	): Promise<{ success: boolean; amount: number; code: 1 | 2 | 3 | 4; error?: string }> {
 		return this.InventoryIncrement("ships", name, quantity);
 	}
 
@@ -100,7 +132,10 @@ export class Player {
 	 * @param quantity
 	 * @returns codes: 1-Success, 2-Item Not Found, 3-Not Enough Resources, 4-Registry not found
 	 */
-	public async ShipDecrement(name: string, quantity: number): Promise<{ success: boolean; amount: number; code: 1 | 2 | 3 | 4; error?: string }> {
+	public async ShipDecrement(
+		name: string,
+		quantity: number
+	): Promise<{ success: boolean; amount: number; code: 1 | 2 | 3 | 4; error?: string }> {
 		return this.InventoryDecrement("ships", name, quantity);
 	}
 	/**
@@ -109,7 +144,10 @@ export class Player {
 	 * @param quantity
 	 * @returns codes: 1-Success, 2-Item Not Found, 3-Not Enough Resources, 4-Registry not found
 	 */
-	public async ShipEdit(name: string, quantity: number): Promise<{ success: boolean; amount: number; code: 1 | 2 | 3 | 4; error?: string }> {
+	public async ShipEdit(
+		name: string,
+		quantity: number
+	): Promise<{ success: boolean; amount: number; code: 1 | 2 | 3 | 4; error?: string }> {
 		let result;
 		if (quantity >= 0) result = this.ShipDecrement(name, quantity);
 		else result = this.ShipDecrement(name, Math.abs(quantity));
@@ -125,7 +163,10 @@ export class Player {
 	 * @param quantity
 	 * @returns codes: 1-Success, 2-Item Not Found, 4-Registry not found
 	 */
-	public async AttachmentIncrement(name: string, quantity: number): Promise<{ success: boolean; amount: number; code: 1 | 2 | 3 | 4; error?: string }> {
+	public async AttachmentIncrement(
+		name: string,
+		quantity: number
+	): Promise<{ success: boolean; amount: number; code: 1 | 2 | 3 | 4; error?: string }> {
 		return this.InventoryIncrement("attachments", name, quantity);
 	}
 
@@ -135,7 +176,10 @@ export class Player {
 	 * @param quantity
 	 * @returns codes: 1-Success, 2-Item Not Found, 3-Not Enough Resources, 4-Registry not found
 	 */
-	public async AttachmentDecrement(name: string, quantity: number): Promise<{ success: boolean; amount: number; code: 1 | 2 | 3 | 4; error?: string }> {
+	public async AttachmentDecrement(
+		name: string,
+		quantity: number
+	): Promise<{ success: boolean; amount: number; code: 1 | 2 | 3 | 4; error?: string }> {
 		return this.InventoryDecrement("attachments", name, quantity);
 	}
 	/**
@@ -144,7 +188,10 @@ export class Player {
 	 * @param quantity
 	 * @returns codes: 1-Success, 2-Item Not Found, 3-Not Enough Resources, 4-Registry not found
 	 */
-	public async AttachmentEdit(name: string, quantity: number): Promise<{ success: boolean; amount: number; code: 1 | 2 | 3 | 4; error?: string }> {
+	public async AttachmentEdit(
+		name: string,
+		quantity: number
+	): Promise<{ success: boolean; amount: number; code: 1 | 2 | 3 | 4; error?: string }> {
 		let result;
 		if (quantity >= 0) result = this.AttachmentIncrement(name, quantity);
 		else result = this.AttachmentDecrement(name, Math.abs(quantity));
@@ -159,7 +206,10 @@ export class Player {
 	 * @param quantity
 	 * @returns codes: 1-Success, 2-Item Not Found, 4-Registry not found
 	 */
-	public async ReputationIncrement(name: string, quantity: number): Promise<{ success: boolean; amount: number; code: 1 | 2 | 3 | 4; error?: string }> {
+	public async ReputationIncrement(
+		name: string,
+		quantity: number
+	): Promise<{ success: boolean; amount: number; code: 1 | 2 | 3 | 4; error?: string }> {
 		return this.InventoryIncrement("reputation", name, quantity);
 	}
 
@@ -169,7 +219,10 @@ export class Player {
 	 * @param quantity
 	 * @returns codes: 1-Success, 2-Item Not Found, 3-Not Enough Resources, 4-Registry not found
 	 */
-	public async ReputationDecrement(name: string, quantity: number): Promise<{ success: boolean; amount: number; code: 1 | 2 | 3 | 4; error?: string }> {
+	public async ReputationDecrement(
+		name: string,
+		quantity: number
+	): Promise<{ success: boolean; amount: number; code: 1 | 2 | 3 | 4; error?: string }> {
 		return this.InventoryDecrement("reputation", name, quantity);
 	}
 	/**
@@ -178,7 +231,10 @@ export class Player {
 	 * @param quantity
 	 * @returns codes: 1-Success, 2-Item Not Found, 3-Not Enough Resources, 4-Registry not found
 	 */
-	public async ReputationEdit(name: string, quantity: number): Promise<{ success: boolean; amount: number; code: 1 | 2 | 3 | 4; error?: string }> {
+	public async ReputationEdit(
+		name: string,
+		quantity: number
+	): Promise<{ success: boolean; amount: number; code: 1 | 2 | 3 | 4; error?: string }> {
 		let result;
 		if (quantity >= 0) result = this.ReputationIncrement(name, quantity);
 		else result = this.ReputationDecrement(name, Math.abs(quantity));
@@ -194,7 +250,11 @@ export class Player {
 	 * @param quantity
 	 * @returns codes: 1-Success, 2-Item Not Found, 4-RegistryNotFound
 	 */
-	public async InventoryIncrement(registryName: TRegistered, name: string, quantity: number): Promise<{ success: boolean; amount: number; code: 1 | 2 | 4; error?: string }> {
+	public async InventoryIncrement(
+		registryName: TRegistered,
+		name: string,
+		quantity: number
+	): Promise<{ success: boolean; amount: number; code: 1 | 2 | 4; error?: string }> {
 		const result = this.inventory[registryName].Increase(name, quantity);
 		if (result.success) await this.save();
 		return result;
@@ -207,7 +267,11 @@ export class Player {
 	 * @param quantity
 	 * @returns codes: 1-Success, 2-Item Not Found, 3-Not enough items, 4-Registry Not Found
 	 */
-	public async InventoryDecrement(registryName: TRegistered, name: string, quantity: number): Promise<{ success: boolean; amount: number; code: 1 | 2 | 3 | 4; error?: string }> {
+	public async InventoryDecrement(
+		registryName: TRegistered,
+		name: string,
+		quantity: number
+	): Promise<{ success: boolean; amount: number; code: 1 | 2 | 3 | 4; error?: string }> {
 		const result = this.inventory[registryName].ReduceToNonNegative(name, quantity);
 		if (result.success) await this.save();
 		return result;
@@ -224,7 +288,10 @@ export class Player {
 		}
 	}
 
-	public async InventorySubtract(inventoryName: TRegistered, gameCollection: Map<string, number>): Promise<{ code: number; failures: string[] }> {
+	public async InventorySubtract(
+		inventoryName: TRegistered,
+		gameCollection: Map<string, number>
+	): Promise<{ code: number; failures: string[] }> {
 		const result = this.inventory[inventoryName].SubtractCollection(gameCollection);
 		await this.save();
 		return result;
@@ -242,7 +309,10 @@ export class Player {
 	 * 3 - Not enough items <br />  \
 	 * 4 - Registry Not Found.
 	 */
-	public async AutoInventoryEdit(name: string, quantity: number): Promise<{ success: boolean; amount?: number; code: 1 | 2 | 3 | 4; error?: string }> {
+	public async AutoInventoryEdit(
+		name: string,
+		quantity: number
+	): Promise<{ success: boolean; amount?: number; code: 1 | 2 | 3 | 4; error?: string }> {
 		const Reg = Client.Get().Registry;
 
 		let result;
@@ -263,7 +333,9 @@ export class Player {
 	 * @param quantity the amount to change by (positive or negative)
 	 * @return codes: 1-Success, 2-Item Not Found, 3-Not enough items
 	 */
-	public async BatchAutoInventoryEdit(pairs: { name: string; quantity: number }[]): Promise<{ success: boolean; code: 1 | 2 | 3 }> {
+	public async BatchAutoInventoryEdit(
+		pairs: { name: string; quantity: number }[]
+	): Promise<{ success: boolean; code: 1 | 2 | 3 }> {
 		const ValidTest = this.BatchSufficientToDecrease(pairs);
 		if (!ValidTest.success) return { success: false, code: ValidTest.code };
 
@@ -278,7 +350,10 @@ export class Player {
 					if (quantity >= 0) {
 						intermediateResult = this.inventory[Player.InventoryTypes[i]].Increase(name, quantity);
 					} else {
-						intermediateResult = this.inventory[Player.InventoryTypes[i]].ReduceToNonNegative(name, Math.abs(quantity));
+						intermediateResult = this.inventory[Player.InventoryTypes[i]].ReduceToNonNegative(
+							name,
+							Math.abs(quantity)
+						);
 					}
 					if (intermediateResult.success == true) {
 						break;
@@ -299,7 +374,10 @@ export class Player {
 	 * @param ignoreInvalid Will not check for invalid names (i.e. they will be ignored. An invalid name will not cause a false return value).
 	 * @returns codes: 1-Success, 2-Item not found, 3-Not enough items
 	 */
-	private BatchSufficientToDecrease(pairs: { name: string; quantity: number }[], ignoreInvalid: boolean = false): { success: boolean; code: 1 | 2 | 3 } {
+	private BatchSufficientToDecrease(
+		pairs: { name: string; quantity: number }[],
+		ignoreInvalid: boolean = false
+	): { success: boolean; code: 1 | 2 | 3 } {
 		const Reg = Client.Get().Registry;
 		for (const pair of pairs) {
 			for (let i = 0; i < 4; i++) {
@@ -367,7 +445,8 @@ export class Player {
 	public async setShip(ship: Ship | string): Promise<void> {
 		if (typeof ship == "string") {
 			const candidate = Client.Reg.ResolveShipFromName(ship);
-			if (candidate == undefined) throw new TypeError(`Ship with name ${ship} does not exist in registry, despite trying to set it`);
+			if (candidate == undefined)
+				throw new TypeError(`Ship with name ${ship} does not exist in registry, despite trying to set it`);
 			ship = candidate;
 		}
 		const oldItems = this.ship.changeShip(ship);
@@ -399,22 +478,64 @@ export class Player {
 
 	//#endregion SHIP
 
+	//#region LOCATION
+
+	public get Location(): SpacemapNode {
+		let node: SpacemapNode | undefined;
+		if (typeof this.location == "string") node = Client.Reg.Spacemap.resolveNodeFromName(this.location);
+		return util.throwUndefined(node, "Player does not have location");
+	}
+
+	public travelTo(node: SpacemapNode): boolean {
+		if (!this.adjacentLocations().includes(node)) return false;
+		if (this.getShipWrapper().pollWarp(node.RequiredWarp)) {
+			this.location = node;
+			this.getShipWrapper().dispatch(GameEvent.WARP, { friend: this.ship, ws: node.RequiredWarp });
+			return true;
+		}
+		return false;
+	}
+
+	public adjacentLocations(): SpacemapNode[] {
+		return Client.Reg.Spacemap.getConnectedNodes(this.location);
+	}
+
+	//#endregion - location
+
 	public async save(): Promise<void> {
 		await PlayerModel.updateOne(
 			{ uId: this.uId },
-			{ uId: this.uId, inventory: this.inventory.GetGeneric(), ship: { name: this.ship.stringifyName(), equipped: this.ship.stringifyAttachments() }, skin: this.skin }
+			{
+				uId: this.uId,
+				inventory: this.inventory.GetGeneric(),
+				ship: { name: this.ship.stringifyName(), equipped: this.ship.stringifyAttachments() },
+				skin: this.skin,
+			}
 		);
 	}
 
 	public constructor(data: IPlayerDocument) {
 		this.uId = data.uId;
 		const Ship = Client.Reg.ResolveShipFromName(data.ship.name);
-		if (Ship == undefined) throw new Error(`Mismatch between database and server. No such item ${this.ship} exists despite existing in database for id ${this.uId}.`);
+		if (Ship == undefined)
+			throw new Error(
+				`Mismatch between database and server. No such item ${this.ship} exists despite existing in database for id ${this.uId}.`
+			);
 		this.ship = new ShipWrapper(Ship, this);
+		this.location = util.throwUndefined(
+			Client.Reg.Spacemap.resolveNodeFromName(data.location),
+			`Mismatch between database and server for location ${location}`
+		);
 		data.ship.equipped.forEach((attachmentName) => {
 			const result = this.ship.addAttachment(attachmentName);
-			if (result.code == 404) throw new Error(`Mismatch between database and server. No such item ${attachmentName} exists despite existing in database for id ${this.uId}.`);
-			if (result.code == 403) throw new Error(`Mismatch between database and server. Player '${this.uId}' has more items equipped in database than possible on ship.`);
+			if (result.code == 404)
+				throw new Error(
+					`Mismatch between database and server. No such item ${attachmentName} exists despite existing in database for id ${this.uId}.`
+				);
+			if (result.code == 403)
+				throw new Error(
+					`Mismatch between database and server. Player '${this.uId}' has more items equipped in database than possible on ship.`
+				);
 		});
 		this.skin = data.skin;
 		this.inventory = new InventoryBuilder()
@@ -428,6 +549,11 @@ export class Player {
 		this.inventory.Materials.Owner = this;
 	}
 
-	private static readonly RegistryTypes: RegistryNames[] = ["MaterialRegistry", "FactionRegistry", "AttachmentRegistry", "ShipRegistry"];
+	private static readonly RegistryTypes: RegistryNames[] = [
+		"MaterialRegistry",
+		"FactionRegistry",
+		"AttachmentRegistry",
+		"ShipRegistry",
+	];
 	private static readonly InventoryTypes: TRegistered[] = ["materials", "reputation", "attachments", "ships"];
 }

@@ -524,7 +524,7 @@ export class Player {
 		this.ship = new ShipWrapper(Ship, this);
 		this.location = util.throwUndefined(
 			Client.Reg.Spacemap.resolveNodeFromName(data.location),
-			`Mismatch between database and server for location ${location}`
+			`Mismatch between database and server for location ${data.location}`
 		);
 		data.ship.equipped.forEach((attachmentName) => {
 			const result = this.ship.addAttachment(attachmentName);

@@ -1,17 +1,14 @@
-import { GameAsset } from "../GameAsset";
+import { GameAsset, IGameAssetOptions, IStrengthOptions } from "../GameAsset";
 import { Blueprint } from "../Blueprint/Blueprint";
 import { Ship } from "../Ship/Ship";
 import { ShipWrapper } from "../Ship/ShipWrapper";
 import { MaterialCollection } from "../../GameCollections/MaterialCollection";
 import { Asteroid } from "../../GameMechanics/Asteroid";
+import { StrengthComparable } from "../AssetDecorators";
 
-export class Attachment extends GameAsset implements IBattleObserver, IPlayerObserver, IAttachment {
-	private techLevel: number;
-	public get TechLevel(): number {
-		return this.techLevel;
-	}
-
+export class Attachment extends GameAsset implements IBattleObserver, IPlayerObserver, IAttachment, StrengthComparable {
 	private type: AttachmentType;
+	private strength: number;
 
 	private onBattleStart?: BattleFunction;
 	private onBattlePreTurn?: BattleFunction;
@@ -27,7 +24,7 @@ export class Attachment extends GameAsset implements IBattleObserver, IPlayerObs
 	constructor(options: AttachmentOptions) {
 		super(options);
 		this.type = options.type;
-		this.techLevel = options.techLevel ?? 0;
+		this.strength = options.strength;
 
 		this.onBattleStart = options.onBattleStart;
 		this.onBattlePreTurn = options.onBattlePreTurn;
@@ -43,6 +40,10 @@ export class Attachment extends GameAsset implements IBattleObserver, IPlayerObs
 
 	public get Type(): AttachmentType {
 		return this.type;
+    }
+    
+	public get Strength(): number {
+		return this.strength;
 	}
 
 	public Triggers(): (BattleEvent | ShipEvent | MineEvent)[] {
@@ -152,13 +153,6 @@ export interface IAttachment extends IPlayerObserver, IBattleObserver {
 }
 
 export class AttachmentBuilder {
-	private name: string;
-	private description: string;
-	private cost?: number;
-	private blueprint?: Blueprint;
-	private techLevel?: number;
-	private type: AttachmentType;
-
 	private onBattleStart?: BattleFunction;
 	private onBattlePreTurn?: BattleFunction;
 	private onBattlePostTurn?: BattleFunction;
@@ -170,28 +164,14 @@ export class AttachmentBuilder {
 	private onMine?: MineFunction;
 	private onWarp?: ShipFunction;
 
-	public constructor({
-		name,
-		description,
-		techLevel,
-		type,
-	}: {
-		name: string;
-		description: string;
-		techLevel?: number;
-		type: AttachmentType;
-	}) {
-		this.name = name;
-		this.description = description;
-		this.techLevel = techLevel;
-		this.type = type;
-	}
+	public constructor(private readonly options: AttachmentOptions) {}
+
 	public EnableSellable(price: number): AttachmentBuilder {
-		this.cost = price;
+		this.options.cost = price;
 		return this;
 	}
 	public EnableBuildable(blueprint: Blueprint): AttachmentBuilder {
-		this.blueprint = blueprint;
+		this.options.blueprint = blueprint;
 		return this;
 	}
 	public BattleStartFn(fn: BattleFunction): AttachmentBuilder {
@@ -233,12 +213,13 @@ export class AttachmentBuilder {
 
 	public Build(): Attachment {
 		return new Attachment({
-			name: this.name,
-			description: this.description,
-			blueprint: this.blueprint,
-			cost: this.cost,
-			techLevel: this.techLevel,
-			type: this.type,
+			name: this.options.name,
+			description: this.options.description,
+			blueprint: this.options.blueprint,
+			cost: this.options.cost,
+			techLevel: this.options.techLevel,
+			type: this.options.type,
+			strength: this.options.strength,
 
 			onBattleStart: this.onBattleStart,
 			onBattlePreTurn: this.onBattlePreTurn,
@@ -254,12 +235,7 @@ export class AttachmentBuilder {
 	}
 }
 
-type AttachmentOptions = {
-	name: string;
-	cost?: number;
-	description: string;
-	techLevel?: number;
-	blueprint?: Blueprint;
+interface AttachmentOptions extends IGameAssetOptions, IStrengthOptions {
 	type: AttachmentType;
 
 	onBattleStart?: BattleFunction;
@@ -272,7 +248,7 @@ type AttachmentOptions = {
 	onUnequip?: ShipFunction;
 	onMine?: MineFunction;
 	onWarp?: ShipFunction;
-};
+}
 
 export type AttachmentReport = {
 	message: string;

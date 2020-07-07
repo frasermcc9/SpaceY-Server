@@ -104,8 +104,7 @@ export class Asteroid extends MaterialCollection {
 			max = mean + deviation,
 			min = mean - deviation > 0 ? mean - deviation : 0;
 		this.forEach((el, key) => {
-			const rnd = Math.random();
-			const NewAmount = el + Math.ceil(rnd * (max - min) - (max - min) / 2);
+			const NewAmount = el + Math.ceil(Math.random() * (max - min) - (max - min) / 2);
 			if (el != 0) this.set(key, NewAmount);
 		});
 	}

@@ -12,6 +12,11 @@ export class GameAsset implements IGameAsset {
 		return this.description;
 	}
 
+	private techLevel: number;
+	public get TechLevel(): number {
+		return this.techLevel;
+	}
+
 	private cost?: number;
 	public get Cost(): number | undefined {
 		return this.cost;
@@ -28,6 +33,7 @@ export class GameAsset implements IGameAsset {
 		this.description = gameAssetOptions.description;
 		this.cost = gameAssetOptions.cost;
 		this.blueprint = gameAssetOptions.blueprint;
+		this.techLevel = gameAssetOptions.techLevel;
 	}
 
 	public toString(): string {
@@ -41,18 +47,24 @@ export interface IGameAsset {
 }
 
 export interface Buildable {
-    Blueprint: IBlueprintInfo;
-    Build(player:Player): Promise<{ code: number; failures: string[] }>;
+	Blueprint: IBlueprintInfo;
+	Build(player: Player): Promise<{ code: number; failures: string[] }>;
 }
 
 export interface Sellable {
-	PriceData: ISellInfo; 
+	PriceData: ISellInfo;
 }
 
 export interface IGameAssetOptions {
+	/**The name of the asset */
 	name: string;
+	/**A description of the asset */
 	description: string;
+	/**The tech level of the asset */
+	techLevel: number;
+	/***Optional*: the price of the asset */
 	cost?: number;
+	/***Optional*: the blueprint to build the asset */
 	blueprint?: Blueprint;
 }
 
@@ -64,4 +76,8 @@ export interface ISellInfo {
 export interface IBlueprintInfo {
 	success: boolean;
 	blueprint?: Blueprint;
+}
+
+export interface IStrengthOptions {
+	strength: number;
 }

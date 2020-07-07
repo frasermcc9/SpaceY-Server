@@ -9,7 +9,7 @@ export class Blueprint extends MaterialCollection {
 		if (key) this.seed = util.hashCode(key);
 	}
 	public RandomNumber(): number {
-		return this.predictableRandom(0, 1);
+		return Math.abs(this.predictableRandom(0, 1));
 	}
 
 	private predictableRandom(min: number, max: number) {
@@ -41,5 +41,15 @@ export class BlueprintBuilder {
 		const bp = new Blueprint(new Map<string, number>(), key);
 		bp.GenerateCollection(options);
 		return bp;
+	}
+
+	public static SIMPLE_BUILD(val: number): IGenerationOptions {
+		return { value: val, rarity: true, minRarity: 0, maxRarity: 6, centralRarity: 3 };
+	}
+	public static MODERATE_BUILD(val: number): IGenerationOptions {
+		return { value: val, rarity: true, minRarity: 0, maxRarity: 8, centralRarity: 5 };
+	}
+	public static ADVANCED_BUILD(val: number): IGenerationOptions {
+		return { value: val, rarity: true, minRarity: 0, maxRarity: 10, centralRarity: 7 };
 	}
 }

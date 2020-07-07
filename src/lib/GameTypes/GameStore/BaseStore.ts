@@ -2,96 +2,226 @@ import { GameCollectionBase } from "../GameCollections/GameCollectionBase";
 import { MapCollection } from "../../Extensions/Collections";
 import { GameAsset } from "../GameAsset/GameAsset";
 import { Player } from "../GameAsset/Player/Player";
+import { SellableDecorator, IMarketForces } from "../GameAsset/AssetDecorators";
+import { Faction } from "../GameAsset/Faction/Faction";
+import { util } from "../../Util/util";
 
-export abstract class BaseStore extends GameCollectionBase {
-	public constructor(credits: number, type: StoreType) {
-		super();
-		this.credits = credits;
-		this.storeType = type;
-	}
-
-	protected storeType: StoreType;
-	public isStoreType(type: StoreType): boolean {
-		return this.storeType == type;
-	}
-
+export abstract class BaseStore implements IStoreUpdatable {
+	protected collection: GameCollectionBase;
 	protected credits: number;
 	public get Credits(): number {
 		return this.credits;
 	}
+	protected readonly storeType: StoreType;
+
+	protected readonly name: string;
+	protected readonly initCredits: number;
+
+	protected readonly marketForces: boolean;
+	protected marketForceSettings: IMarketForces = {
+		randEffect: 10,
+		hiTechEffect: 25,
+		loTechEffect: 15,
+	};
+	public set MarketForceSettings(options: { randEffect?: number; loTechEffect?: number; hiTechEffect?: number }) {
+		this.marketForceSettings.hiTechEffect = options.hiTechEffect ?? 25;
+		this.marketForceSettings.loTechEffect = options.loTechEffect ?? 15;
+		this.marketForceSettings.randEffect = options.randEffect ?? 10;
+	}
+
+	public constructor(collection: GameCollectionBase, options: BaseStoreOptions) {
+		this.collection = collection;
+
+		this.name = options.storeName;
+		this.credits = options.initialCredits;
+		this.initCredits = options.initialCredits;
+		this.storeType = options.type;
+		this.marketForces = options.marketForces ?? false;
+		this.marketForceSettings.territory = options.territory;
+	}
+
+	//#region Trading
+
 	/**
-	 * Adds the given data to this inventory. For a newly refreshed store, this is identical behaviour to SetInventory
-	 * @param data the inventory to add
+	 * Buys from the store, removing it from the store collection and into the
+	 * player.
+	 * @param TradeOptions type
+	 * @returns codes <br />  \
+	 * 200: Success<br />  \
+	 * 400: Invalid input, check quantity signs<br />  \
+	 * 404: Not found, no item could be found for the given name<br />  \
+	 * 405: Cannot buy item, the item provided cannot be bought<br />  \
+	 * 403: Not allowed, the store or player has insufficient resource<br />  \
+	 * 500: Unknown server error
 	 */
-	public AddToStore(data: Map<string, number>): void {
-		return this.SumCollection(data);
+	public async buyFromStore({ trader, item, quantity }: TradeOptions): Promise<TradeOutput> {
+		//Check valid quantity
+		if (quantity < 0) return { code: 400 };
+		//Check if material exists in game
+		if (this.collection.has(item) == undefined) return { code: 404 };
+		//Check if material is sellable, get cost per item
+		const cpi = this.getCostPerItem(item);
+		if (cpi == undefined) return { code: 405 };
+		//Check if this store has enough resources to sell
+		if (!this.collection.SufficientToDecrease(item, -quantity)) return { code: 403 };
+		//Check if the user has enough credits
+		if (trader.Credits < cpi * quantity) return { code: 403 };
+		const storeResult = this.collection.ReduceToNonNegative(item, quantity);
+		if (!storeResult.success) return { code: 500 };
+		trader.CreditsDecrement({ amount: cpi * quantity });
+		this.credits += cpi * quantity;
+		const m = await trader.MaterialIncrement(item, quantity);
+		return { itemAmount: m.amount, playerCredits: trader.Credits, code: 200 };
 	}
 	/**
-	 * Clears the inventory, then sets it to the given data.
+	 * Sells from the store, removing it from the player into the store.
+	 * @param TradeOptions type
+	 * @returns codes <br />  \
+	 * 200: Success<br />  \
+	 * 400: Invalid input, check quantity signs<br />  \
+	 * 404: Not found, no item could be found for the given name<br />  \
+	 * 405: Cannot buy item, the item provided cannot be bought<br />  \
+	 * 403: Not allowed, the store or player has insufficient resource<br />  \
+	 * 500: Unknown server error
+	 */
+	public async sellToStore({ trader, item, quantity }: TradeOptions): Promise<TradeOutput> {
+		if (quantity < 0) return { code: 400 };
+		if (this.collection.has(item) == undefined) return { code: 404 };
+		const cpi = this.getCostPerItem(item);
+		if (cpi == undefined) return { code: 405 };
+		//Check if the player and store can afford to sell
+		const inPlayerInventory = trader.AutoInventoryRetrieve(item).amount;
+		if (inPlayerInventory == undefined) return { code: 500 };
+		if (inPlayerInventory < quantity) return { code: 403 };
+		if (this.credits < cpi * quantity) return { code: 403 };
+
+		this.credits -= cpi * quantity;
+		this.collection.Increase(item, quantity);
+		trader.CreditsIncrement({ amount: cpi * quantity });
+		const playerNew = (await trader.AutoInventoryEdit(item, -quantity)).amount;
+		if (playerNew == undefined) return { code: 500 };
+		return { itemAmount: playerNew, playerCredits: trader.Credits, code: 200 };
+	}
+
+	/**
+	 * Sells from the store, removing it from the player into the store. **Will
+	 * execute even if the store has insufficient credits to buy. The player
+	 * will only be compensated for the credits held by the store.**
+	 * @param TradeOptions type
+	 * @returns codes <br />  \
+	 * 200: Success<br />  \
+	 * 400: Invalid input, check quantity signs<br />  \
+	 * 404: Not found, no item could be found for the given name<br />  \
+	 * 405: Cannot buy item, the item provided cannot be bought<br />  \
+	 * 403: Not allowed, the store or player has insufficient resource<br />  \
+	 * 500: Unknown server error
+	 */
+	public async sellToStoreForce({ trader, item, quantity }: TradeOptions): Promise<TradeOutput> {
+		if (quantity < 0) return { code: 400 };
+		if (this.collection.has(item) == undefined) return { code: 404 };
+
+		const cpi = this.getCostPerItem(item);
+		if (cpi == undefined) return { code: 405 };
+
+		//Check if the player and store can afford to sell
+		const inPlayerInventory = trader.AutoInventoryRetrieve(item).amount;
+		if (inPlayerInventory == undefined) return { code: 500 };
+		if (inPlayerInventory < quantity) return { code: 403 };
+		let storeCreditsToSpend = cpi * quantity;
+		if (this.credits < storeCreditsToSpend) storeCreditsToSpend = this.credits;
+
+		this.credits -= storeCreditsToSpend;
+		this.collection.Increase(item, quantity);
+		trader.CreditsIncrement({ amount: storeCreditsToSpend });
+		const playerNew = (await trader.AutoInventoryEdit(item, -quantity)).amount;
+		if (playerNew == undefined) return { code: 500 };
+		return { itemAmount: playerNew, playerCredits: trader.Credits, code: 200 };
+	}
+
+	public getCostPerItem(item: string): number | undefined {
+		if (this.marketForces) {
+			return new SellableDecorator(item).fluctuatingPriceData(this.marketForceSettings).cost;
+		}
+		return new SellableDecorator(item).PriceData.cost;
+	}
+
+	//#endregion - Trading
+
+	public getCollectionValue(): number {
+		return this.collection.GetCollectionValue();
+	}
+	/**@deprecated */
+	public GetCollectionValue(): number {
+		return this.getCollectionValue();
+	}
+	public get StoreItems(): MapCollection<string, number> {
+		return new MapCollection(this.collection);
+	}
+	public get StoreItemCosts(): MapCollection<string, number> {
+		const output = new MapCollection<string, number>();
+		this.collection.forEach((_, item) => {
+			output.set(item, util.throwUndefined(this.getCostPerItem(item)));
+		});
+		return output;
+	}
+
+	public isType(type: StoreType) {
+		return type == this.storeType;
+	}
+
+	//Refresh the store with new stock
+	public abstract update(): void;
+	public Update(): void {
+		this.update();
+	}
+
+	public abstract generateInventory(): void;
+	/**
+	 * Clears the current inventory, and sets it to what is given in the input parameter.
 	 * @param data
 	 */
-	public SetStore(data: Map<string, number>): void {
-		this.clear();
-		return this.SumCollection(data);
+	public setInventory(data: Map<string, number>): void {
+		this.collection.forEach((_el, key) => this.collection.set(key, 0));
+		return this.collection.StrictSumCollection(data);
 	}
 
-	public async Buy({
-		buyer,
-		item,
-		quantity,
-	}: {
-		buyer: Player;
-		item: string;
-		quantity: number;
-	}): Promise<IBuyResult> {
-		//Check valid quantity
-		if (quantity < 0) return { success: false, amount: 0, code: 6, error: "Negative quantity" };
-		//Check if material exists in game
-		const Item = this.GetItem(item);
-		if (Item == undefined) return { success: false, amount: 0, code: 2, error: "Item not found" };
-		//Check if material is sellable, get cost per item
-		const cpi = this.GetCostOfItem(Item);
-		if (cpi == undefined) return { success: false, amount: 0, code: 5, error: "Invalid item" };
-		//Check if this store has enough resources to sell
-		if (!this.SufficientToDecrease(item, -quantity))
-			return { success: false, amount: 0, code: 3, error: "Insufficient amount of item at store" };
-		//Check if the user has enough credits
-		if (buyer.Credits < cpi * quantity)
-			return { success: false, amount: 0, code: 4, error: "Insufficient credits owned by player" };
-		const storeResult = this.ReduceToNonNegative(item, quantity);
-		if (!storeResult.success) return { success: false, amount: 0, code: 7, error: "Unknown error occurred." };
-		buyer.CreditsDecrement({ amount: cpi * quantity });
-		this.credits += cpi * quantity;
-		const m = await buyer.MaterialIncrement(item, quantity);
-		return { success: true, amount: m.amount, code: 1 };
-	}
-
-	/**
-	 * Abstract step for the Buy() method.
-	 * @param itemName string name of the item
-	 */
-	public abstract GetItem(itemName: string): GameAsset | undefined;
-	public abstract GetCostOfItem(item: GameAsset): number | undefined;
-
-	public abstract GenerateInventory(): void;
-
-	public abstract Sell(): void;
-	public abstract Update(): void;
-
-	public abstract displayName(): string;
 	public identity(): string {
-		return `${this.storeName}: ${this.displayName()}`;
-	}
-	private storeName?: string;
-	public set StoreName(name: string) {
-		this.storeName = name;
+		return `${this.name}`;
 	}
 }
-export interface IBuyResult {
-	success: boolean;
-	amount: number;
-	code: 1 | 2 | 3 | 4 | 5 | 6 | 7;
-	error?: string | undefined;
+
+type TradeOutput = {
+	/**The number of credits the player has */
+	playerCredits?: number;
+	/**The quantity of the item the player now has */
+	itemAmount?: number;
+	/**The code of the output */
+	code: 200 | 400 | 404 | 405 | 403 | 500;
+};
+type TradeOptions = {
+	/**The player trading */
+	trader: Player;
+	/**The name of the item to be traded */
+	item: string;
+	/**The amount to be traded */
+	quantity: number;
+};
+export type BaseStoreOptions = {
+	/**Name of the store (for displays) */
+	storeName: string;
+	/**The default number of credits*/
+	initialCredits: number;
+	/**The type of the store */
+	type: StoreType;
+	/**Whether to enable *market forces*, fluctuations to prices based on tech
+	 * level and randomness */
+	marketForces?: boolean;
+	/**The faction that has this store */
+	territory: Faction;
+};
+
+export interface IStoreUpdatable {
+	update(): void;
 }
 
 export enum StoreType {

@@ -5,6 +5,8 @@ import { Material } from "../GameTypes/GameAsset//Material/Material";
 import { MapCollection } from "../Extensions/Collections";
 import { GameAsset } from "../GameTypes/GameAsset/GameAsset";
 import { BlueprintBuilder } from "../GameTypes/GameAsset/Blueprint/Blueprint";
+import { Spacemap } from "../GameTypes/GameSpacemap/Spacemap";
+import { util } from "../Util/util";
 
 export class Registry {
 	public constructor(copyReg?: Registry) {
@@ -17,12 +19,32 @@ export class Registry {
 		this.RegisterShips({ ships: [BlankShip] });
 		this.defaultShip = BlankShip;
 	}
-	private maxRarity: number = 1;
+	private maxRarity: number = 10;
 	public get MaxRarity() {
 		return this.maxRarity;
 	}
 	public set MaxRarity(v: number) {
 		this.maxRarity = v;
+	}
+	private maxTechLevel: number = 10;
+	public get MaxTech() {
+		return this.maxTechLevel;
+	}
+	public set MaxTech(v: number) {
+		this.maxTechLevel = v;
+	}
+
+	//#region - Spacemap
+
+	private spacemap?: Spacemap;
+	public get Spacemap() {
+		return util.throwUndefined(
+			this.spacemap,
+			"The spacemap has not been registered. Register a spacemap with registerSpacemap."
+		);
+	}
+	public registerSpacemap(spacemap: Spacemap) {
+		this.spacemap = spacemap;
 	}
 
 	//#region - Defaults
@@ -182,13 +204,16 @@ interface IMaterials {
 	materials: Material[];
 }
 
-const BlankShip = new ShipBuilder({ name: "Default Ship", description: "There is no default ship" })
-	.EnableSell(15000)
-	.SetStats({ baseShield: 15, baseCargo: 100, baseEnergy: [3, 5, 1], baseHandling: 1, baseHp: 50 })
-	.SetWeapons({ generalCap: 1, heavyCap: 0, minerCap: 1, primaryCap: 1, shieldCap: 0 })
-	.SetSubclass("Scrap Ship")
-	.SetTechLevel(1)
-	.SetImageUri("No Image")
-	.Build();
+const BlankShip = new ShipBuilder({
+    name: "Recovered Shuttle",
+    description:
+        "A small recovered shuttle that was found crashed on some planet. Not worth much but it can fly... a bit.",
+    techLevel: 0,
+})
+    .SetStats({ baseHp: 35, baseShield: 8, baseEnergy: [2, 2, 6], baseCargo: 30, baseHandling: 4 })
+    .SetWeapons({ primaryCap: 0, shieldCap: 0, heavyCap: 1, minerCap: 0, generalCap: 1 })
+    .EnableSell(59000)
+    .SetMisc({ uri: "", subclass: "Shuttle" })
+    .Build();
 
 export type RegistryNames = "AttachmentRegistry" | "FactionRegistry" | "MaterialRegistry" | "ShipRegistry";

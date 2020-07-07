@@ -19,6 +19,15 @@ export class util {
 		return min + rnd * (max - min);
 	}
 
+	private static currentSeed = 0;
+	public static *seededGenerator(seed?: number) {
+		for (;;) {
+			if (seed != undefined) util.currentSeed = seed;
+			util.currentSeed = (util.currentSeed * 9301 + 49297) % 233280;
+			yield util.currentSeed / 233280;
+		}
+	}
+
 	/**
 	 * Generates a random number between min and max (inclusive)
 	 * @param min minimum number
@@ -45,5 +54,10 @@ export class util {
 			index: i,
 		};
 		return a;
+	}
+
+	public static throwUndefined<K>(variable: K | undefined, message?: string): K {
+		if (variable == undefined) throw new Error(message ?? `Variable ${variable} is undefined`);
+		return variable;
 	}
 }

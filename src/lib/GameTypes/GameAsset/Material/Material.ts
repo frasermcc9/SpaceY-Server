@@ -2,14 +2,14 @@ import { GameAsset, IGameAssetOptions, IGameAsset } from "../GameAsset";
 import { Blueprint } from "../Blueprint/Blueprint";
 
 export class Material extends GameAsset implements IMaterial {
-	private mineable: boolean = false;
+	private mineable: boolean;
 	private rarity: number;
 
 	public constructor(materialOptions: IMaterialOptions) {
-		super({ name: materialOptions.name, description: materialOptions.description, cost: materialOptions.cost, blueprint: materialOptions.blueprint });
+		super(materialOptions);
 
-		this.mineable = materialOptions.mineable;
-        this.rarity = materialOptions.rarity || 1;
+		this.mineable = materialOptions.mineable ?? false;
+		this.rarity = materialOptions.rarity || 1;
 	}
 
 	public IsMineable(): boolean {
@@ -26,52 +26,40 @@ export interface IMaterial extends IGameAsset {
 }
 
 export class MaterialBuilder {
-	private name: string;
-	private description: string;
-	private cost?: number;
-	private blueprint?: Blueprint;
+	public constructor(private readonly options: IMaterialOptions) {}
 
-	private mineable: boolean = false;
-	private rarity?: number;
-
-	public constructor({ name, description }: { name: string; description: string }) {
-		this.name = name;
-		this.description = description;
-	}
 	public EnableSell(price: number): MaterialBuilder {
-		this.cost = price;
+		this.options.cost = price;
 		return this;
 	}
 	public EnableBuild(blueprint: Blueprint): MaterialBuilder {
-		this.blueprint = blueprint;
+		this.options.blueprint = blueprint;
 		return this;
 	}
 	public EnableMine(): MaterialBuilder {
-		this.mineable = true;
+		this.options.mineable = true;
 		return this;
 	}
 	public SetRarity(level: number): MaterialBuilder {
-		this.rarity = level;
+		this.options.rarity = level;
 		return this;
 	}
 	public Build(): Material {
 		return new Material({
-			description: this.description,
-			mineable: this.mineable,
-			name: this.name,
-			rarity: this.rarity,
-			blueprint: this.blueprint,
-			cost: this.cost,
+			description: this.options.description,
+			mineable: this.options.mineable,
+			name: this.options.name,
+			techLevel: this.options.techLevel,
+			rarity: this.options.rarity,
+			blueprint: this.options.blueprint,
+			cost: this.options.cost,
 		});
 	}
 }
 
 interface IMaterialOptions extends IGameAssetOptions {
-	mineable: boolean;
+    /**If the material can be mined. Default: false */
+    mineable?: boolean;
+    /**The rarity of the material. Default: 1 */
 	rarity?: number;
-
-	name: string;
-	description: string;
-	cost?: number;
-	blueprint?: Blueprint;
 }

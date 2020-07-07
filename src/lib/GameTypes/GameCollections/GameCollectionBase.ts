@@ -11,13 +11,21 @@ export abstract class GameCollectionBase extends MapCollection<string, number> {
 	 * @returns codes: 1-Success, 2-Item Not Found, 3-Not Enough Resources
 	 */
 	public ReduceToNonNegative(itemName: string, quantity: number): ReduceToNonNegativeOutput {
-		if (quantity < 0) throw new TypeError("A negative number has been passed when " + this.ReduceToNonNegative.name + " was called");
+		if (quantity < 0)
+			throw new TypeError(
+				"A negative number has been passed when " + this.ReduceToNonNegative.name + " was called"
+			);
 		const amountOwned = this.get(itemName);
 		if (amountOwned == undefined) {
 			return { success: false, code: 2, error: "The given item could not be found.", amount: 0 };
 		}
 		if (amountOwned < quantity) {
-			return { success: false, code: 3, error: "The user has an insufficient amount of this item.", amount: amountOwned };
+			return {
+				success: false,
+				code: 3,
+				error: "The user has an insufficient amount of this item.",
+				amount: amountOwned,
+			};
 		}
 		this.set(itemName, amountOwned - quantity);
 		return { success: true, code: 1, amount: amountOwned - quantity };
@@ -30,7 +38,8 @@ export abstract class GameCollectionBase extends MapCollection<string, number> {
 	 * @returns codes: 1-Success, 2-Item Not Found
 	 */
 	public Increase(itemName: string, quantity: number): IncreaseOutput {
-		if (quantity < 0) throw new TypeError("A negative number has been passed when " + this.Increase.name + " was called");
+		if (quantity < 0)
+			throw new TypeError("A negative number has been passed when " + this.Increase.name + " was called");
 		const amountOwned = this.get(itemName);
 		if (amountOwned == undefined) {
 			return { success: false, code: 2, error: "The given item could not be found.", amount: 0 };
@@ -65,7 +74,8 @@ export abstract class GameCollectionBase extends MapCollection<string, number> {
 	public StrictSumCollection(gameCollection: Map<string, number> | Array<string>): void {
 		if (Array.isArray(gameCollection)) {
 			gameCollection.forEach((el) => {
-				if (this.get(el) == undefined) throw new Error(`Item with name ${el} does not exist when used in StrictSumCollection function.`);
+				if (this.get(el) == undefined)
+					throw new Error(`Item with name ${el} does not exist when used in StrictSumCollection function.`);
 			});
 			gameCollection.forEach((el) => {
 				const StartValue = this.get(el)!;
@@ -75,7 +85,8 @@ export abstract class GameCollectionBase extends MapCollection<string, number> {
 		}
 		gameCollection.forEach((val, key) => {
 			if (val < 0) throw new Error(`Negative number '${val}' used in SumCollection function.`);
-			if (this.get(key) == undefined) throw new Error(`Item with name ${key} does not exist when used in StrictSumCollection function.`);
+			if (this.get(key) == undefined)
+				throw new Error(`Item with name ${key} does not exist when used in StrictSumCollection function.`);
 		});
 		gameCollection.forEach((val, key) => {
 			const StartValue = this.get(key)!;
@@ -109,7 +120,8 @@ export abstract class GameCollectionBase extends MapCollection<string, number> {
 		const Failed: string[] = new Array();
 		gameCollection.forEach((val, key) => {
 			if (val < 0) throw new Error(`Negative number '${val}' used in SubtractCollection function for ${key}.`);
-			if (this.get(key) == undefined) throw new Error(`Item with name ${key} does not exist when used in SumCollection function.`);
+			if (this.get(key) == undefined)
+				throw new Error(`Item with name ${key} does not exist when used in SumCollection function.`);
 			if (this.get(key)! < val) Failed.push(key);
 		});
 		if (Failed.length > 0) return { code: 403, failures: Failed };
@@ -181,18 +193,21 @@ export abstract class GameCollectionBase extends MapCollection<string, number> {
 	 * Generate a random collection for this class. Template method.
 	 */
 	public GenerateCollection(options: IGenerationOptions): GameCollectionBase {
-		let intermediatePrice = 0;
+		let intermediatePrice = this.GetCollectionValue();
 		const CompatibleItems = this.GetCompatibleItems(options.minRarity, options.maxRarity);
 		const ItemNames = CompatibleItems.array();
 		const Weights = this.GenerateWeights(ItemNames, options.centralRarity, options.minRarity, options.maxRarity);
 		let FlatArray = new Array<GameAsset>();
 		//Generates the flat array of probabilities. See benchmarks for why this method was used
-		if (options.rarity) for (let i = 0; i < ItemNames.length; ++i) for (let j = 0; j < Weights[i]; ++j) FlatArray.push(ItemNames[i]);
+		if (options.rarity)
+			for (let i = 0; i < ItemNames.length; ++i)
+				for (let j = 0; j < Weights[i]; ++j) FlatArray.push(ItemNames[i]);
 		else FlatArray = CompatibleItems.array();
 		//Generate the collection
 		do {
 			const Selected = FlatArray[~~(this.RandomNumber() * FlatArray.length)];
 			const Material = new SellableDecorator(Selected);
+
 			const ExistingAmount = this.get(Selected.Name) ?? 0;
 			this.set(Selected.Name, ExistingAmount + 1);
 			intermediatePrice += Material.PriceData.cost ?? 0;
@@ -220,7 +235,12 @@ export abstract class GameCollectionBase extends MapCollection<string, number> {
 	 * @returns should return an array with the weights of each GameAsset, such that the weight
 	 *          of a GameAsset at position *i* is in position *i* of the returned array.
 	 */
-	public abstract GenerateWeights(items: GameAsset[], centralRarity: number, minRarity: number, maxRarity: number): number[];
+	public abstract GenerateWeights(
+		items: GameAsset[],
+		centralRarity: number,
+		minRarity: number,
+		maxRarity: number
+	): number[];
 	/**
 	 * Optional method for GenerateCollection. Can be overridden if different behaviour is desired
 	 */

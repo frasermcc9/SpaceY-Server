@@ -41,7 +41,7 @@ export class Attachment extends GameAsset implements IAttachment, StrengthCompar
 		return Catalysts;
 	}
 
-    public dispatch(event: GameEvent.BATTLE_END, friend: ShipWrapper, enemy: ShipWrapper): AttachmentReport[] | undefined;
+	public dispatch(event: GameEvent.BATTLE_END, friend: ShipWrapper, enemy: ShipWrapper): AttachmentReport[] | undefined;
 	public dispatch(event: GameEvent.BATTLE_INVOKED, friend: ShipWrapper, enemy: ShipWrapper): AttachmentReport[] | undefined;
 	public dispatch(event: GameEvent.BATTLE_POST_TURN, friend: ShipWrapper, enemy: ShipWrapper): AttachmentReport[] | undefined;
 	public dispatch(event: GameEvent.BATTLE_PRE_TURN, friend: ShipWrapper, enemy: ShipWrapper): AttachmentReport[] | undefined;
@@ -50,7 +50,7 @@ export class Attachment extends GameAsset implements IAttachment, StrengthCompar
 	public dispatch(event: GameEvent.MINE, asteroid: Asteroid): AttachmentReport[] | undefined;
 	public dispatch(event: GameEvent.UNEQUIP, friend: ShipWrapper): AttachmentReport[] | undefined;
 	public dispatch(event: GameEvent.WARP, friend: ShipWrapper, ws: number): AttachmentReport[] | undefined;
-    public dispatch(event: GameEvent.WARP_POLL, friend: ShipWrapper, ws: number): AttachmentReport[] | undefined;
+	public dispatch(event: GameEvent.WARP_POLL, friend: ShipWrapper, ws: number): AttachmentReport[] | undefined;
 	public dispatch(
 		event: GameEvent.BATTLE_DAMAGE_TAKEN,
 		f: ShipWrapper,
@@ -67,37 +67,49 @@ export class Attachment extends GameAsset implements IAttachment, StrengthCompar
 							args as [ShipWrapper, ShipWrapper, number]
 						) as AttachmentReport,
 					];
+				break;
 			case GameEvent.BATTLE_END:
 				if (this.functions.onBattleEnd)
 					return [this.functions.onBattleEnd.apply(this, args as [ShipWrapper, ShipWrapper]) as AttachmentReport];
+				break;
 			case GameEvent.BATTLE_INVOKED:
 				if (this.functions.onBattleInvoked)
 					return [this.functions.onBattleInvoked.apply(this, args as [ShipWrapper, ShipWrapper]) as AttachmentReport];
+				break;
 			case GameEvent.BATTLE_POST_TURN:
 				if (this.functions.onBattlePostTurn)
 					return [
 						this.functions.onBattlePostTurn.apply(this, args as [ShipWrapper, ShipWrapper]) as AttachmentReport,
 					];
+				break;
 			case GameEvent.BATTLE_PRE_TURN:
 				if (this.functions.onBattlePreTurn)
 					return [this.functions.onBattlePreTurn.apply(this, args as [ShipWrapper, ShipWrapper]) as AttachmentReport];
+				break;
 			case GameEvent.BATTLE_START:
 				if (this.functions.onBattleStart)
 					return [this.functions.onBattleStart.apply(this, args as [ShipWrapper, ShipWrapper]) as AttachmentReport];
+				break;
 			case GameEvent.EQUIP:
-				if (this.functions.onEquip)
+				if (this.functions.onEquip) {
 					return [this.functions.onEquip.apply(this, args as [ShipWrapper]) as AttachmentReport];
+				}
+				break;
 			case GameEvent.UNEQUIP:
 				if (this.functions.onUnequip)
 					return [this.functions.onUnequip.apply(this, args as [ShipWrapper]) as AttachmentReport];
+				break;
 			case GameEvent.MINE:
 				if (this.functions.onMine) return [this.functions.onMine.apply(this, args as [Asteroid]) as AttachmentReport];
+				break;
 			case GameEvent.WARP:
 				if (this.functions.onWarp)
 					return [this.functions.onWarp.apply(this, args as [ShipWrapper, number]) as AttachmentReport];
+				break;
 			case GameEvent.WARP_POLL:
 				if (this.functions.onWarpPoll)
 					return [this.functions.onWarpPoll.apply(this, args as [ShipWrapper, number]) as AttachmentReport];
+				break;
 		}
 	}
 }
@@ -108,7 +120,7 @@ export interface IAttachment {
 }
 
 export class AttachmentBuilder {
-	public constructor(private readonly options: AttachmentOptions, private readonly functions: AttachmentFunctions) {}
+	public constructor(private readonly options: AttachmentOptions, private readonly functions: AttachmentFunctions = {}) {}
 
 	public EnableSellable(price: number): AttachmentBuilder {
 		this.options.cost = price;

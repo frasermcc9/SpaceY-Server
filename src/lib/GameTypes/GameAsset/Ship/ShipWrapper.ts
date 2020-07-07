@@ -146,8 +146,8 @@ export class ShipWrapper {
 	public dispatch(event: GameEvent.EQUIP, { friend }: IOnePlayerDispatch): AttachmentReport[] | undefined;
 	public dispatch(event: GameEvent.MINE, { asteroid }: IAsteroidDispatch): AttachmentReport[] | undefined;
 	public dispatch(event: GameEvent.UNEQUIP, { friend }: IOnePlayerDispatch): AttachmentReport[] | undefined;
-    public dispatch(event: GameEvent.WARP_POLL, { friend, ws }: IWarpDispatch): AttachmentReport[] | undefined;
-    public dispatch(event: GameEvent.WARP, { friend, ws }: IWarpDispatch): AttachmentReport[] | undefined;
+	public dispatch(event: GameEvent.WARP_POLL, { friend, ws }: IWarpDispatch): AttachmentReport[] | undefined;
+	public dispatch(event: GameEvent.WARP, { friend, ws }: IWarpDispatch): AttachmentReport[] | undefined;
 	public dispatch(event: GameEvent, { friend, enemy, asteroid, dmg, ws }: IFullDispatch): AttachmentReport[] {
 		const reports: AttachmentReport[] = [];
 		let report;

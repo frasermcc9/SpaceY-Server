@@ -1,6 +1,7 @@
 import { MaterialCollection, IMaterialCollectionOptions } from "../GameCollections/MaterialCollection";
 import { Player } from "../GameAsset/Player/Player";
 import { Client } from "../../Client/Client";
+import { GameEvent } from "../GameAsset/Attachment/Attachment";
 
 export class Asteroid extends MaterialCollection {
 	private cooldown: number;
@@ -62,7 +63,7 @@ export class Asteroid extends MaterialCollection {
 		//apply probabilities
 		if (percent != undefined) this.applyDeviation(percent);
 		//apply mining laser
-		player.getShipWrapper().fireMineEvent(this);
+		player.getShipWrapper().dispatch(GameEvent.MINE, { asteroid: this });
 		//set cooldown
 		this.cooldownManager(player, this.cooldown);
 		//add to player

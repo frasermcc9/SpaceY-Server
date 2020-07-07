@@ -42,9 +42,7 @@ export class Spacemap implements ISpacemap, ISpacemapPrivileged {
 			node = node.Name;
 		}
 		if (!this.registry.has(node))
-			throw new TypeError(
-				`Nodes: ${node} does not exist, cannot get connected nodes of node that does not exist.`
-			);
+			throw new TypeError(`Nodes: ${node} does not exist, cannot get connected nodes of node that does not exist.`);
 		const nodes = this.graph.get(node)!;
 		const output: SpacemapNode[] = [];
 		nodes.forEach((val) => output.push(this.registry.get(val)!));

@@ -8,7 +8,6 @@ import {
 	AttachmentBuilder,
 	AttachmentType,
 	AttachmentReport,
-	MineEvent,
 } from "../lib/GameTypes/GameAsset/Attachment/Attachment";
 import { ShipWrapper } from "../lib/GameTypes/GameAsset/Ship/ShipWrapper";
 import { Asteroid } from "../lib/GameTypes/GameMechanics/Asteroid";
@@ -116,17 +115,17 @@ export function GENERATED_FACTIONS() {
 export function GENERATED_ATTACHMENTS() {
 	const PlatingEquip: (friendly: ShipWrapper) => AttachmentReport = (friendly) => {
 		friendly.incrementStatistics({ hp: 20 });
-		return { message: `New Health: ${friendly.ShipStatistics.totalHp}` };
+		return { message: `New Health: ${friendly.ShipStatistics.totalHp}`, success: true };
 	};
 	const PlatingUnequip: (friendly: ShipWrapper) => AttachmentReport = (friendly) => {
 		friendly.decrementStatistics({ hp: 20 });
-		return { message: `New Health: ${friendly.ShipStatistics.totalHp}` };
+		return { message: `New Health: ${friendly.ShipStatistics.totalHp}`, success: true };
 	};
 	const LaserMine: (inputCollection: Asteroid) => AttachmentReport = (asteroid) => {
 		asteroid.forEach((val, key) => {
 			asteroid.set(key, val * 2);
 		});
-		return { message: "Success" };
+		return { message: "Success", success: true };
 	};
 	return [
 		new AttachmentBuilder({
@@ -134,24 +133,28 @@ export function GENERATED_ATTACHMENTS() {
 			description: "Standard issue blaster",
 			type: AttachmentType.PRIMARY,
 			techLevel: 2,
+			strength: 20,
 		}).Build(),
 		new AttachmentBuilder({
 			name: "Space Sword",
 			description: "Not very practical",
 			type: AttachmentType.HEAVY,
 			techLevel: 1,
+			strength: 20,
 		}).Build(),
 		new AttachmentBuilder({
 			name: "Obliterator",
 			description: "This one will hurt",
 			type: AttachmentType.HEAVY,
 			techLevel: 6,
+			strength: 20,
 		}).Build(),
 		new AttachmentBuilder({
 			name: "Iron Plating",
 			description: "Tough metal",
 			techLevel: 2,
 			type: AttachmentType.GENERAL,
+			strength: 20,
 		})
 			.EquipFn(PlatingEquip)
 			.UnequipFn(PlatingUnequip)
@@ -161,6 +164,7 @@ export function GENERATED_ATTACHMENTS() {
 			description: "The pinnacle of mining technology",
 			type: AttachmentType.MINER,
 			techLevel: 8,
+			strength: 20,
 		})
 			.MineFn(LaserMine)
 			.Build(),
@@ -278,9 +282,7 @@ export function generateIntegrationSet() {
 		.SetStats({ baseHp: 250, baseShield: 90, baseEnergy: [28, 20, 18], baseCargo: 850, baseHandling: 8 })
 		.SetWeapons({ primaryCap: 2, shieldCap: 2, heavyCap: 4, minerCap: 1, generalCap: 4 })
 		.EnableSell(2121000)
-		.EnableBuildable(
-			new BlueprintBuilder().DefinedBuild(BlueprintBuilder.MODERATE_BUILD(1821000), "Quargic Cruiser")
-		)
+		.EnableBuildable(new BlueprintBuilder().DefinedBuild(BlueprintBuilder.MODERATE_BUILD(1821000), "Quargic Cruiser"))
 		.SetMisc({ uri: "", subclass: "Light Cruiser" })
 		.Build();
 	const S4 = new ShipBuilder({
@@ -291,9 +293,7 @@ export function generateIntegrationSet() {
 		.SetStats({ baseHp: 340, baseShield: 195, baseEnergy: [28, 24, 26], baseCargo: 1400, baseHandling: 8 })
 		.SetWeapons({ primaryCap: 2, shieldCap: 2, heavyCap: 5, minerCap: 1, generalCap: 5 })
 		.EnableSell(3307000)
-		.EnableBuildable(
-			new BlueprintBuilder().DefinedBuild(BlueprintBuilder.MODERATE_BUILD(2607000), "Ty'Linic Crawler")
-		)
+		.EnableBuildable(new BlueprintBuilder().DefinedBuild(BlueprintBuilder.MODERATE_BUILD(2607000), "Ty'Linic Crawler"))
 		.SetMisc({ uri: "", subclass: "Heavy Cruiser" })
 		.Build();
 	const S5 = new ShipBuilder({
@@ -305,9 +305,7 @@ export function generateIntegrationSet() {
 		.SetStats({ baseHp: 290, baseShield: 480, baseEnergy: [32, 28, 29], baseCargo: 1280, baseHandling: 6 })
 		.SetWeapons({ primaryCap: 3, shieldCap: 3, heavyCap: 5, minerCap: 1, generalCap: 4 })
 		.EnableSell(5134000)
-		.EnableBuildable(
-			new BlueprintBuilder().DefinedBuild(BlueprintBuilder.ADVANCED_BUILD(280000), "Asarin Enforcer")
-		)
+		.EnableBuildable(new BlueprintBuilder().DefinedBuild(BlueprintBuilder.ADVANCED_BUILD(280000), "Asarin Enforcer"))
 		.SetMisc({ uri: "", subclass: "Dreadnought" })
 		.Build();
 	const S6 = new ShipBuilder({

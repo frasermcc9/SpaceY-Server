@@ -92,7 +92,7 @@ export class Registry {
 	public get DefaultLocation(): SpacemapNode {
 		return util.throwUndefined(this.defaultLocation);
 	}
-	public registerDefaultLocation(node: SpacemapNode): void {
+	public set DefaultLocation(node: SpacemapNode) {
 		this.defaultLocation = node;
 	}
 

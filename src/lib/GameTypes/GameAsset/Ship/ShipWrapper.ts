@@ -1,8 +1,8 @@
-import { Ship, IShip } from "./Ship";
-import { Attachment, AttachmentType, BattleEvent, ShipEvent, AttachmentReport } from "../Attachment/Attachment";
-import { Player } from "../Player/Player";
 import { Client } from "../../../Client/Client";
 import { Asteroid } from "../../GameMechanics/Asteroid";
+import { Attachment, AttachmentReport, AttachmentType, GameEvent } from "../Attachment/Attachment";
+import { Player } from "../Player/Player";
+import { Ship } from "./Ship";
 
 export class ShipWrapper {
 	private ship: Ship;
@@ -116,7 +116,7 @@ export class ShipWrapper {
 		if (NumEquipped >= MaxEquipped) return { code: 403 };
 		this.Slots.set(Type, NumEquipped + 1);
 		this.attachments.push(attachment);
-		attachment.NonBattleUpdate(ShipEvent.EQUIP, { friendly: this });
+		attachment.dispatch(GameEvent.EQUIP, this);
 		return { code: 200 };
 	}
 
@@ -130,35 +130,84 @@ export class ShipWrapper {
 		const idxAttachment = this.attachments.findIndex((val) => val.Name == attachment);
 		if (idxAttachment == undefined) return { code: 404 };
 		const Attachment = this.attachments.splice(idxAttachment, 1);
-		Attachment[0].NonBattleUpdate(ShipEvent.UNEQUIP, { friendly: this });
+		Attachment[0].dispatch(GameEvent.UNEQUIP, this);
 		return { code: 200, removedAttachment: Attachment[0] };
 	}
 
-	public fireBattleEvent(event: BattleEvent, opponentShip: ShipWrapper): AttachmentReport[] {
+	public dispatch(
+		event: GameEvent.BATTLE_DAMAGE_TAKEN,
+		{ friend, enemy, dmg }: IBattleDamageTakenDispatch
+	): AttachmentReport[] | undefined;
+	public dispatch(event: GameEvent.BATTLE_END, { friend, enemy }: ITwoPlayerDispatch): AttachmentReport[] | undefined;
+	public dispatch(event: GameEvent.BATTLE_INVOKED, { friend, enemy }: ITwoPlayerDispatch): AttachmentReport[] | undefined;
+	public dispatch(event: GameEvent.BATTLE_POST_TURN, { friend, enemy }: ITwoPlayerDispatch): AttachmentReport[] | undefined;
+	public dispatch(event: GameEvent.BATTLE_PRE_TURN, { friend, enemy }: ITwoPlayerDispatch): AttachmentReport[] | undefined;
+	public dispatch(event: GameEvent.BATTLE_START, { friend, enemy }: ITwoPlayerDispatch): AttachmentReport[] | undefined;
+	public dispatch(event: GameEvent.EQUIP, { friend }: IOnePlayerDispatch): AttachmentReport[] | undefined;
+	public dispatch(event: GameEvent.MINE, { asteroid }: IAsteroidDispatch): AttachmentReport[] | undefined;
+	public dispatch(event: GameEvent.UNEQUIP, { friend }: IOnePlayerDispatch): AttachmentReport[] | undefined;
+    public dispatch(event: GameEvent.WARP_POLL, { friend, ws }: IWarpDispatch): AttachmentReport[] | undefined;
+    public dispatch(event: GameEvent.WARP, { friend, ws }: IWarpDispatch): AttachmentReport[] | undefined;
+	public dispatch(event: GameEvent, { friend, enemy, asteroid, dmg, ws }: IFullDispatch): AttachmentReport[] {
 		const reports: AttachmentReport[] = [];
+		let report;
 		this.attachments.forEach((attachment) => {
-			const report = attachment.BattleUpdate(event, { friendly: this, opponent: opponentShip });
-			if (report != undefined) reports.push(report);
-		});
-		return reports;
-	}
-	public fireNonBattleEvent(event: ShipEvent): AttachmentReport[] {
-		const reports: AttachmentReport[] = [];
-		this.attachments.forEach((attachment) => {
-			const report = attachment.NonBattleUpdate(event, { friendly: this });
-			if (report != undefined) reports.push(report);
-		});
-		return reports;
-	}
-	public fireMineEvent(asteroid: Asteroid): AttachmentReport {
-		for (const attachment of this.attachments) {
-			if (attachment.Type == AttachmentType.MINER) {
-				const mineResult = attachment.MineEvent({ collection: asteroid });
-				if (mineResult == undefined) break;
-				return mineResult;
+			switch (event) {
+				case GameEvent.BATTLE_DAMAGE_TAKEN:
+					report = attachment.dispatch(GameEvent.BATTLE_DAMAGE_TAKEN, friend!, enemy!, dmg!);
+					if (report?.length == 1) reports.push(report[0]);
+					break;
+				case GameEvent.BATTLE_END:
+					report = attachment.dispatch(GameEvent.BATTLE_END, friend!, enemy!);
+					if (report?.length == 1) reports.push(report[0]);
+					break;
+				case GameEvent.BATTLE_INVOKED:
+					report = attachment.dispatch(GameEvent.BATTLE_INVOKED, friend!, enemy!);
+					if (report?.length == 1) reports.push(report[0]);
+					break;
+				case GameEvent.BATTLE_POST_TURN:
+					report = attachment.dispatch(GameEvent.BATTLE_POST_TURN, friend!, enemy!);
+					if (report?.length == 1) reports.push(report[0]);
+					break;
+				case GameEvent.BATTLE_PRE_TURN:
+					report = attachment.dispatch(GameEvent.BATTLE_PRE_TURN, friend!, enemy!);
+					if (report?.length == 1) reports.push(report[0]);
+					break;
+				case GameEvent.BATTLE_START:
+					report = attachment.dispatch(GameEvent.BATTLE_START, friend!, enemy!);
+					if (report?.length == 1) reports.push(report[0]);
+					break;
+				case GameEvent.EQUIP:
+					report = attachment.dispatch(GameEvent.EQUIP, friend!);
+					if (report?.length == 1) reports.push(report[0]);
+					break;
+				case GameEvent.UNEQUIP:
+					report = attachment.dispatch(GameEvent.UNEQUIP, friend!);
+					if (report?.length == 1) reports.push(report[0]);
+					break;
+				case GameEvent.MINE:
+					report = attachment.dispatch(GameEvent.MINE, asteroid!);
+					if (report?.length == 1) reports.push(report[0]);
+					break;
+				case GameEvent.WARP:
+					report = attachment.dispatch(GameEvent.WARP, friend!, ws!);
+					if (report?.length == 1) reports.push(report[0]);
+					break;
+				case GameEvent.WARP_POLL:
+					report = attachment.dispatch(GameEvent.WARP_POLL, friend!, ws!);
+					if (report?.length == 1) reports.push(report[0]);
+					break;
 			}
-		}
-		return { message: "No mining laser, so no enhancements." };
+		});
+		return reports;
+	}
+
+	public pollWarp(warpRequired: number): boolean {
+		if (warpRequired == 0) return true;
+		const result = this.dispatch(GameEvent.WARP_POLL, { friend: this, ws: warpRequired });
+		if (result == undefined) return false;
+		if (result.length > 1) return false;
+		return result[0].success;
 	}
 }
 
@@ -169,3 +218,30 @@ type BonusStatChanger = {
 	cargo?: number;
 	handling?: number;
 };
+
+interface IBattleDamageTakenDispatch {
+	friend?: ShipWrapper;
+	enemy?: ShipWrapper;
+	dmg?: number;
+}
+interface ITwoPlayerDispatch {
+	friend?: ShipWrapper;
+	enemy?: ShipWrapper;
+}
+interface IOnePlayerDispatch {
+	friend?: ShipWrapper;
+}
+interface IAsteroidDispatch {
+	asteroid?: Asteroid;
+}
+interface IWarpDispatch {
+	friend?: ShipWrapper;
+	ws?: number;
+}
+
+interface IFullDispatch
+	extends IBattleDamageTakenDispatch,
+		ITwoPlayerDispatch,
+		IOnePlayerDispatch,
+		IWarpDispatch,
+		IAsteroidDispatch {}

@@ -6,165 +6,109 @@ import { MaterialCollection } from "../../GameCollections/MaterialCollection";
 import { Asteroid } from "../../GameMechanics/Asteroid";
 import { StrengthComparable } from "../AssetDecorators";
 
-export class Attachment extends GameAsset implements IBattleObserver, IPlayerObserver, IAttachment, StrengthComparable {
+export class Attachment extends GameAsset implements IAttachment, StrengthComparable {
 	private type: AttachmentType;
 	private strength: number;
 
-	private onBattleStart?: BattleFunction;
-	private onBattlePreTurn?: BattleFunction;
-	private onBattlePostTurn?: BattleFunction;
-	private onBattleInvoked?: BattleFunction;
-	private onBattleEnd?: BattleFunction;
-
-	private onEquip?: ShipFunction;
-	private onUnequip?: ShipFunction;
-	private onMine?: MineFunction;
-	private onWarp?: ShipFunction;
-
-	constructor(options: AttachmentOptions) {
-		super(options);
-		this.type = options.type;
-		this.strength = options.strength;
-
-		this.onBattleStart = options.onBattleStart;
-		this.onBattlePreTurn = options.onBattlePreTurn;
-		this.onBattlePostTurn = options.onBattlePostTurn;
-		this.onBattleInvoked = options.onBattleInvoked;
-		this.onBattleEnd = options.onBattleEnd;
-
-		this.onEquip = options.onEquip;
-		this.onUnequip = options.onUnequip;
-		this.onMine = options.onMine;
-		this.onWarp = options.onWarp;
+	constructor(data: AttachmentOptions, private readonly functions: AttachmentFunctions) {
+		super(data);
+		this.type = data.type;
+		this.strength = data.strength;
 	}
 
 	public get Type(): AttachmentType {
 		return this.type;
-    }
-    
+	}
+
 	public get Strength(): number {
 		return this.strength;
 	}
 
-	public Triggers(): (BattleEvent | ShipEvent | MineEvent)[] {
-		const Catalysts = new Array<BattleEvent | ShipEvent | MineEvent>();
-		if (this.onBattleStart) Catalysts.push(BattleEvent.BATTLE_START);
-		if (this.onBattlePreTurn) Catalysts.push(BattleEvent.BATTLE_PRE_TURN);
-		if (this.onBattlePostTurn) Catalysts.push(BattleEvent.BATTLE_POST_TURN);
-		if (this.onBattleInvoked) Catalysts.push(BattleEvent.BATTLE_INVOKED);
-		if (this.onBattleEnd) Catalysts.push(BattleEvent.BATTLE_END);
+	public Triggers(): GameEvent[] {
+		const Catalysts = new Array<GameEvent>();
+		if (this.functions.onBattleStart) Catalysts.push(GameEvent.BATTLE_START);
+		if (this.functions.onBattlePreTurn) Catalysts.push(GameEvent.BATTLE_PRE_TURN);
+		if (this.functions.onBattlePostTurn) Catalysts.push(GameEvent.BATTLE_POST_TURN);
+		if (this.functions.onBattleInvoked) Catalysts.push(GameEvent.BATTLE_INVOKED);
+		if (this.functions.onDamageTaken) Catalysts.push(GameEvent.BATTLE_DAMAGE_TAKEN);
+		if (this.functions.onBattleEnd) Catalysts.push(GameEvent.BATTLE_END);
 
-		if (this.onEquip) Catalysts.push(ShipEvent.EQUIP);
-		if (this.onUnequip) Catalysts.push(ShipEvent.UNEQUIP);
-		if (this.onWarp) Catalysts.push(ShipEvent.WARP);
-
-		if (this.onMine) Catalysts.push(MineEvent.MINE);
+		if (this.functions.onEquip) Catalysts.push(GameEvent.EQUIP);
+		if (this.functions.onUnequip) Catalysts.push(GameEvent.UNEQUIP);
+		if (this.functions.onWarp) Catalysts.push(GameEvent.WARP);
+		if (this.functions.onMine) Catalysts.push(GameEvent.MINE);
 
 		return Catalysts;
 	}
 
-	public BattleUpdate(
-		event: BattleEvent,
-		{ friendly, opponent }: { friendly: ShipWrapper; opponent: ShipWrapper }
-	): AttachmentReport | undefined {
+    public dispatch(event: GameEvent.BATTLE_END, friend: ShipWrapper, enemy: ShipWrapper): AttachmentReport[] | undefined;
+	public dispatch(event: GameEvent.BATTLE_INVOKED, friend: ShipWrapper, enemy: ShipWrapper): AttachmentReport[] | undefined;
+	public dispatch(event: GameEvent.BATTLE_POST_TURN, friend: ShipWrapper, enemy: ShipWrapper): AttachmentReport[] | undefined;
+	public dispatch(event: GameEvent.BATTLE_PRE_TURN, friend: ShipWrapper, enemy: ShipWrapper): AttachmentReport[] | undefined;
+	public dispatch(event: GameEvent.BATTLE_START, friend: ShipWrapper, enemy: ShipWrapper): AttachmentReport[] | undefined;
+	public dispatch(event: GameEvent.EQUIP, friend: ShipWrapper): AttachmentReport[] | undefined;
+	public dispatch(event: GameEvent.MINE, asteroid: Asteroid): AttachmentReport[] | undefined;
+	public dispatch(event: GameEvent.UNEQUIP, friend: ShipWrapper): AttachmentReport[] | undefined;
+	public dispatch(event: GameEvent.WARP, friend: ShipWrapper, ws: number): AttachmentReport[] | undefined;
+    public dispatch(event: GameEvent.WARP_POLL, friend: ShipWrapper, ws: number): AttachmentReport[] | undefined;
+	public dispatch(
+		event: GameEvent.BATTLE_DAMAGE_TAKEN,
+		f: ShipWrapper,
+		o: ShipWrapper,
+		dmg: number
+	): AttachmentReport[] | undefined;
+	public dispatch(event: GameEvent, ...args: any[]) {
 		switch (event) {
-			case BattleEvent.BATTLE_START:
-				return this.BattleStart(friendly, opponent);
-			case BattleEvent.BATTLE_END:
-				return this.BattleEnd(friendly, opponent);
-			case BattleEvent.BATTLE_INVOKED:
-				return this.BattleInvoked(friendly, opponent);
-			case BattleEvent.BATTLE_PRE_TURN:
-				return this.BattlePreTurn(friendly, opponent);
-			case BattleEvent.BATTLE_POST_TURN:
-				return this.BattlePostTurn(friendly, opponent);
-			default:
-				break;
+			case GameEvent.BATTLE_DAMAGE_TAKEN:
+				if (this.functions.onDamageTaken)
+					return [
+						this.functions.onDamageTaken.apply(
+							this,
+							args as [ShipWrapper, ShipWrapper, number]
+						) as AttachmentReport,
+					];
+			case GameEvent.BATTLE_END:
+				if (this.functions.onBattleEnd)
+					return [this.functions.onBattleEnd.apply(this, args as [ShipWrapper, ShipWrapper]) as AttachmentReport];
+			case GameEvent.BATTLE_INVOKED:
+				if (this.functions.onBattleInvoked)
+					return [this.functions.onBattleInvoked.apply(this, args as [ShipWrapper, ShipWrapper]) as AttachmentReport];
+			case GameEvent.BATTLE_POST_TURN:
+				if (this.functions.onBattlePostTurn)
+					return [
+						this.functions.onBattlePostTurn.apply(this, args as [ShipWrapper, ShipWrapper]) as AttachmentReport,
+					];
+			case GameEvent.BATTLE_PRE_TURN:
+				if (this.functions.onBattlePreTurn)
+					return [this.functions.onBattlePreTurn.apply(this, args as [ShipWrapper, ShipWrapper]) as AttachmentReport];
+			case GameEvent.BATTLE_START:
+				if (this.functions.onBattleStart)
+					return [this.functions.onBattleStart.apply(this, args as [ShipWrapper, ShipWrapper]) as AttachmentReport];
+			case GameEvent.EQUIP:
+				if (this.functions.onEquip)
+					return [this.functions.onEquip.apply(this, args as [ShipWrapper]) as AttachmentReport];
+			case GameEvent.UNEQUIP:
+				if (this.functions.onUnequip)
+					return [this.functions.onUnequip.apply(this, args as [ShipWrapper]) as AttachmentReport];
+			case GameEvent.MINE:
+				if (this.functions.onMine) return [this.functions.onMine.apply(this, args as [Asteroid]) as AttachmentReport];
+			case GameEvent.WARP:
+				if (this.functions.onWarp)
+					return [this.functions.onWarp.apply(this, args as [ShipWrapper, number]) as AttachmentReport];
+			case GameEvent.WARP_POLL:
+				if (this.functions.onWarpPoll)
+					return [this.functions.onWarpPoll.apply(this, args as [ShipWrapper, number]) as AttachmentReport];
 		}
 	}
-	public NonBattleUpdate(event: ShipEvent, { friendly }: { friendly: ShipWrapper }): AttachmentReport | undefined {
-		switch (event) {
-			case ShipEvent.EQUIP:
-				return this.Equip(friendly);
-			case ShipEvent.UNEQUIP:
-				return this.UnEquip(friendly);
-			case ShipEvent.WARP:
-				return this.Warp(friendly);
-			default:
-				break;
-		}
-	}
-
-	public MineEvent({ collection }: { collection: Asteroid }) {
-		return this.Mine(collection);
-	}
-
-	private BattleStart(friendly: ShipWrapper, opponent: ShipWrapper): AttachmentReport | undefined {
-		if (this.onBattleStart) return this.onBattleStart.apply(this, [friendly, opponent]);
-	}
-	private BattlePreTurn(friendly: ShipWrapper, opponent: ShipWrapper): AttachmentReport | undefined {
-		if (this.onBattlePreTurn) return this.onBattlePreTurn.apply(this, [friendly, opponent]);
-	}
-	private BattlePostTurn(friendly: ShipWrapper, opponent: ShipWrapper): AttachmentReport | undefined {
-		if (this.onBattlePostTurn) return this.onBattlePostTurn.apply(this, [friendly, opponent]);
-	}
-	private BattleInvoked(friendly: ShipWrapper, opponent: ShipWrapper): AttachmentReport | undefined {
-		if (this.onBattleInvoked) return this.onBattleInvoked.apply(this, [friendly, opponent]);
-	}
-	private BattleEnd(friendly: ShipWrapper, opponent: ShipWrapper): AttachmentReport | undefined {
-		if (this.onBattleEnd) return this.onBattleEnd.apply(this, [friendly, opponent]);
-	}
-
-	private Equip(friendly: ShipWrapper): AttachmentReport | undefined {
-		if (this.onEquip) return this.onEquip.apply(this, [friendly]);
-	}
-	private UnEquip(friendly: ShipWrapper): AttachmentReport | undefined {
-		if (this.onUnequip) return this.onUnequip.apply(this, [friendly]);
-	}
-	private Mine(collection: Asteroid): AttachmentReport | undefined {
-		if (this.onMine) return this.onMine.apply(this, [collection]);
-	}
-	private Warp(friendly: ShipWrapper): AttachmentReport | undefined {
-		if (this.onWarp) return this.onWarp.apply(this, [friendly]);
-	}
 }
 
-export interface IBattleObserver {
-	/* 	BattleStart?: BattleFunction;
-	BattlePreTurn?: BattleFunction;
-	BattlePostTurn?: BattleFunction;
-	BattleInvoked?: BattleFunction;
-    BattleEnd?: BattleFunction; */
-	BattleUpdate?: (
-		event: BattleEvent,
-		{ friendly, opponent }: { friendly: ShipWrapper; opponent: ShipWrapper }
-	) => AttachmentReport | undefined;
-}
-export interface IPlayerObserver {
-	/* Equip?: PlayerFunction;
-	Unequip?: PlayerFunction;
-	Mine?: PlayerFunction;
-    Warp?: PlayerFunction; */
-	NonBattleUpdate?: (event: ShipEvent, { friendly }: { friendly: ShipWrapper }) => AttachmentReport | undefined;
-}
-export interface IAttachment extends IPlayerObserver, IBattleObserver {
+export interface IAttachment {
 	Type: AttachmentType;
-	Triggers(): (BattleEvent | ShipEvent | MineEvent)[];
+	Triggers(): GameEvent[];
 }
 
 export class AttachmentBuilder {
-	private onBattleStart?: BattleFunction;
-	private onBattlePreTurn?: BattleFunction;
-	private onBattlePostTurn?: BattleFunction;
-	private onBattleInvoked?: BattleFunction;
-	private onBattleEnd?: BattleFunction;
-
-	private onEquip?: ShipFunction;
-	private onUnequip?: ShipFunction;
-	private onMine?: MineFunction;
-	private onWarp?: ShipFunction;
-
-	public constructor(private readonly options: AttachmentOptions) {}
+	public constructor(private readonly options: AttachmentOptions, private readonly functions: AttachmentFunctions) {}
 
 	public EnableSellable(price: number): AttachmentBuilder {
 		this.options.cost = price;
@@ -174,101 +118,152 @@ export class AttachmentBuilder {
 		this.options.blueprint = blueprint;
 		return this;
 	}
+	/**
+	 * Fires to all attachments when a battle starts.
+	 * @param fn
+	 */
 	public BattleStartFn(fn: BattleFunction): AttachmentBuilder {
-		this.onBattleStart = fn;
+		this.functions.onBattleStart = fn;
 		return this;
 	}
+	/**
+	 * Fires to all attachments at the start of a turn
+	 * @param fn
+	 */
 	public BattlePreTurnFn(fn: BattleFunction): AttachmentBuilder {
-		this.onBattlePreTurn = fn;
+		this.functions.onBattlePreTurn = fn;
 		return this;
 	}
+	/**
+	 * Fires to all attachments at the end of a turn
+	 * @param fn
+	 */
 	public BattlePostTurnFn(fn: BattleFunction): AttachmentBuilder {
-		this.onBattlePostTurn = fn;
+		this.functions.onBattlePostTurn = fn;
 		return this;
 	}
+	/**
+	 * Fires when the attachment is ran
+	 * @param fn
+	 */
 	public BattleInvokeFn(fn: BattleFunction): AttachmentBuilder {
-		this.onBattleInvoked = fn;
+		this.functions.onBattleInvoked = fn;
 		return this;
 	}
+	/**
+	 * Fires to all attachments when the battle is completed
+	 * @param fn
+	 */
 	public BattleEndFn(fn: BattleFunction): AttachmentBuilder {
-		this.onBattleEnd = fn;
+		this.functions.onBattleEnd = fn;
 		return this;
 	}
+	/**
+	 * Fires to all attachments when damage is taken
+	 * @param fn
+	 */
+	public DamageTakenFn(fn: BattleFunction): AttachmentBuilder {
+		this.functions.onDamageTaken = fn;
+		return this;
+	}
+	/**
+	 * Fires to the attachment when it is equipped
+	 * @param fn
+	 */
 	public EquipFn(fn: ShipFunction): AttachmentBuilder {
-		this.onEquip = fn;
+		this.functions.onEquip = fn;
 		return this;
 	}
+	/**
+	 * Fires to the attachment when it is unequipped.
+	 * @param fn
+	 */
 	public UnequipFn(fn: ShipFunction): AttachmentBuilder {
-		this.onUnequip = fn;
+		this.functions.onUnequip = fn;
 		return this;
 	}
+	/**
+	 * Fires to all attachments when mining occurs
+	 * @param fn
+	 */
 	public MineFn(fn: MineFunction): AttachmentBuilder {
-		this.onMine = fn;
+		this.functions.onMine = fn;
 		return this;
 	}
-	public WarpFn(fn: ShipFunction): AttachmentBuilder {
-		this.onWarp = fn;
+	/**
+	 * Fires to all attachments when a warp occurs
+	 * @param fn
+	 */
+	public WarpFn(fn: WarpFunction): AttachmentBuilder {
+		this.functions.onWarp = fn;
+		return this;
+	}
+	/**
+	 * Fires to all attachments to indicate a warp is going to try occur
+	 * @param fn
+	 */
+	public WarpPollFn(fn: WarpFunction): AttachmentBuilder {
+		this.functions.onWarpPoll = fn;
 		return this;
 	}
 
 	public Build(): Attachment {
-		return new Attachment({
-			name: this.options.name,
-			description: this.options.description,
-			blueprint: this.options.blueprint,
-			cost: this.options.cost,
-			techLevel: this.options.techLevel,
-			type: this.options.type,
-			strength: this.options.strength,
-
-			onBattleStart: this.onBattleStart,
-			onBattlePreTurn: this.onBattlePreTurn,
-			onBattlePostTurn: this.onBattlePostTurn,
-			onBattleInvoked: this.onBattleInvoked,
-			onBattleEnd: this.onBattleEnd,
-
-			onEquip: this.onEquip,
-			onUnequip: this.onUnequip,
-			onMine: this.onMine,
-			onWarp: this.onWarp,
-		});
+		return new Attachment(
+			{
+				name: this.options.name,
+				description: this.options.description,
+				blueprint: this.options.blueprint,
+				cost: this.options.cost,
+				techLevel: this.options.techLevel,
+				type: this.options.type,
+				strength: this.options.strength,
+			},
+			this.functions
+		);
 	}
 }
 
 interface AttachmentOptions extends IGameAssetOptions, IStrengthOptions {
 	type: AttachmentType;
-
+}
+export interface AttachmentFunctions {
 	onBattleStart?: BattleFunction;
 	onBattlePreTurn?: BattleFunction;
 	onBattlePostTurn?: BattleFunction;
 	onBattleInvoked?: BattleFunction;
 	onBattleEnd?: BattleFunction;
 
+	onDamageTaken?: DamageTakenFunction;
+
 	onEquip?: ShipFunction;
 	onUnequip?: ShipFunction;
+
 	onMine?: MineFunction;
-	onWarp?: ShipFunction;
+
+	onWarp?: WarpFunction;
+	onWarpPoll?: WarpFunction;
 }
 
 export type AttachmentReport = {
 	message: string;
+	success: boolean;
 };
 
-export enum BattleEvent {
+export enum GameEvent {
 	BATTLE_START,
 	BATTLE_END,
 	BATTLE_INVOKED,
 	BATTLE_PRE_TURN,
 	BATTLE_POST_TURN,
-}
-export enum ShipEvent {
+	BATTLE_DAMAGE_TAKEN,
 	EQUIP,
 	UNEQUIP,
-	WARP,
-}
-export enum MineEvent {
 	MINE,
+
+	WARP,
+	WARP_POLL,
 }
+
 export enum AttachmentType {
 	GENERAL,
 	PRIMARY,
@@ -278,5 +273,7 @@ export enum AttachmentType {
 }
 
 export type BattleFunction = (friendly: ShipWrapper, opponent: ShipWrapper) => AttachmentReport | undefined;
+export type DamageTakenFunction = (friendly: ShipWrapper, opponent: ShipWrapper, dmg: number) => AttachmentReport | undefined;
 export type ShipFunction = (friendly: ShipWrapper) => AttachmentReport | undefined;
 export type MineFunction = (inputCollection: Asteroid) => AttachmentReport | undefined;
+export type WarpFunction = (friendly: ShipWrapper, warp: number) => AttachmentReport | undefined;

@@ -9,7 +9,9 @@ export class Client {
 	public static Client: Client;
 	public static Get() {
 		if (this.Client == null) {
-			throw new Error("You must explicity create the client. Did you forget to go Client.CreateClient(IClientSettings)?");
+			throw new Error(
+				"You must explicity create the client. Did you forget to go Client.CreateClient(IClientSettings)?"
+			);
 		}
 		return this.Client;
 	}
@@ -30,6 +32,7 @@ export class Client {
 		this.ConsoleLogging = clientSettings.consoleLogging || false;
 		this.registry.DefaultCredits = clientSettings.defaultCredits || 0;
 		this.registry.MaxRarity = clientSettings.maximumRarity;
+		this.registry.MaxTech = clientSettings.maximumTechLevel;
 	}
 
 	//Section: Registry
@@ -61,4 +64,5 @@ interface IClientSettings {
 	consoleLogging?: boolean;
 	defaultCredits?: number;
 	maximumRarity: number;
+	maximumTechLevel: number;
 }

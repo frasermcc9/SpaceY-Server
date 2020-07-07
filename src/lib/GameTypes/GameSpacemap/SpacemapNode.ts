@@ -16,7 +16,7 @@ export class SpacemapNode {
 	public constructor({ name, faction, requiredWarp, stores, techLevel, asteroids }: TSpaceMapNode) {
 		this.name = name;
 		this.faction = faction;
-		this.requiredWarp = requiredWarp ?? WarpPower.NONE;
+		this.requiredWarp = requiredWarp;
 		this.stores = stores;
 		this.techLevel = techLevel ?? 0;
 		this.asteroids = asteroids;
@@ -53,17 +53,17 @@ export class SpacemapNode {
 	//#region - Stores
 
 	public storeDisplayNames(): string[] {
-		return this.stores.map((el) => el.displayName());
+		return this.stores.map((el) => el.identity());
 	}
 
 	public nodeMaterialStores(): BaseStore[] {
-		return this.stores.filter((el) => el.isStoreType(StoreType.MATERIAL_STORE));
+		return this.stores.filter((el) => el.isType(StoreType.MATERIAL_STORE));
 	}
 	public nodeShipStores(): BaseStore[] {
-		return this.stores.filter((el) => el.isStoreType(StoreType.SHIP_STORE));
+		return this.stores.filter((el) => el.isType(StoreType.SHIP_STORE));
 	}
 	public nodeAttachmentStores(): BaseStore[] {
-		return this.stores.filter((el) => el.isStoreType(StoreType.ATTACHMENT_STORE));
+		return this.stores.filter((el) => el.isType(StoreType.ATTACHMENT_STORE));
 	}
 
 	//#endregion
@@ -72,19 +72,19 @@ export class SpacemapNode {
 export class SpacemapNodeBuilder {
 	private name: string;
 	private faction: Faction;
-	private requiredWarp?: WarpPower;
+	private requiredWarp: WarpPower;
 	private stores: BaseStore[] = [];
 	private techLevel?: number;
 
 	private asteroids: Asteroid[] = [];
 
-	public constructor({ name, faction }: { name: string; faction: Faction }) {
+	public constructor({ name, faction, requiredWarp }: { name: string; faction: Faction; requiredWarp: WarpPower }) {
 		this.name = name;
 		this.faction = faction;
+		this.requiredWarp = requiredWarp;
 	}
 
 	public addStore(store: BaseStore) {
-		store.StoreName = name;
 		this.stores.push(store);
 	}
 
@@ -117,7 +117,7 @@ type TSpaceMapNode = {
 
 	asteroids: Asteroid[];
 
-	requiredWarp?: WarpPower;
+	requiredWarp: WarpPower;
 	stores: BaseStore[];
 	techLevel?: number;
 };

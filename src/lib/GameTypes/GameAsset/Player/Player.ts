@@ -28,21 +28,28 @@ export class Player {
 	private blueprints: Set<string> = new Set();
 
 	private exp: number = 100;
+	private skillPoints: number[] = [0, 0, 0];
+
+	//#region - EXP and Skills
 
 	//#region EXP
 
+	public get Exp(): number {
+		return this.exp;
+	}
 	public get Level(): number {
 		return Player.inverseExpFunction(this.exp);
 	}
 	public get ExpToNextLevel(): number {
-		return Player.expFunction(this.Level + 1) - this.exp;
+		return Math.ceil(Player.expFunction(this.Level + 1) - this.exp);
 	}
 	public addExp(exp: number): void {
 		if (this.exp + exp >= this.ExpToNextLevel) {
 			//the player levelled up
 			Client.EventMan.emit("LevelUp", { uId: this.uId, level: this.Level });
 		}
-        this.exp += exp;
+		this.exp += exp;
+		this.save();
 	}
 
 	/**
@@ -65,10 +72,59 @@ export class Player {
 			}
 		}
 	}
-
 	//#endregion EXP
 
-	//#region INVENTORY
+	//#region Skills
+
+	/**
+	 * Total skill points of player, including those spent and unspent
+	 */
+	public get totalSkillPoints(): number {
+		return this.Level * 3;
+	}
+	/**
+	 * Total amount of skill points the player has spent
+	 */
+	public get spentSkillPoints(): number {
+		return this.skillPoints.reduce((acc, val) => acc + val, 0);
+	}
+	/**
+	 * Gets the amount of unspent skill points the player has
+	 */
+	public get unspentSkillPoints(): number {
+		return this.totalSkillPoints - this.spentSkillPoints;
+	}
+	/**
+	 * Adds a point to the specified skill
+	 * @param type the skill to add the point to
+	 * @returns true if point was allocated successfully
+	 */
+	public async addSkillPoint(type: "Weapons" | "Engineering" | "Technology"): Promise<boolean> {
+		if (this.unspentSkillPoints < 1) return false;
+		switch (type) {
+			case "Weapons":
+				this.skillPoints[0] += 1;
+				break;
+			case "Engineering":
+				this.skillPoints[1] += 1;
+				break;
+			case "Technology":
+				this.skillPoints[2] += 1;
+				break;
+		}
+		await this.save();
+		return true;
+	}
+
+	public pollSkillPoints(): number[] {
+		return this.skillPoints.slice();
+	}
+
+	//#endregion Skills
+
+	//#endregion EXP and Skills
+
+	//#region - INVENTORY
 
 	//#region - Credits
 
@@ -565,7 +621,7 @@ export class Player {
 		if (!this.adjacentLocations().includes(node)) return false;
 		if (this.getShipWrapper().pollWarp(node.RequiredWarp)) {
 			this.location = node;
-			this.getShipWrapper().dispatch(GameEvent.WARP, { friend: this.ship, ws: node.RequiredWarp });
+			this.getShipWrapper().warp(node.RequiredWarp);
 			await this.save();
 			return true;
 		}
@@ -608,6 +664,7 @@ export class Player {
 				location: this.location.Name,
 				blueprints: Array.from(this.blueprints),
 				exp: this.exp,
+				skills: this.skillPoints,
 			}
 		);
 	}
@@ -631,6 +688,7 @@ export class Player {
 		this.blueprints = new Set(data.blueprints);
 
 		this.exp = data.exp;
+		this.skillPoints = data.skills;
 
 		data.ship.equipped.forEach((attachmentName) => {
 			const result = this.ship.addAttachment(attachmentName);

@@ -63,7 +63,8 @@ export async function findOneOrCreate(this: IPlayerModel, { uId }: { uId: string
 			skin: new Skin(),
 			location: Client.Reg.DefaultLocation.Name,
 			blueprints: new Array<string>(),
-			exp: 100,
+			exp: 30,
+			skills: [0, 0, 0],
 		});
 		return new Player(record);
 	}

@@ -19,6 +19,7 @@ const PlayerSchema = new Schema({
 	location: String,
 	blueprints: [String],
 	exp: Number,
+	skills: [Number],
 	dateOfEntry: {
 		type: Date,
 		default: new Date(),

@@ -23,6 +23,7 @@ export interface IPlayer {
 	location: string;
 	blueprints: string[];
 	exp: number;
+	skills: number[];
 	dateOfEntry?: Date;
 	lastUpdated?: Date;
 }

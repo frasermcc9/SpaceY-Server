@@ -22,6 +22,16 @@ export class Spacemap implements ISpacemap, ISpacemapPrivileged {
 		this.graph.set(node.Name, new Set());
 		return this;
 	}
+	public addNodes(nodes: SpacemapNode[]): this {
+		nodes.forEach((node) => {
+			if (this.registry.has(node.Name)) {
+				throw new TypeError(`Duplicate spacemap entry for node ${node.Name}`);
+			}
+			this.registry.set(node.Name, node);
+			this.graph.set(node.Name, new Set());
+		});
+		return this;
+	}
 
 	public addLink(a: SpacemapNode | string, b: SpacemapNode | string): this {
 		const aNode = this.resolveNodeFromName(a);

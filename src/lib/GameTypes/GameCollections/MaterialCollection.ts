@@ -79,7 +79,9 @@ export class MaterialCollection extends GameCollectionBase {
 
 	/** @override */
 	public GetCompatibleItems(minRarity: number, maxRarity: number): MapCollection<string, Material> {
-		return Client.Reg.MaterialRegistry.filter((val) => val.Cost != undefined && val.GetMaterialRarity() <= maxRarity && val.GetMaterialRarity() >= minRarity);
+		return Client.Reg.MaterialRegistry.filter(
+			(val) => val.Cost != undefined && val.GetMaterialRarity() <= maxRarity && val.GetMaterialRarity() >= minRarity
+		);
 	}
 
 	/** @override */

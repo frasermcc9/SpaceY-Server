@@ -37,7 +37,11 @@ export class GameAsset implements IGameAsset {
 	}
 
 	public toString(): string {
-		return this.name + ": " + this.description;
+		return this.name;
+	}
+
+	public stringDetails(): string {
+		return `${this.name}: ${this.description} Tech Level: ${this.techLevel}`;
 	}
 }
 

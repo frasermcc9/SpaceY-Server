@@ -220,7 +220,8 @@ export abstract class GameCollectionBase extends MapCollection<string, number> {
 	 */
 	public get CollectionSize(): number {
 		return [...this.values()].reduce((acc, cur) => acc + cur, 0);
-	}
+    }
+
 
 	/**
 	 * Required method for GenerateCollection

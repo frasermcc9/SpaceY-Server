@@ -73,13 +73,22 @@ export class BuildableDecorator extends GameAssetDecorator implements Buildable 
 	}
 	/**
 	 * @param player
-	 * @returns codes: 200-Success, 403-Insufficient resources, 405-Item not buildable, 500-Internal Error
+	 * @returns codes:<br />  \
+	 * 200 - Success<br />  \
+	 * 403.1 - Insufficient resources<br />  \
+	 * 403.2 - User doesn't have blueprint<br />  \
+	 * 405 - Item not buildable<br />  \
+	 * 500 - Internal Error
 	 */
 	public async Build(player: Player): Promise<{ code: number; failures: string[] }> {
 		const bp = this.Blueprint.blueprint;
 		if (bp == undefined) return { code: 405, failures: [] };
+
+		if (!player.hasBlueprintFor(this.Name)) return { code: 403.2, failures: [] };
+
 		const result = await player.InventorySubtract("materials", bp);
-		if (result.code != 200) return result;
+		if (result.code != 200) return { code: 403.1, failures: result.failures };
+
 		const editResult = await player.AutoInventoryEdit(this.asset.Name, 1);
 		if (editResult.success) return result;
 		else return { code: 500, failures: [] };

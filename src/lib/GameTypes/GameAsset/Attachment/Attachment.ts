@@ -5,15 +5,20 @@ import { ShipWrapper } from "../Ship/ShipWrapper";
 import { MaterialCollection } from "../../GameCollections/MaterialCollection";
 import { Asteroid } from "../../GameMechanics/Asteroid";
 import { StrengthComparable } from "../AssetDecorators";
+import { Battleship } from "../Ship/BattleShip";
+import { IBattleData } from "../../GameBattle/Battle";
 
 export class Attachment extends GameAsset implements IAttachment, StrengthComparable {
 	private type: AttachmentType;
 	private strength: number;
 
+	private energyCost: number[] = [0, 0, 0];
+
 	constructor(data: AttachmentOptions, private readonly functions: AttachmentFunctions) {
 		super(data);
 		this.type = data.type;
 		this.strength = data.strength;
+		this.energyCost = data.energyCost ?? [0, 0, 0];
 	}
 
 	public get Type(): AttachmentType {
@@ -24,6 +29,14 @@ export class Attachment extends GameAsset implements IAttachment, StrengthCompar
 		return this.strength;
 	}
 
+	public get EnergyCost(): number[] {
+		return this.energyCost.slice();
+	}
+
+	public isInvocable(): boolean {
+		return this.functions.onBattleInvoked != undefined;
+	}
+
 	public Triggers(): GameEvent[] {
 		const Catalysts = new Array<GameEvent>();
 		if (this.functions.onBattleStart) Catalysts.push(GameEvent.BATTLE_START);
@@ -32,6 +45,7 @@ export class Attachment extends GameAsset implements IAttachment, StrengthCompar
 		if (this.functions.onBattleInvoked) Catalysts.push(GameEvent.BATTLE_INVOKED);
 		if (this.functions.onDamageTaken) Catalysts.push(GameEvent.BATTLE_DAMAGE_TAKEN);
 		if (this.functions.onBattleEnd) Catalysts.push(GameEvent.BATTLE_END);
+		if (this.functions.onCriticalDamageTaken) Catalysts.push(GameEvent.BATTLE_CRITICAL_DAMAGE_TAKEN);
 
 		if (this.functions.onEquip) Catalysts.push(GameEvent.EQUIP);
 		if (this.functions.onUnequip) Catalysts.push(GameEvent.UNEQUIP);
@@ -41,74 +55,64 @@ export class Attachment extends GameAsset implements IAttachment, StrengthCompar
 		return Catalysts;
 	}
 
-	public dispatch(event: GameEvent.BATTLE_END, friend: ShipWrapper, enemy: ShipWrapper): AttachmentReport[] | undefined;
-	public dispatch(event: GameEvent.BATTLE_INVOKED, friend: ShipWrapper, enemy: ShipWrapper): AttachmentReport[] | undefined;
-	public dispatch(event: GameEvent.BATTLE_POST_TURN, friend: ShipWrapper, enemy: ShipWrapper): AttachmentReport[] | undefined;
-	public dispatch(event: GameEvent.BATTLE_PRE_TURN, friend: ShipWrapper, enemy: ShipWrapper): AttachmentReport[] | undefined;
-	public dispatch(event: GameEvent.BATTLE_START, friend: ShipWrapper, enemy: ShipWrapper): AttachmentReport[] | undefined;
-	public dispatch(event: GameEvent.EQUIP, friend: ShipWrapper): AttachmentReport[] | undefined;
-	public dispatch(event: GameEvent.MINE, asteroid: Asteroid): AttachmentReport[] | undefined;
-	public dispatch(event: GameEvent.UNEQUIP, friend: ShipWrapper): AttachmentReport[] | undefined;
-	public dispatch(event: GameEvent.WARP, friend: ShipWrapper, ws: number): AttachmentReport[] | undefined;
-	public dispatch(event: GameEvent.WARP_POLL, friend: ShipWrapper, ws: number): AttachmentReport[] | undefined;
-	public dispatch(
-		event: GameEvent.BATTLE_DAMAGE_TAKEN,
-		f: ShipWrapper,
-		o: ShipWrapper,
-		dmg: number
-	): AttachmentReport[] | undefined;
+	public dispatch(event: GameEvent.BATTLE_END, battle: IBattleData): AttachmentReport | undefined;
+	public dispatch(event: GameEvent.BATTLE_INVOKED, battle: IBattleData): AttachmentReport | undefined;
+	public dispatch(event: GameEvent.BATTLE_POST_TURN, battle: IBattleData): AttachmentReport | undefined;
+	public dispatch(event: GameEvent.BATTLE_PRE_TURN, battle: IBattleData): AttachmentReport | undefined;
+	public dispatch(event: GameEvent.BATTLE_START, battle: IBattleData): AttachmentReport | undefined;
+	public dispatch(event: GameEvent.BATTLE_CRITICAL_DAMAGE_TAKEN, friend: Battleship, enemy: Battleship): AttachmentReport | undefined;
+	public dispatch(event: GameEvent.BATTLE_DAMAGE_TAKEN, friend: Battleship, enemy: Battleship, dmg: number): AttachmentReport | undefined;
+	public dispatch(event: GameEvent.EQUIP, friend: ShipWrapper): AttachmentReport | undefined;
+	public dispatch(event: GameEvent.MINE, asteroid: Asteroid): AttachmentReport | undefined;
+	public dispatch(event: GameEvent.UNEQUIP, friend: ShipWrapper): AttachmentReport | undefined;
+	public dispatch(event: GameEvent.WARP, friend: ShipWrapper, ws: number): AttachmentReport | undefined;
+	public dispatch(event: GameEvent.WARP_POLL, friend: ShipWrapper, ws: number): AttachmentReport | undefined;
 	public dispatch(event: GameEvent, ...args: any[]) {
 		switch (event) {
 			case GameEvent.BATTLE_DAMAGE_TAKEN:
 				if (this.functions.onDamageTaken)
-					return [
-						this.functions.onDamageTaken.apply(
-							this,
-							args as [ShipWrapper, ShipWrapper, number]
-						) as AttachmentReport,
-					];
+					return this.functions.onDamageTaken.apply(this, args as [Battleship, Battleship, number]) as AttachmentReport;
 				break;
 			case GameEvent.BATTLE_END:
-				if (this.functions.onBattleEnd)
-					return [this.functions.onBattleEnd.apply(this, args as [ShipWrapper, ShipWrapper]) as AttachmentReport];
+				if (this.functions.onBattleEnd) return this.functions.onBattleEnd.apply(this, args as [IBattleData]) as AttachmentReport;
 				break;
 			case GameEvent.BATTLE_INVOKED:
 				if (this.functions.onBattleInvoked)
-					return [this.functions.onBattleInvoked.apply(this, args as [ShipWrapper, ShipWrapper]) as AttachmentReport];
+					return this.functions.onBattleInvoked.apply(this, args as [IBattleData]) as AttachmentReport;
 				break;
 			case GameEvent.BATTLE_POST_TURN:
 				if (this.functions.onBattlePostTurn)
-					return [
-						this.functions.onBattlePostTurn.apply(this, args as [ShipWrapper, ShipWrapper]) as AttachmentReport,
-					];
+					return this.functions.onBattlePostTurn.apply(this, args as [IBattleData]) as AttachmentReport;
 				break;
 			case GameEvent.BATTLE_PRE_TURN:
 				if (this.functions.onBattlePreTurn)
-					return [this.functions.onBattlePreTurn.apply(this, args as [ShipWrapper, ShipWrapper]) as AttachmentReport];
+					return this.functions.onBattlePreTurn.apply(this, args as [IBattleData]) as AttachmentReport;
 				break;
 			case GameEvent.BATTLE_START:
 				if (this.functions.onBattleStart)
-					return [this.functions.onBattleStart.apply(this, args as [ShipWrapper, ShipWrapper]) as AttachmentReport];
+					return this.functions.onBattleStart.apply(this, args as [IBattleData]) as AttachmentReport;
+				break;
+			case GameEvent.BATTLE_CRITICAL_DAMAGE_TAKEN:
+				if (this.functions.onCriticalDamageTaken)
+					return this.functions.onCriticalDamageTaken.apply(this, args as [Battleship, Battleship, number]) as AttachmentReport;
 				break;
 			case GameEvent.EQUIP:
 				if (this.functions.onEquip) {
-					return [this.functions.onEquip.apply(this, args as [ShipWrapper]) as AttachmentReport];
+					return this.functions.onEquip.apply(this, args as [ShipWrapper]) as AttachmentReport;
 				}
 				break;
 			case GameEvent.UNEQUIP:
-				if (this.functions.onUnequip)
-					return [this.functions.onUnequip.apply(this, args as [ShipWrapper]) as AttachmentReport];
+				if (this.functions.onUnequip) return this.functions.onUnequip.apply(this, args as [ShipWrapper]) as AttachmentReport;
 				break;
 			case GameEvent.MINE:
-				if (this.functions.onMine) return [this.functions.onMine.apply(this, args as [Asteroid]) as AttachmentReport];
+				if (this.functions.onMine) return this.functions.onMine.apply(this, args as [Asteroid]) as AttachmentReport;
 				break;
 			case GameEvent.WARP:
-				if (this.functions.onWarp)
-					return [this.functions.onWarp.apply(this, args as [ShipWrapper, number]) as AttachmentReport];
+				if (this.functions.onWarp) return this.functions.onWarp.apply(this, args as [ShipWrapper, number]) as AttachmentReport;
 				break;
 			case GameEvent.WARP_POLL:
 				if (this.functions.onWarpPoll)
-					return [this.functions.onWarpPoll.apply(this, args as [ShipWrapper, number]) as AttachmentReport];
+					return this.functions.onWarpPoll.apply(this, args as [ShipWrapper, number]) as AttachmentReport;
 				break;
 		}
 	}
@@ -158,8 +162,10 @@ export class AttachmentBuilder {
 	 * Fires when the attachment is ran
 	 * @param fn
 	 */
-	public BattleInvokeFn(fn: BattleFunction): AttachmentBuilder {
+	public BattleInvokeFn(fn: BattleFunction, cost: number[]): AttachmentBuilder {
+		if (cost.length != 3) throw new Error("Invoked attachments require an explicitly defined energy cost.");
 		this.functions.onBattleInvoked = fn;
+		this.options.energyCost = cost;
 		return this;
 	}
 	/**
@@ -171,10 +177,18 @@ export class AttachmentBuilder {
 		return this;
 	}
 	/**
+	 * Fires to all attachments when the player takes critical damage
+	 * @param fn
+	 */
+	public CriticalDamageFn(fn: DamageTakenFunction): AttachmentBuilder {
+		this.functions.onCriticalDamageTaken = fn;
+		return this;
+	}
+	/**
 	 * Fires to all attachments when damage is taken
 	 * @param fn
 	 */
-	public DamageTakenFn(fn: BattleFunction): AttachmentBuilder {
+	public DamageTakenFn(fn: DamageTakenFunction): AttachmentBuilder {
 		this.functions.onDamageTaken = fn;
 		return this;
 	}
@@ -220,23 +234,13 @@ export class AttachmentBuilder {
 	}
 
 	public Build(): Attachment {
-		return new Attachment(
-			{
-				name: this.options.name,
-				description: this.options.description,
-				blueprint: this.options.blueprint,
-				cost: this.options.cost,
-				techLevel: this.options.techLevel,
-				type: this.options.type,
-				strength: this.options.strength,
-			},
-			this.functions
-		);
+		return new Attachment(this.options, this.functions);
 	}
 }
 
 interface AttachmentOptions extends IGameAssetOptions, IStrengthOptions {
 	type: AttachmentType;
+	energyCost?: number[];
 }
 export interface AttachmentFunctions {
 	onBattleStart?: BattleFunction;
@@ -245,6 +249,7 @@ export interface AttachmentFunctions {
 	onBattleInvoked?: BattleFunction;
 	onBattleEnd?: BattleFunction;
 
+	onCriticalDamageTaken?: DamageTakenFunction;
 	onDamageTaken?: DamageTakenFunction;
 
 	onEquip?: ShipFunction;
@@ -259,6 +264,7 @@ export interface AttachmentFunctions {
 export type AttachmentReport = {
 	message: string;
 	success: boolean;
+	damage?: number;
 };
 
 export enum GameEvent {
@@ -267,6 +273,7 @@ export enum GameEvent {
 	BATTLE_INVOKED,
 	BATTLE_PRE_TURN,
 	BATTLE_POST_TURN,
+	BATTLE_CRITICAL_DAMAGE_TAKEN,
 	BATTLE_DAMAGE_TAKEN,
 	EQUIP,
 	UNEQUIP,
@@ -284,8 +291,8 @@ export enum AttachmentType {
 	MINER,
 }
 
-export type BattleFunction = (friendly: ShipWrapper, opponent: ShipWrapper) => AttachmentReport | undefined;
-export type DamageTakenFunction = (friendly: ShipWrapper, opponent: ShipWrapper, dmg: number) => AttachmentReport | undefined;
+export type BattleFunction = (battle: IBattleData) => AttachmentReport | undefined;
+export type DamageTakenFunction = (friendly: Battleship, opponent: Battleship, dmg: number) => AttachmentReport | undefined;
 export type ShipFunction = (friendly: ShipWrapper) => AttachmentReport | undefined;
 export type MineFunction = (inputCollection: Asteroid) => AttachmentReport | undefined;
 export type WarpFunction = (friendly: ShipWrapper, warp: number) => AttachmentReport | undefined;

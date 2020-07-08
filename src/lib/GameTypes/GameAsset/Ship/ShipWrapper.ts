@@ -39,10 +39,20 @@ export class ShipWrapper {
 	public get Owner(): Player {
 		return this.owner;
 	}
+	public get Strength(): number {
+		let strength = this.ship.Strength;
+		this.attachments.forEach((attachment) => (strength += attachment.Strength));
+		return strength;
+	}
 
 	public get WeaponCapacities(): Map<AttachmentType, number> {
 		return this.ship.WeaponCapacities;
 	}
+
+	public copyAttachments(): Attachment[] {
+		return this.attachments.slice();
+	}
+
 	public get ShipStatistics(): {
 		totalHp: number;
 		totalShield: number;
@@ -139,77 +149,25 @@ export class ShipWrapper {
 		return { code: 200, removedAttachment: Attachment[0] };
 	}
 
-	public dispatch(
-		event: GameEvent.BATTLE_DAMAGE_TAKEN,
-		{ friend, enemy, dmg }: IBattleDamageTakenDispatch
-	): AttachmentReport[] | undefined;
-	public dispatch(event: GameEvent.BATTLE_END, { friend, enemy }: ITwoPlayerDispatch): AttachmentReport[] | undefined;
-	public dispatch(event: GameEvent.BATTLE_INVOKED, { friend, enemy }: ITwoPlayerDispatch): AttachmentReport[] | undefined;
-	public dispatch(event: GameEvent.BATTLE_POST_TURN, { friend, enemy }: ITwoPlayerDispatch): AttachmentReport[] | undefined;
-	public dispatch(event: GameEvent.BATTLE_PRE_TURN, { friend, enemy }: ITwoPlayerDispatch): AttachmentReport[] | undefined;
-	public dispatch(event: GameEvent.BATTLE_START, { friend, enemy }: ITwoPlayerDispatch): AttachmentReport[] | undefined;
-	public dispatch(event: GameEvent.EQUIP, { friend }: IOnePlayerDispatch): AttachmentReport[] | undefined;
-	public dispatch(event: GameEvent.MINE, { asteroid }: IAsteroidDispatch): AttachmentReport[] | undefined;
-	public dispatch(event: GameEvent.UNEQUIP, { friend }: IOnePlayerDispatch): AttachmentReport[] | undefined;
-	public dispatch(event: GameEvent.WARP_POLL, { friend, ws }: IWarpDispatch): AttachmentReport[] | undefined;
-	public dispatch(event: GameEvent.WARP, { friend, ws }: IWarpDispatch): AttachmentReport[] | undefined;
-	public dispatch(event: GameEvent, { friend, enemy, asteroid, dmg, ws }: IFullDispatch): AttachmentReport[] {
-		const reports: AttachmentReport[] = [];
-		let report;
-		this.attachments.forEach((attachment) => {
-			switch (event) {
-				case GameEvent.BATTLE_DAMAGE_TAKEN:
-					report = attachment.dispatch(GameEvent.BATTLE_DAMAGE_TAKEN, friend!, enemy!, dmg!);
-					if (report?.length == 1) reports.push(report[0]);
-					break;
-				case GameEvent.BATTLE_END:
-					report = attachment.dispatch(GameEvent.BATTLE_END, friend!, enemy!);
-					if (report?.length == 1) reports.push(report[0]);
-					break;
-				case GameEvent.BATTLE_INVOKED:
-					report = attachment.dispatch(GameEvent.BATTLE_INVOKED, friend!, enemy!);
-					if (report?.length == 1) reports.push(report[0]);
-					break;
-				case GameEvent.BATTLE_POST_TURN:
-					report = attachment.dispatch(GameEvent.BATTLE_POST_TURN, friend!, enemy!);
-					if (report?.length == 1) reports.push(report[0]);
-					break;
-				case GameEvent.BATTLE_PRE_TURN:
-					report = attachment.dispatch(GameEvent.BATTLE_PRE_TURN, friend!, enemy!);
-					if (report?.length == 1) reports.push(report[0]);
-					break;
-				case GameEvent.BATTLE_START:
-					report = attachment.dispatch(GameEvent.BATTLE_START, friend!, enemy!);
-					if (report?.length == 1) reports.push(report[0]);
-					break;
-				case GameEvent.EQUIP:
-					report = attachment.dispatch(GameEvent.EQUIP, friend!);
-					if (report?.length == 1) reports.push(report[0]);
-					break;
-				case GameEvent.UNEQUIP:
-					report = attachment.dispatch(GameEvent.UNEQUIP, friend!);
-					if (report?.length == 1) reports.push(report[0]);
-					break;
-				case GameEvent.MINE:
-					report = attachment.dispatch(GameEvent.MINE, asteroid!);
-					if (report?.length == 1) reports.push(report[0]);
-					break;
-				case GameEvent.WARP:
-					report = attachment.dispatch(GameEvent.WARP, friend!, ws!);
-					if (report?.length == 1) reports.push(report[0]);
-					break;
-				case GameEvent.WARP_POLL:
-					report = attachment.dispatch(GameEvent.WARP_POLL, friend!, ws!);
-					if (report?.length == 1) reports.push(report[0]);
-					break;
-			}
-		});
-		return reports;
-	}
-
 	public pollWarp(warpRequired: number): boolean {
 		if (warpRequired == 0) return true;
-		const result = this.dispatch(GameEvent.WARP_POLL, { friend: this, ws: warpRequired });
+		const result: AttachmentReport[] = [];
+		this.attachments.forEach((attachment) => {
+			const data = attachment.dispatch(GameEvent.WARP_POLL, this, warpRequired);
+			if (data != undefined) result.push(data);
+		});
+
+		if (result == undefined) return false;
+		if (result.length > 1) return false;
+		return result[0].success;
+	}
+	public warp(warpRequired: number): boolean {
+		const result: AttachmentReport[] = [];
+		this.attachments.forEach((attachment) => {
+			const data = attachment.dispatch(GameEvent.WARP, this, warpRequired);
+			if (data != undefined) result.push(data);
+		});
+
 		if (result == undefined) return false;
 		if (result.length > 1) return false;
 		return result[0].success;
@@ -223,30 +181,3 @@ type BonusStatChanger = {
 	cargo?: number;
 	handling?: number;
 };
-
-interface IBattleDamageTakenDispatch {
-	friend?: ShipWrapper;
-	enemy?: ShipWrapper;
-	dmg?: number;
-}
-interface ITwoPlayerDispatch {
-	friend?: ShipWrapper;
-	enemy?: ShipWrapper;
-}
-interface IOnePlayerDispatch {
-	friend?: ShipWrapper;
-}
-interface IAsteroidDispatch {
-	asteroid?: Asteroid;
-}
-interface IWarpDispatch {
-	friend?: ShipWrapper;
-	ws?: number;
-}
-
-interface IFullDispatch
-	extends IBattleDamageTakenDispatch,
-		ITwoPlayerDispatch,
-		IOnePlayerDispatch,
-		IWarpDispatch,
-		IAsteroidDispatch {}

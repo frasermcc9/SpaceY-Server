@@ -19,6 +19,7 @@ before(async () => {
 		consoleLogging: false,
 		maximumRarity: 10,
 		maximumTechLevel: 10,
+		testMode: true,
 	});
 	GenerateClientSet();
 	connect();
@@ -26,7 +27,7 @@ before(async () => {
 	const SN = new SpacemapNodeBuilder({
 		name: "Default",
 		requiredWarp: WarpPower.NONE,
-		faction: new FactionBuilder({ name: "G", techLevel: 2, description: "Test" }).Build(),
+		faction: new FactionBuilder({ name: "G", techLevel: 4, description: "Test" }).Build(),
 	}).build();
 	SM.addNode(SN);
 	Client.Reg.registerSpacemap(SM);

@@ -8,6 +8,7 @@ import {
 import { Ship } from "../../../lib/GameTypes/GameAsset/Ship/Ship";
 import { ShipWrapper } from "../../../lib/GameTypes/GameAsset/Ship/ShipWrapper";
 import { default as must } from "must";
+import { Client } from "../../../lib/main";
 require("must/register");
 
 describe("Attachment Tests", async () => {
@@ -64,9 +65,23 @@ describe("Attachment Tests", async () => {
 			await preSaveP1.addAttachmentToShip("Iron Plating");
 			preSaveP1.getShipWrapper().ShipStatistics.totalHp.must.eql(120);
 
-			await preSaveP1.removeAttachmentFromShip("Iron Plating");
+			await preSaveP1.unequipAttachment("Iron Plating");
 			preSaveP1.getShipWrapper().ShipStatistics.totalHp.must.eql(100);
 			preSaveP1.AutoInventoryRetrieve("Iron Plating").amount.must.eql(1);
+		});
+
+		it("Cannot equip attachment that will overload tech level", async () => {
+			const preSaveP1 = await PlayerModel.findOneOrCreate({ uId: "22" });
+			await preSaveP1.setShip("Shuttle");
+			const ACH1 = new AttachmentBuilder({
+				name: "SuperTech",
+				description: "Extremely high tech attachment",
+				techLevel: 100,
+				strength: 10,
+				type: AttachmentType.GENERAL,
+			}).Build();
+			Client.Reg.RegisterAttachments({ attachments: [ACH1] });
+			(await preSaveP1.addAttachmentToShip("SuperTech")).code.must.eql(403);
 		});
 	});
 });

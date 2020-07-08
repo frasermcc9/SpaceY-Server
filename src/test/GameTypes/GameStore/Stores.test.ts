@@ -7,6 +7,8 @@ import { BaseStore, StoreType } from "../../../lib/GameTypes/GameStore/BaseStore
 import { MaterialStore } from "../../../lib/GameTypes/GameStore/MaterialStore";
 import { Client } from "../../../lib/main";
 import { default as must } from "must";
+import { throws } from "assert";
+import { SpacemapNodeBuilder, WarpPower } from "../../../lib/GameTypes/GameSpacemap/SpacemapNode";
 
 require("must/register");
 
@@ -18,32 +20,29 @@ describe("Store Testing", async () => {
 			const store: BaseStore = new MaterialStore({
 				initialCredits: Infinity,
 				type: StoreType.MATERIAL_STORE,
-				value: 10000,
+				generationValue: 10000,
 				storeName: "MaterialStoreS1",
-				territory: new FactionBuilder({ name: "Humans", description: "Like you and me", techLevel: 4 }).Build(),
 			});
-			store.Update();
+			store.update();
 			store.GetCollectionValue().must.be.gte(10000);
 		});
 		it("Should generate an inventory with rarity", async () => {
 			const store: BaseStore = new MaterialStore({
 				initialCredits: Infinity,
 				type: StoreType.MATERIAL_STORE,
-				value: 10000,
+				generationValue: 10000,
 				storeName: "MaterialStoreS1",
-				territory: new FactionBuilder({ name: "Humans", description: "Like you and me", techLevel: 4 }).Build(),
 				centralRarity: 2,
 			});
-			store.Update();
+			store.update();
 			store.GetCollectionValue().must.be.gte(10000);
 		});
 		it("Should be set with the given inventory", async () => {
 			const store: BaseStore = new MaterialStore({
 				initialCredits: Infinity,
 				type: StoreType.MATERIAL_STORE,
-				value: 10000,
+				generationValue: 10000,
 				storeName: "MaterialStoreS1",
-				territory: new FactionBuilder({ name: "Humans", description: "Like you and me", techLevel: 4 }).Build(),
 			});
 			const setInventory: GameCollectionBase = new MaterialCollection().set("Iron", 23).set("Gold", 3);
 			store.setInventory(setInventory);
@@ -57,12 +56,11 @@ describe("Store Testing", async () => {
 			const store: BaseStore = new MaterialStore({
 				initialCredits: Infinity,
 				type: StoreType.MATERIAL_STORE,
-				value: 15000,
+				generationValue: 15000,
 				storeName: "MaterialStoreS1",
-				territory: new FactionBuilder({ name: "Humans", description: "Like you and me", techLevel: 4 }).Build(),
 				maxRarity: 8,
 			});
-			store.Update();
+			store.update();
 			store.getCollectionValue().must.be.gte(15000);
 			store.StoreItems.get("Gold").must.eql(0);
 		});
@@ -73,7 +71,6 @@ describe("Store Testing", async () => {
 				initialCredits: 100,
 				type: StoreType.MATERIAL_STORE,
 				storeName: "MaterialStoreS1",
-				territory: new FactionBuilder({ name: "Humans", description: "Like you and me", techLevel: 4 }).Build(),
 				marketForces: false,
 			});
 			const setInventory: GameCollectionBase = new MaterialCollection().set("Iron", 10).set("Gold", 5);
@@ -108,7 +105,6 @@ describe("Store Testing", async () => {
 				initialCredits: 100,
 				type: StoreType.MATERIAL_STORE,
 				storeName: "MaterialStoreS1",
-				territory: new FactionBuilder({ name: "Humans", description: "Like you and me", techLevel: 4 }).Build(),
 				marketForces: false,
 			});
 			const setInventory: GameCollectionBase = new MaterialCollection().set("Iron", 10).set("Gold", 5);
@@ -143,7 +139,6 @@ describe("Store Testing", async () => {
 				initialCredits: 100,
 				type: StoreType.MATERIAL_STORE,
 				storeName: "MaterialStoreS1",
-				territory: new FactionBuilder({ name: "Humans", description: "Like you and me", techLevel: 4 }).Build(),
 				marketForces: false,
 			});
 			const setInventory: GameCollectionBase = new MaterialCollection().set("Tech", 100);
@@ -175,7 +170,6 @@ describe("Store Testing", async () => {
 				initialCredits: 100,
 				type: StoreType.MATERIAL_STORE,
 				storeName: "MaterialStoreS1",
-				territory: new FactionBuilder({ name: "Humans", description: "Like you and me", techLevel: 4 }).Build(),
 				marketForces: false,
 			});
 			const setInventory: GameCollectionBase = new MaterialCollection().set("Food", 1);
@@ -207,7 +201,6 @@ describe("Store Testing", async () => {
 				initialCredits: 100,
 				type: StoreType.MATERIAL_STORE,
 				storeName: "MaterialStoreS1",
-				territory: new FactionBuilder({ name: "Humans", description: "Like you and me", techLevel: 4 }).Build(),
 				marketForces: false,
 			});
 			const setInventory: GameCollectionBase = new MaterialCollection().set("Food", 1);
@@ -236,20 +229,20 @@ describe("Store Testing", async () => {
 		it("Market forces should alter prices", async () => {
 			const S1: BaseStore = new MaterialStore({
 				initialCredits: 100,
-				value: 1000,
+				generationValue: 1000,
 				type: StoreType.MATERIAL_STORE,
 				storeName: "MaterialStoreS1",
-				territory: new FactionBuilder({ name: "Humans", description: "Like you and me", techLevel: 4 }).Build(),
 				marketForces: true,
 			});
 			const S2: BaseStore = new MaterialStore({
 				initialCredits: 100,
-				value: 1000,
+				generationValue: 1000,
 				type: StoreType.MATERIAL_STORE,
 				storeName: "MaterialStoreS2",
-				territory: new FactionBuilder({ name: "Humans", description: "Like you and me", techLevel: 4 }).Build(),
 				marketForces: false,
 			});
+			Client.Reg.Spacemap.resolveNodeFromName("Default").addStore(S1);
+			Client.Reg.Spacemap.resolveNodeFromName("Default").addStore(S2);
 			S1.MarketForceSettings = { randEffect: 0, hiTechEffect: 50 };
 			S1.update();
 			S2.update();
@@ -259,20 +252,20 @@ describe("Store Testing", async () => {
 			const Player = await PlayerModel.findOneOrCreate({ uId: "1" });
 			const S1: BaseStore = new MaterialStore({
 				initialCredits: 100,
-				value: 1000,
+				generationValue: 1000,
 				type: StoreType.MATERIAL_STORE,
 				storeName: "MaterialStoreS1",
-				territory: new FactionBuilder({ name: "Humans", description: "Like you and me", techLevel: 4 }).Build(),
 				marketForces: true,
 			});
 			const S2: BaseStore = new MaterialStore({
 				initialCredits: 100,
-				value: 1000,
+				generationValue: 1000,
 				type: StoreType.MATERIAL_STORE,
 				storeName: "MaterialStoreS2",
-				territory: new FactionBuilder({ name: "Humans", description: "Like you and me", techLevel: 4 }).Build(),
 				marketForces: false,
 			});
+			Client.Reg.Spacemap.resolveNodeFromName("Default").addStore(S1);
+			Client.Reg.Spacemap.resolveNodeFromName("Default").addStore(S2);
 			S1.MarketForceSettings = { randEffect: 0, hiTechEffect: 50 };
 			S1.update();
 			S2.update();
@@ -286,6 +279,85 @@ describe("Store Testing", async () => {
 			purchase2.code.must.eql(200);
 			purchase2.itemAmount.must.eql(2);
 			Player.Credits.must.eql(DEFAULT_CREDITS - cost - 50);
+		});
+		it("Should update differently based on generation or manual set", async () => {
+			const MS1 = new MaterialStore({
+				initialCredits: 5000,
+				storeName: "Default Material Store",
+				type: StoreType.MATERIAL_STORE,
+			});
+			Client.Reg.Spacemap.resolveNodeFromName("Default").addStore(MS1);
+			const MS1_Collection = new Map().set("Iron", 15).set("Gold", 10);
+			MS1.setInventory(MS1_Collection);
+			MS1.INTERNAL_GetCollection().get("Iron").must.eql(15);
+			MS1.update();
+			throws(() => {
+				MS1.generateInventory();
+			});
+			MS1.INTERNAL_GetCollection().get("Iron").must.eql(15);
+			MS1.editGenSettings({ generationValue: 10000 });
+			MS1.generateInventory();
+			MS1.getCollectionValue().must.be.gte(10000);
+			MS1.setInventory(MS1_Collection);
+			MS1.INTERNAL_GetCollection().get("Iron").must.eql(15);
+			MS1.INTERNAL_AlterItem("Iron", -10);
+			MS1.INTERNAL_GetCollection().get("Iron").must.eql(5);
+			MS1.update();
+			MS1.INTERNAL_GetCollection().get("Iron").must.eql(15);
+		});
+
+		it("Should update all stores", () => {
+			const MS1 = new MaterialStore({
+				initialCredits: 5000,
+				storeName: "MsOne",
+				type: StoreType.MATERIAL_STORE,
+				generationValue: 250,
+			});
+			const MS2 = new MaterialStore({
+				initialCredits: 5000,
+				storeName: "MsTwo",
+				type: StoreType.MATERIAL_STORE,
+				generationValue: 450,
+			});
+			const MS3 = new MaterialStore({
+				initialCredits: 5000,
+				storeName: "MsThree",
+				type: StoreType.MATERIAL_STORE,
+				generationValue: 1250,
+			});
+
+			const FN1 = new FactionBuilder({ name: "G", techLevel: 4, description: "Test" }).Build();
+
+			const SN1 = new SpacemapNodeBuilder({
+				name: "TestNodeOne",
+				requiredWarp: WarpPower.NONE,
+				faction: FN1,
+			})
+				.addStore(MS1)
+				.addStore(MS2)
+				.build();
+			const SN2 = new SpacemapNodeBuilder({
+				name: "TestNodeTwo",
+				requiredWarp: WarpPower.NONE,
+				faction: FN1,
+			})
+				.addStore(MS3)
+				.build();
+
+			Client.Reg.Spacemap.addNodes([SN1, SN2]);
+
+			MS1.INTERNAL_AlterItem("Gold", -8);
+			MS1.getCollectionValue().must.be.lt(250);
+			MS2.INTERNAL_AlterItem("Iron", -15);
+			MS2.getCollectionValue().must.be.lt(450);
+			MS3.INTERNAL_AlterItem("Tech", -10);
+			MS3.getCollectionValue().must.be.lt(1250);
+
+			Client.Reg.Spacemap.updateMap();
+
+			MS1.getCollectionValue().must.be.gte(250);
+			MS2.getCollectionValue().must.be.gte(450);
+			MS3.getCollectionValue().must.be.gte(1250);
 		});
 	});
 });

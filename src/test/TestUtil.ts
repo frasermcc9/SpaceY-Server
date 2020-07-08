@@ -62,7 +62,7 @@ export function GENERATED_MATERIALS() {
 }
 export function GENERATED_SHIPS() {
 	return [
-		new ShipBuilder({ name: "Shuttle", description: "A small but agile ship" })
+		new ShipBuilder({ name: "Shuttle", description: "A small but agile ship", techLevel: 4 })
 			.EnableSell(1500)
 			.EnableBuildable(
 				new BlueprintBuilder().AutoBuild({
@@ -76,7 +76,7 @@ export function GENERATED_SHIPS() {
 			.SetStats({ baseHp: 100, baseShield: 50 })
 			.SetWeapons({ heavyCap: 3, primaryCap: 3, generalCap: 2 })
 			.Build(),
-		new ShipBuilder({ name: "Warship", description: "A medium sized vehicle" })
+		new ShipBuilder({ name: "Warship", description: "A medium sized vehicle", techLevel: 6 })
 			.EnableSell(3000)
 			.EnableBuildable(
 				new BlueprintBuilder().AutoBuild({
@@ -89,7 +89,7 @@ export function GENERATED_SHIPS() {
 			)
 			.SetStats({ baseHp: 150, baseShield: 90, baseCargo: 750 })
 			.Build(),
-		new ShipBuilder({ name: "Destroyer", description: "A flagship destroyer" })
+		new ShipBuilder({ name: "Destroyer", description: "A flagship destroyer", techLevel: 8 })
 			.EnableSell(4500)
 			.EnableBuildable(
 				new BlueprintBuilder().AutoBuild({

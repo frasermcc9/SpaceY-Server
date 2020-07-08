@@ -8,9 +8,10 @@ import { ShipWrapper } from "../Ship/ShipWrapper";
 import { Attachment, GameEvent } from "../Attachment/Attachment";
 import { SpacemapNode, SpacemapNodeBuilder } from "../../GameSpacemap/SpacemapNode";
 import { util } from "../../../Util/util";
+import { GameAsset } from "../GameAsset";
 
 export class Player {
-	private uId!: string;
+	private readonly uId!: string;
 	public get UId(): string {
 		return this.uId;
 	}
@@ -23,6 +24,49 @@ export class Player {
 		return this.inventory;
 	}
 	private location: SpacemapNode = Client.Reg.DefaultLocation;
+
+	private blueprints: Set<string> = new Set();
+
+	private exp: number = 100;
+
+	//#region EXP
+
+	public get Level(): number {
+		return Player.inverseExpFunction(this.exp);
+	}
+	public get ExpToNextLevel(): number {
+		return Player.expFunction(this.Level + 1) - this.exp;
+	}
+	public addExp(exp: number): void {
+		if (this.exp + exp >= this.ExpToNextLevel) {
+			//the player levelled up
+			Client.EventMan.emit("LevelUp", { uId: this.uId, level: this.Level });
+		}
+        this.exp += exp;
+	}
+
+	/**
+	 * Returns cumulative xp required to reach a level
+	 * @param x the level
+	 * @returns the cumulative xp to reach this level
+	 */
+	private static expFunction(x: number) {
+		return (5 / 9) * (x + 1) * (4 * x ** 2 - 4 * x + 27);
+	}
+	/**
+	 * Returns the level that a player with xp *x* would be
+	 * @param x the cumulative xp of the player
+	 * @returns the level that the player would be
+	 */
+	private static inverseExpFunction(x: number) {
+		for (let i = 0; ; i++) {
+			if (this.expFunction(i) > x) {
+				return i - 1;
+			}
+		}
+	}
+
+	//#endregion EXP
 
 	//#region INVENTORY
 
@@ -460,16 +504,47 @@ export class Player {
 		return this.ship;
 	}
 
+	public async equipAttachment(attachment: Attachment | string): Promise<{ code: 200 | 403 | 404 }> {
+		const inInventory = this.inventory.Attachments.get(attachment.toString());
+		if (inInventory == undefined || inInventory < 1) return { code: 403 };
+		const addResult = this.ship.addAttachment(attachment);
+		if (addResult.code == 200) {
+			if ((await this.AttachmentDecrement(attachment.toString(), 1)).code != 1)
+				throw new Error("Server error when decrementing player attachments");
+			await this.save();
+			return { code: 200 };
+		} else {
+			return addResult;
+		}
+	}
+
+	public async unequipAttachment(attachment: Attachment | string): Promise<{ code: 200 | 404 }> {
+		const Result = this.ship.removeAttachment(attachment);
+		if (Result.code == 200 && Result.removedAttachment != undefined) {
+			this.AttachmentIncrement(Result.removedAttachment.Name, 1);
+			await this.save();
+			return { code: 200 };
+		}
+		return { code: 404 };
+	}
+	/**
+	 * **FORCE** adds attachment to ship. Does nothing else. For normal add from
+	 * inventory, use equipAttachment()
+	 * @param attachment any attachment in client registry
+	 */
 	public async addAttachmentToShip(attachment: Attachment | string): Promise<{ code: 200 | 403 | 404 }> {
 		const Result = this.ship.addAttachment(attachment);
 		await this.save();
 		return Result;
 	}
-
-	public async removeAttachmentFromShip(attachment: Attachment | string): Promise<{ code: 200 | 404 }> {
+	/**
+	 * **FORCE** adds attachment to ship. Does nothing else. For normal remove
+	 * from ship and add to inventory, use unequipAttachment().
+	 * @param attachment any attachment in client registry
+	 */
+	public async forceRemoveFromShip(attachment: Attachment | string): Promise<{ code: 200 | 403 | 404 }> {
 		const Result = this.ship.removeAttachment(attachment);
 		if (Result.code == 200 && Result.removedAttachment != undefined) {
-			this.inventory.Attachments.StrictSumCollection([Result.removedAttachment.Name]);
 			await this.save();
 			return { code: 200 };
 		}
@@ -486,11 +561,12 @@ export class Player {
 		return util.throwUndefined(node, "Player does not have location");
 	}
 
-	public travelTo(node: SpacemapNode): boolean {
+	public async travelTo(node: SpacemapNode): Promise<boolean> {
 		if (!this.adjacentLocations().includes(node)) return false;
 		if (this.getShipWrapper().pollWarp(node.RequiredWarp)) {
 			this.location = node;
 			this.getShipWrapper().dispatch(GameEvent.WARP, { friend: this.ship, ws: node.RequiredWarp });
+			await this.save();
 			return true;
 		}
 		return false;
@@ -502,6 +578,25 @@ export class Player {
 
 	//#endregion - location
 
+	//#region BLUEPRINT
+
+	public hasBlueprintFor(item: string | GameAsset): boolean {
+		return this.blueprints.has(item.toString());
+	}
+	/**
+	 * Adds a blueprint to the player. Returns `true` if its new, `false` if the
+	 * player already has it.
+	 * @param item
+	 */
+	public async discoverBlueprint(item: string | GameAsset): Promise<boolean> {
+		if (this.blueprints.has(item.toString())) return false;
+		this.blueprints.add(item.toString());
+		await this.save();
+		return true;
+	}
+
+	//#endregion blueprint
+
 	public async save(): Promise<void> {
 		await PlayerModel.updateOne(
 			{ uId: this.uId },
@@ -510,22 +605,33 @@ export class Player {
 				inventory: this.inventory.GetGeneric(),
 				ship: { name: this.ship.stringifyName(), equipped: this.ship.stringifyAttachments() },
 				skin: this.skin,
+				location: this.location.Name,
+				blueprints: Array.from(this.blueprints),
+				exp: this.exp,
 			}
 		);
 	}
 
 	public constructor(data: IPlayerDocument) {
-		this.uId = data.uId;
+		this.uId = data.uId; //ID
+
 		const Ship = Client.Reg.ResolveShipFromName(data.ship.name);
 		if (Ship == undefined)
 			throw new Error(
-				`Mismatch between database and server. No such item ${this.ship} exists despite existing in database for id ${this.uId}.`
+				`Mismatch between database and server. No item ${this.ship} exists in server, but does in db for ${this.uId}.`
 			);
+
 		this.ship = new ShipWrapper(Ship, this);
+
 		this.location = util.throwUndefined(
 			Client.Reg.Spacemap.resolveNodeFromName(data.location),
 			`Mismatch between database and server for location ${data.location}`
 		);
+
+		this.blueprints = new Set(data.blueprints);
+
+		this.exp = data.exp;
+
 		data.ship.equipped.forEach((attachmentName) => {
 			const result = this.ship.addAttachment(attachmentName);
 			if (result.code == 404)

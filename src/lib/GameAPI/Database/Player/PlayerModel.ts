@@ -21,6 +21,8 @@ export interface IPlayer {
 		reputation: Map<string, number>;
 	};
 	location: string;
+	blueprints: string[];
+	exp: number;
 	dateOfEntry?: Date;
 	lastUpdated?: Date;
 }

@@ -8,7 +8,6 @@ const PlayerSchema = new Schema({
 		equipped: [String],
 	},
 	skin: {},
-	location: String,
 	inventory: {
 		credits: Number,
 		tokens: Number,
@@ -17,6 +16,9 @@ const PlayerSchema = new Schema({
 		attachments: Map,
 		reputation: Map,
 	},
+	location: String,
+	blueprints: [String],
+	exp: Number,
 	dateOfEntry: {
 		type: Date,
 		default: new Date(),

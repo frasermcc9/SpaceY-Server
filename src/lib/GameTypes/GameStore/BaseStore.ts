@@ -5,6 +5,8 @@ import { Player } from "../GameAsset/Player/Player";
 import { SellableDecorator, IMarketForces } from "../GameAsset/AssetDecorators";
 import { Faction } from "../GameAsset/Faction/Faction";
 import { util } from "../../Util/util";
+import { SpacemapNode } from "../GameSpacemap/SpacemapNode";
+import { Client } from "../../Client/Client";
 
 export abstract class BaseStore implements IStoreUpdatable {
 	protected collection: GameCollectionBase;
@@ -13,6 +15,9 @@ export abstract class BaseStore implements IStoreUpdatable {
 		return this.credits;
 	}
 	protected readonly storeType: StoreType;
+
+	protected manualEnabled: boolean = false;
+	protected manualInventory: MapCollection<string, number>;
 
 	protected readonly name: string;
 	protected readonly initCredits: number;
@@ -23,6 +28,7 @@ export abstract class BaseStore implements IStoreUpdatable {
 		hiTechEffect: 25,
 		loTechEffect: 15,
 	};
+
 	public set MarketForceSettings(options: { randEffect?: number; loTechEffect?: number; hiTechEffect?: number }) {
 		this.marketForceSettings.hiTechEffect = options.hiTechEffect ?? 25;
 		this.marketForceSettings.loTechEffect = options.loTechEffect ?? 15;
@@ -37,7 +43,12 @@ export abstract class BaseStore implements IStoreUpdatable {
 		this.initCredits = options.initialCredits;
 		this.storeType = options.type;
 		this.marketForces = options.marketForces ?? false;
-		this.marketForceSettings.territory = options.territory;
+
+		this.manualInventory = new MapCollection();
+	}
+
+	public setFaction(faction: Faction): void {
+		this.marketForceSettings.territory = faction;
 	}
 
 	//#region Trading
@@ -154,6 +165,7 @@ export abstract class BaseStore implements IStoreUpdatable {
 	public GetCollectionValue(): number {
 		return this.getCollectionValue();
 	}
+
 	public get StoreItems(): MapCollection<string, number> {
 		return new MapCollection(this.collection);
 	}
@@ -170,24 +182,52 @@ export abstract class BaseStore implements IStoreUpdatable {
 	}
 
 	//Refresh the store with new stock
-	public abstract update(): void;
-	public Update(): void {
-		this.update();
+	public update() {
+		if (this.credits < this.initCredits) {
+			this.credits = this.initCredits;
+		}
+		if (this.manualEnabled) {
+			return this.setInventory(this.manualInventory);
+		}
+		return this.populateInventory();
 	}
 
-	public abstract generateInventory(): void;
+	public generateInventory(): void {
+		this.manualEnabled = true;
+		this.populateInventory();
+	}
+
+	public abstract populateInventory(): void;
 	/**
 	 * Clears the current inventory, and sets it to what is given in the input parameter.
 	 * @param data
 	 */
 	public setInventory(data: Map<string, number>): void {
-		this.collection.forEach((_el, key) => this.collection.set(key, 0));
+		this.manualEnabled = true;
+		this.collection.forEach((_el, key) => {
+			this.collection.set(key, 0);
+		});
+		this.manualInventory = new MapCollection(data);
 		return this.collection.StrictSumCollection(data);
 	}
 
 	public identity(): string {
 		return `${this.name}`;
 	}
+
+	//#region TESTING METHODS
+
+	public INTERNAL_AlterItem(item: string, n: number): void {
+		if (!Client.TEST) throw new Error("Internal prefix functions can only be used in test mode.");
+		const currentAmount = this.collection.get(item);
+		this.collection.set(item, (currentAmount ?? 0) + n);
+	}
+
+	public INTERNAL_GetCollection() {
+		return this.collection;
+	}
+
+	//#endregion
 }
 
 type TradeOutput = {
@@ -216,8 +256,6 @@ export type BaseStoreOptions = {
 	/**Whether to enable *market forces*, fluctuations to prices based on tech
 	 * level and randomness */
 	marketForces?: boolean;
-	/**The faction that has this store */
-	territory: Faction;
 };
 
 export interface IStoreUpdatable {

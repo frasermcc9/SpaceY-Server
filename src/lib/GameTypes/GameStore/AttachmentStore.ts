@@ -12,14 +12,7 @@ export class AttachmentStore extends BaseStore {
 		this.maxToSell = options.maxToSell;
 	}
 
-	public update(): void {
-		if (this.credits < this.initCredits) {
-			this.credits = this.initCredits;
-		}
-		this.generateInventory();
-	}
-
-	public generateInventory(): void {
+	public populateInventory(): void {
 		const candidates = this.faction.SellableAttachments;
 		while (this.collection.CollectionSize < this.maxToSell) {
 			const selected = candidates[~~(Math.random() * candidates.length)];

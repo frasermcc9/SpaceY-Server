@@ -55,6 +55,15 @@ export class SpacemapNode {
 
 	//#region - Stores
 
+	public addStore(store: BaseStore) {
+		store.setFaction(this.faction);
+		this.stores.push(store);
+	}
+
+	public addAsteroid(asteroid: Asteroid) {
+		this.asteroids.push(asteroid);
+	}
+
 	public storeDisplayNames(): string[] {
 		return this.stores.map((el) => el.identity());
 	}
@@ -91,12 +100,15 @@ export class SpacemapNodeBuilder {
 		this.requiredWarp = requiredWarp;
 	}
 
-	public addStore(store: BaseStore) {
+	public addStore(store: BaseStore): this {
+		store.setFaction(this.faction);
 		this.stores.push(store);
+		return this;
 	}
 
-	public addAsteroid(asteroid: Asteroid) {
+	public addAsteroid(asteroid: Asteroid): this {
 		this.asteroids.push(asteroid);
+		return this;
 	}
 
 	public build(): SpacemapNode {

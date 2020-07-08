@@ -98,7 +98,7 @@ export class ShipWrapper {
 	 * @returns codes:<br />  \
 	 *  200: success<br />  \
 	 *  404: attachment not found in registry<br />  \
-	 *  403: not enough room to add item
+	 *  403: not enough room to add item (space or tech)
 	 */
 	public addAttachment(attachment: Attachment | string): { code: 200 | 403 | 404 } {
 		if (typeof attachment == "string") {
@@ -114,10 +114,15 @@ export class ShipWrapper {
 				`Unsupported attachment type ${Type}. It could not be found. NumEquipped:${NumEquipped}, MaxEquipped${MaxEquipped}`
 			);
 		if (NumEquipped >= MaxEquipped) return { code: 403 };
+		if (this.getTotalTech() + attachment.TechLevel > this.ship.MaxTech) return { code: 403 };
 		this.Slots.set(Type, NumEquipped + 1);
 		this.attachments.push(attachment);
 		attachment.dispatch(GameEvent.EQUIP, this);
 		return { code: 200 };
+	}
+
+	public getTotalTech(): number {
+		return this.attachments.reduce((acc, val) => acc + val.TechLevel, 0);
 	}
 
 	/**

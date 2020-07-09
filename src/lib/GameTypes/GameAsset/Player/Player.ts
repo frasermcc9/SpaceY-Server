@@ -632,6 +632,40 @@ export class Player {
 
 	//#endregion blueprint
 
+	//#region Character
+
+	public get PlayerImage(): string {
+		if (this.skin != undefined) {
+			return this.skin.SkinUri;
+		} else {
+			return this.ship.Uri;
+		}
+	}
+
+	public applySkin(name: string, uri: string): void {
+		this.skin = new Skin(name, uri);
+	}
+
+	public profile() {
+		return {
+			credits: this.Credits,
+			skills: this.skillPoints,
+			image: this.PlayerImage,
+			bestFaction: Client.Reg.ResolveFactionFromName(
+				this.inventory.Reputation.keyArray().reduce((a, b) =>
+					this.inventory.Reputation.get(a)! > this.inventory.Reputation.get(b)! ? a : b
+				)
+			),
+			ship: this.ship,
+			level: this.Level,
+			location: this.location,
+			exp: this.exp,
+			expToNext: this.ExpToNextLevel,
+		};
+	}
+
+	//#endregion Character
+
 	public async save(): Promise<void> {
 		await PlayerModel.updateOne(
 			{ uId: this.uId },

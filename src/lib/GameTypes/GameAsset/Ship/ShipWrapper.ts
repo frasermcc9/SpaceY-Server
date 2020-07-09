@@ -49,6 +49,10 @@ export class ShipWrapper {
 		return this.ship.WeaponCapacities;
 	}
 
+	public get Uri() {
+		return this.ship.ImageUri;
+	}
+
 	public copyAttachments(): Attachment[] {
 		return this.attachments.slice();
 	}

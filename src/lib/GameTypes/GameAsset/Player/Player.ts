@@ -659,6 +659,11 @@ export class Player {
 		await this.save();
 	}
 
+	public async removeSkin(): Promise<void> {
+		this.skin = undefined;
+		await this.save;
+	}
+
 	public get availableSkins(): Skin[] {
 		return this.allSkins.slice();
 	}

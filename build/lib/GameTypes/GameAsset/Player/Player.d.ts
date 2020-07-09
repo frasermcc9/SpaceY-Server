@@ -336,6 +336,7 @@ export declare class Player {
     get PlayerImage(): string;
     newSkin(name: string, uri: string): Promise<boolean>;
     applySkin(name: string, uri: string): Promise<void>;
+    removeSkin(): Promise<void>;
     get availableSkins(): Skin[];
     profile(): {
         credits: number;

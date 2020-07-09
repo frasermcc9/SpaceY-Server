@@ -594,7 +594,7 @@ class Player {
     }
     async removeSkin() {
         this.skin = undefined;
-        await this.save;
+        await this.save();
     }
     get availableSkins() {
         return this.allSkins.slice();

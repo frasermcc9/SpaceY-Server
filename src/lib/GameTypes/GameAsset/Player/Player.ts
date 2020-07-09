@@ -661,7 +661,7 @@ export class Player {
 
 	public async removeSkin(): Promise<void> {
 		this.skin = undefined;
-		await this.save;
+		await this.save();
 	}
 
 	public get availableSkins(): Skin[] {

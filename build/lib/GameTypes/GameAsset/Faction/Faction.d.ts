@@ -8,6 +8,7 @@ export declare class Faction extends GameAsset {
     get SellableAttachments(): Attachment[];
     get UsableShips(): Ship[];
     get UsableAttachments(): Attachment[];
+    get Uri(): string;
 }
 export declare class FactionBuilder {
     private readonly options;
@@ -45,6 +46,7 @@ export declare class FactionBuilder {
      * @param attachment
      */
     addUsedAttachments(attachment: Attachment[] | Attachment): this;
+    setImageUri(uri: string): this;
     Build(): Faction;
 }
 interface IFactionBuilderOptions extends IGameAssetOptions {
@@ -61,6 +63,7 @@ interface IFactionBuilderOptions extends IGameAssetOptions {
     usedAttachments?: Attachment[];
     cost?: never;
     blueprint?: never;
+    imageUri?: string;
 }
 interface IFactionOptions extends IGameAssetOptions {
     /**The ships that are sold by this faction */
@@ -74,6 +77,7 @@ interface IFactionOptions extends IGameAssetOptions {
      * implicitly, so this is for attachments that aren't sold, but are to be
      * used. */
     usedAttachments: Attachment[];
+    imageUri: string;
     cost?: never;
     blueprint?: never;
 }

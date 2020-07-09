@@ -10,6 +10,7 @@ class Faction extends GameAsset_1.GameAsset {
         this.options.usedShips = options.usedShips ?? [];
         this.options.soldAttachments = options.soldAttachments ?? [];
         this.options.usedAttachments = options.usedAttachments ?? [];
+        this.options.imageUri = options.imageUri ?? "";
     }
     get SellableShips() {
         return this.options.soldShips.slice();
@@ -22,6 +23,9 @@ class Faction extends GameAsset_1.GameAsset {
     }
     get UsableAttachments() {
         return this.options.soldAttachments.slice();
+    }
+    get Uri() {
+        return this.options.imageUri;
     }
 }
 exports.Faction = Faction;
@@ -90,6 +94,10 @@ class FactionBuilder {
         this.options.usedAttachments?.push(...attachment);
         return this;
     }
+    setImageUri(uri) {
+        this.options.imageUri = uri;
+        return this;
+    }
     Build() {
         return new Faction({
             name: this.options.name,
@@ -99,6 +107,7 @@ class FactionBuilder {
             usedAttachments: this.options.usedAttachments ?? [],
             soldShips: this.options.soldShips ?? [],
             usedShips: this.options.usedShips ?? [],
+            imageUri: this.options.imageUri ?? "",
         });
     }
 }

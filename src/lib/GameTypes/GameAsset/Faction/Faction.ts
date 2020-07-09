@@ -9,6 +9,7 @@ export class Faction extends GameAsset {
 		this.options.usedShips = options.usedShips ?? [];
 		this.options.soldAttachments = options.soldAttachments ?? [];
 		this.options.usedAttachments = options.usedAttachments ?? [];
+		this.options.imageUri = options.imageUri ?? "";
 	}
 
 	public get SellableShips(): Ship[] {
@@ -23,6 +24,9 @@ export class Faction extends GameAsset {
 	}
 	public get UsableAttachments(): Attachment[] {
 		return this.options.soldAttachments.slice();
+	}
+	public get Uri(): string {
+		return this.options.imageUri;
 	}
 }
 
@@ -86,6 +90,11 @@ export class FactionBuilder {
 		return this;
 	}
 
+	public setImageUri(uri: string): this {
+		this.options.imageUri = uri;
+		return this;
+	}
+
 	public Build(): Faction {
 		return new Faction({
 			name: this.options.name,
@@ -95,6 +104,7 @@ export class FactionBuilder {
 			usedAttachments: this.options.usedAttachments ?? [],
 			soldShips: this.options.soldShips ?? [],
 			usedShips: this.options.usedShips ?? [],
+			imageUri: this.options.imageUri ?? "",
 		});
 	}
 }
@@ -114,6 +124,7 @@ interface IFactionBuilderOptions extends IGameAssetOptions {
 
 	cost?: never;
 	blueprint?: never;
+	imageUri?: string;
 }
 interface IFactionOptions extends IGameAssetOptions {
 	/**The ships that are sold by this faction */
@@ -127,7 +138,7 @@ interface IFactionOptions extends IGameAssetOptions {
 	 * implicitly, so this is for attachments that aren't sold, but are to be
 	 * used. */
 	usedAttachments: Attachment[];
-
+	imageUri: string;
 	cost?: never;
 	blueprint?: never;
 }

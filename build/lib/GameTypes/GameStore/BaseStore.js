@@ -67,7 +67,8 @@ class BaseStore {
             return { code: 500 };
         trader.CreditsDecrement({ amount: cpi * quantity });
         this.credits += cpi * quantity;
-        const m = await trader.MaterialIncrement(item, quantity);
+        const m = await trader.AutoInventoryEdit(item, quantity);
+        trader.save();
         return { itemAmount: m.amount, playerCredits: trader.Credits, code: 200 };
     }
     /**
@@ -103,6 +104,7 @@ class BaseStore {
         const playerNew = (await trader.AutoInventoryEdit(item, -quantity)).amount;
         if (playerNew == undefined)
             return { code: 500 };
+        trader.save();
         return { itemAmount: playerNew, playerCredits: trader.Credits, code: 200 };
     }
     /**
@@ -141,6 +143,7 @@ class BaseStore {
         const playerNew = (await trader.AutoInventoryEdit(item, -quantity)).amount;
         if (playerNew == undefined)
             return { code: 500 };
+        trader.save();
         return { itemAmount: playerNew, playerCredits: trader.Credits, code: 200 };
     }
     getCostPerItem(item) {

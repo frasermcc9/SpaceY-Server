@@ -58,7 +58,7 @@ exports.NodeGenerator = () => {
         })
             .addStore(new ShipStore_1.ShipStore({
             initialCredits: 25000,
-            storeName: "Kalen Logistics",
+            storeName: "Lyra Logistics",
             type: BaseStore_1.StoreType.SHIP_STORE,
             maxToSell: 2,
             storeFaction: main_1.Client.Reg.ResolveFactionFromName("Kalen"),

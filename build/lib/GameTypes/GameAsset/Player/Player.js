@@ -615,14 +615,16 @@ class Player {
     }
     //#endregion Character
     async save() {
+        const skinDb = [];
+        this.allSkins.forEach((skin) => {
+            skinDb.push({ skinName: skin.SkinName, skinUri: skin.SkinUri });
+        });
         await PlayerModel_1.PlayerModel.updateOne({ uId: this.uId }, {
             uId: this.uId,
             inventory: this.inventory.GetGeneric(),
             ship: { name: this.ship.stringifyName(), equipped: this.ship.stringifyAttachments() },
             skin: { skinName: this.skin?.SkinName ?? "", skinUri: this.skin?.SkinUri ?? "" },
-            skins: this.allSkins.map((s) => {
-                return { skinName: s.SkinName, skinUri: s.SkinUri };
-            }),
+            skins: skinDb,
             location: this.location.Name,
             blueprints: Array.from(this.blueprints),
             exp: this.exp,

@@ -690,6 +690,11 @@ export class Player {
 	//#endregion Character
 
 	public async save(): Promise<void> {
+		const skinDb: { skinName: string; skinUri: string }[] = [];
+		this.allSkins.forEach((skin) => {
+			skinDb.push({ skinName: skin.SkinName, skinUri: skin.SkinUri });
+		});
+
 		await PlayerModel.updateOne(
 			{ uId: this.uId },
 			{
@@ -697,9 +702,7 @@ export class Player {
 				inventory: this.inventory.GetGeneric(),
 				ship: { name: this.ship.stringifyName(), equipped: this.ship.stringifyAttachments() },
 				skin: { skinName: this.skin?.SkinName ?? "", skinUri: this.skin?.SkinUri ?? "" },
-				skins: this.allSkins.map((s) => {
-					return { skinName: s.SkinName, skinUri: s.SkinUri };
-				}),
+				skins: skinDb,
 				location: this.location.Name,
 				blueprints: Array.from(this.blueprints),
 				exp: this.exp,

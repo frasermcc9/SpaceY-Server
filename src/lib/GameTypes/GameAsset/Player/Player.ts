@@ -643,17 +643,30 @@ export class Player {
 		}
 	}
 
-	public applySkin(name: string, uri: string): boolean {
+	public async newSkin(name: string, uri: string): Promise<boolean> {
 		if (this.inventory.removeTokens({ amount: 1 })) {
 			this.skin = new Skin(name, uri);
+			this.allSkins.push(this.skin);
+			await this.save();
 			return true;
 		}
 		return false;
 	}
 
+	public async applySkin(name: string, uri: string): Promise<void> {
+		const skin = this.allSkins.find((skin) => skin.SkinName == name && skin.SkinUri == uri);
+		this.skin = skin;
+		await this.save();
+	}
+
+	public get availableSkins(): Skin[] {
+		return this.allSkins.slice();
+	}
+
 	public profile() {
 		return {
 			credits: this.Credits,
+			tokens: this.inventory.Tokens,
 			skills: this.skillPoints,
 			image: this.PlayerImage,
 			bestFaction: Client.Reg.ResolveFactionFromName(

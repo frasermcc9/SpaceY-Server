@@ -4,7 +4,8 @@ export declare class Asteroid extends MaterialCollection {
     private cooldown;
     private timeoutMap;
     private timeoutIntervals;
-    constructor(options: IMaterialCollectionOptions, cooldown?: number);
+    private name;
+    constructor(options: IMaterialCollectionOptions, cooldown: number | undefined, name: string);
     /**
      * Asynchronously adds and then removes players from the cooldown map after
      * the duration provided. Stores the player uid for the timeout, and keeps
@@ -55,9 +56,12 @@ export declare class Asteroid extends MaterialCollection {
      * @internal
      */
     private applyDeviation;
+    get Name(): string;
 }
 export declare class AsteroidBuilder {
     cooldown?: number;
+    name: string;
+    constructor(name: string);
     setCooldown(seconds: number): this;
     BuildRandom({ value }: {
         value: number;

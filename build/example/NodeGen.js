@@ -14,9 +14,9 @@ exports.NodeGenerator = () => {
             requiredWarp: SpacemapNode_1.WarpPower.NONE,
             faction: main_1.Client.Reg.ResolveFactionFromName("Kalen"),
         })
-            .addAsteroid(new Asteroid_1.AsteroidBuilder().BuildRandom({ value: 500 }))
-            .addAsteroid(new Asteroid_1.AsteroidBuilder().BuildRandom({ value: 500 }))
-            .addAsteroid(new Asteroid_1.AsteroidBuilder().BuildRandom({ value: 500 }))
+            .addAsteroid(new Asteroid_1.AsteroidBuilder("GEM01").BuildRandom({ value: 500 }))
+            .addAsteroid(new Asteroid_1.AsteroidBuilder("GEM02").BuildRandom({ value: 500 }))
+            .addAsteroid(new Asteroid_1.AsteroidBuilder("GEM03").BuildRandom({ value: 500 }))
             .addStore(new MaterialStore_1.MaterialStore({
             initialCredits: 1250,
             storeName: "Gemini Scrapshop",
@@ -36,7 +36,7 @@ exports.NodeGenerator = () => {
             requiredWarp: SpacemapNode_1.WarpPower.NONE,
             faction: main_1.Client.Reg.ResolveFactionFromName("Kalen"),
         })
-            .addAsteroid(new Asteroid_1.AsteroidBuilder().BuildRandom({ value: 750 }))
+            .addAsteroid(new Asteroid_1.AsteroidBuilder("KAL01").BuildRandom({ value: 750 }))
             .addStore(new MaterialStore_1.MaterialStore({
             initialCredits: 1550,
             storeName: "Kalen Resource Distribution",

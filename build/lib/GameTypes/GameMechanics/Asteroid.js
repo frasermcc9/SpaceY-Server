@@ -4,11 +4,12 @@ exports.AsteroidBuilder = exports.Asteroid = void 0;
 const MaterialCollection_1 = require("../GameCollections/MaterialCollection");
 const Client_1 = require("../../Client/Client");
 class Asteroid extends MaterialCollection_1.MaterialCollection {
-    constructor(options, cooldown = Client_1.Client.Reg.DefaultAsteroidCooldown) {
+    constructor(options, cooldown = Client_1.Client.Reg.DefaultAsteroidCooldown, name) {
         super(options);
         this.timeoutMap = new Map();
         this.timeoutIntervals = new Set();
         this.cooldown = cooldown;
+        this.name = name;
     }
     /**
      * Asynchronously adds and then removes players from the cooldown map after
@@ -98,9 +99,15 @@ class Asteroid extends MaterialCollection_1.MaterialCollection {
                 this.set(key, NewAmount);
         });
     }
+    get Name() {
+        return this.name;
+    }
 }
 exports.Asteroid = Asteroid;
 class AsteroidBuilder {
+    constructor(name) {
+        this.name = name;
+    }
     setCooldown(seconds) {
         this.cooldown = seconds;
         return this;
@@ -109,10 +116,10 @@ class AsteroidBuilder {
         if (value < 0 && Client_1.Client.Get().ConsoleLogging)
             console.warn("Negative asteroid value passed.");
         const collection = MaterialCollection_1.MaterialCollection.GenerateMineableCollection(value);
-        return new Asteroid({ data: collection }, this.cooldown);
+        return new Asteroid({ data: collection }, this.cooldown, this.name);
     }
     BuildCustom(materialCollection) {
-        return new Asteroid(materialCollection, this.cooldown);
+        return new Asteroid(materialCollection, this.cooldown, this.name);
     }
 }
 exports.AsteroidBuilder = AsteroidBuilder;

@@ -8,9 +8,12 @@ export class Asteroid extends MaterialCollection {
 	private timeoutMap = new Map<string, number>();
 	private timeoutIntervals = new Set<NodeJS.Timeout>();
 
-	constructor(options: IMaterialCollectionOptions, cooldown: number = Client.Reg.DefaultAsteroidCooldown) {
+	private name: string;
+
+	constructor(options: IMaterialCollectionOptions, cooldown: number = Client.Reg.DefaultAsteroidCooldown, name: string) {
 		super(options);
 		this.cooldown = cooldown;
+		this.name = name;
 	}
 	/**
 	 * Asynchronously adds and then removes players from the cooldown map after
@@ -105,10 +108,19 @@ export class Asteroid extends MaterialCollection {
 			if (el != 0) this.set(key, NewAmount);
 		});
 	}
+
+	public get Name(): string {
+		return this.name;
+	}
 }
 
 export class AsteroidBuilder {
 	public cooldown?: number;
+	public name: string;
+
+	public constructor(name: string) {
+		this.name = name;
+	}
 
 	public setCooldown(seconds: number): this {
 		this.cooldown = seconds;
@@ -118,10 +130,10 @@ export class AsteroidBuilder {
 	public BuildRandom({ value }: { value: number }): Asteroid {
 		if (value < 0 && Client.Get().ConsoleLogging) console.warn("Negative asteroid value passed.");
 		const collection = MaterialCollection.GenerateMineableCollection(value);
-		return new Asteroid({ data: collection }, this.cooldown);
+		return new Asteroid({ data: collection }, this.cooldown, this.name);
 	}
 
 	public BuildCustom(materialCollection: IMaterialCollectionOptions): Asteroid {
-		return new Asteroid(materialCollection, this.cooldown);
+		return new Asteroid(materialCollection, this.cooldown, this.name);
 	}
 }

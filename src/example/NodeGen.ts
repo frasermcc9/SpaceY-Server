@@ -12,9 +12,9 @@ export const NodeGenerator = () => {
 			requiredWarp: WarpPower.NONE,
 			faction: Client.Reg.ResolveFactionFromName("Kalen")!,
 		})
-			.addAsteroid(new AsteroidBuilder().BuildRandom({ value: 500 }))
-			.addAsteroid(new AsteroidBuilder().BuildRandom({ value: 500 }))
-			.addAsteroid(new AsteroidBuilder().BuildRandom({ value: 500 }))
+			.addAsteroid(new AsteroidBuilder("GEM01").BuildRandom({ value: 500 }))
+			.addAsteroid(new AsteroidBuilder("GEM02").BuildRandom({ value: 500 }))
+			.addAsteroid(new AsteroidBuilder("GEM03").BuildRandom({ value: 500 }))
 			.addStore(
 				new MaterialStore({
 					initialCredits: 1250,
@@ -36,7 +36,7 @@ export const NodeGenerator = () => {
 			requiredWarp: WarpPower.NONE,
 			faction: Client.Reg.ResolveFactionFromName("Kalen")!,
 		})
-			.addAsteroid(new AsteroidBuilder().BuildRandom({ value: 750 }))
+			.addAsteroid(new AsteroidBuilder("KAL01").BuildRandom({ value: 750 }))
 			.addStore(
 				new MaterialStore({
 					initialCredits: 1550,

@@ -1,6 +1,7 @@
 import { IPlayerDocument } from "../../../GameApi/Database/Player/PlayerModel";
 import { Ship } from "../Ship/Ship";
 import { PlayerInventory, TRegistered } from "./PlayerInventory";
+import { Skin } from "./Skin";
 import { ShipWrapper } from "../Ship/ShipWrapper";
 import { Attachment } from "../Attachment/Attachment";
 import { SpacemapNode } from "../../GameSpacemap/SpacemapNode";
@@ -333,9 +334,12 @@ export declare class Player {
      */
     discoverBlueprint(item: string | GameAsset): Promise<boolean>;
     get PlayerImage(): string;
-    applySkin(name: string, uri: string): boolean;
+    newSkin(name: string, uri: string): Promise<boolean>;
+    applySkin(name: string, uri: string): Promise<void>;
+    get availableSkins(): Skin[];
     profile(): {
         credits: number;
+        tokens: number;
         skills: number[];
         image: string;
         bestFaction: import("../Faction/Faction").Faction | undefined;

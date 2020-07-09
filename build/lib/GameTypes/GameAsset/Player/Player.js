@@ -578,16 +578,27 @@ class Player {
             return this.ship.Uri;
         }
     }
-    applySkin(name, uri) {
+    async newSkin(name, uri) {
         if (this.inventory.removeTokens({ amount: 1 })) {
             this.skin = new Skin_1.Skin(name, uri);
+            this.allSkins.push(this.skin);
+            await this.save();
             return true;
         }
         return false;
     }
+    async applySkin(name, uri) {
+        const skin = this.allSkins.find((skin) => skin.SkinName == name && skin.SkinUri == uri);
+        this.skin = skin;
+        await this.save();
+    }
+    get availableSkins() {
+        return this.allSkins.slice();
+    }
     profile() {
         return {
             credits: this.Credits,
+            tokens: this.inventory.Tokens,
             skills: this.skillPoints,
             image: this.PlayerImage,
             bestFaction: Client_1.Client.Reg.ResolveFactionFromName(this.inventory.Reputation.keyArray().reduce((a, b) => this.inventory.Reputation.get(a) > this.inventory.Reputation.get(b) ? a : b)),

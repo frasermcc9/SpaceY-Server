@@ -1,0 +1,29 @@
+import { Material } from "../GameAsset/Material/Material";
+import { GameCollectionBase } from "./GameCollectionBase";
+import { MapCollection } from "../../Extensions/Collections";
+export declare class MaterialCollection extends GameCollectionBase {
+    constructor(options?: IMaterialCollectionOptions);
+    /**@deprecated*/
+    DataFromName(name: string): IMaterialQuantity;
+    /**@deprecated*/
+    DataFromNames(names: string[]): IMaterialQuantity[];
+    /**@deprecated*/
+    DataFromMaterial(material: Material): IMaterialQuantity;
+    GetCollectionValue(): number;
+    static GenerateMineableCollection(value: number): MaterialCollection;
+    /** @override */
+    GetCompatibleItems(minRarity: number, maxRarity: number): MapCollection<string, Material>;
+    /** @override */
+    GenerateWeights(items: Material[], centralRarity: number, minRarity: number, maxRarity: number): number[];
+}
+export interface IMaterialCollectionOptions {
+    data?: Map<string, number>;
+}
+interface IMaterialQuantity {
+    success: boolean;
+    name: string;
+    quantity: number;
+    material: Material | null;
+    error?: string;
+}
+export {};

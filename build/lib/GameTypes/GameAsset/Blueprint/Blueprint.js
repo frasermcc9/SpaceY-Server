@@ -44,13 +44,13 @@ class BlueprintBuilder {
         return bp;
     }
     static SIMPLE_BUILD(val) {
-        return { value: val, rarity: true, minRarity: 0, maxRarity: 6, centralRarity: 3 };
+        return { value: val, rarity: true, minRarity: 0, maxRarity: 6, centralRarity: 3, minTech: 0, maxTech: 5 };
     }
     static MODERATE_BUILD(val) {
-        return { value: val, rarity: true, minRarity: 0, maxRarity: 8, centralRarity: 5 };
+        return { value: val, rarity: true, minRarity: 0, maxRarity: 8, centralRarity: 5, minTech: 0, maxTech: 8 };
     }
     static ADVANCED_BUILD(val) {
-        return { value: val, rarity: true, minRarity: 0, maxRarity: 10, centralRarity: 7 };
+        return { value: val, rarity: true, minRarity: 0, maxRarity: 10, centralRarity: 7, minTech: 0, maxTech: 10 };
     }
 }
 exports.BlueprintBuilder = BlueprintBuilder;

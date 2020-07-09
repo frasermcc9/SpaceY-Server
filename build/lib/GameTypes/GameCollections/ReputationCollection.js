@@ -18,8 +18,8 @@ class ReputationCollection extends GameCollectionBase_1.GameCollectionBase {
         }
     }
     /** @override */
-    GetCompatibleItems(minRarity, maxRarity) {
-        return Client_1.Client.Reg.FactionRegistry.filter((val) => val.Cost != undefined && val.TechLevel <= maxRarity && val.TechLevel >= minRarity);
+    GetCompatibleItems({ minTech, maxTech }) {
+        return Client_1.Client.Reg.FactionRegistry.filter((val) => val.Cost != undefined && val.TechLevel <= maxTech && val.TechLevel >= minTech);
     }
     /** @override */
     GenerateWeights(items, centralRarity, minRarity, maxRarity) {

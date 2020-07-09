@@ -49,14 +49,8 @@ function GENERATED_MATERIALS() {
             .EnableMine()
             .SetRarity(10)
             .Build(),
-        new Material_1.MaterialBuilder({ name: "Food", description: "Food for one person.", techLevel: 1 })
-            .EnableSell(5)
-            .SetRarity(1)
-            .Build(),
-        new Material_1.MaterialBuilder({ name: "Tech", description: "Pile of tech pieces.", techLevel: 7 })
-            .EnableSell(50)
-            .SetRarity(6)
-            .Build(),
+        new Material_1.MaterialBuilder({ name: "Food", description: "Food for one person.", techLevel: 1 }).EnableSell(5).SetRarity(1).Build(),
+        new Material_1.MaterialBuilder({ name: "Tech", description: "Pile of tech pieces.", techLevel: 7 }).EnableSell(50).SetRarity(6).Build(),
     ];
 }
 exports.GENERATED_MATERIALS = GENERATED_MATERIALS;
@@ -70,6 +64,8 @@ function GENERATED_SHIPS() {
             minRarity: 0,
             maxRarity: 10,
             centralRarity: 3,
+            minTech: 0,
+            maxTech: 10,
         }))
             .SetStats({ baseHp: 100, baseShield: 50 })
             .SetWeapons({ heavyCap: 3, primaryCap: 3, generalCap: 2 })
@@ -82,6 +78,8 @@ function GENERATED_SHIPS() {
             minRarity: 0,
             maxRarity: 10,
             centralRarity: 5,
+            minTech: 0,
+            maxTech: 10,
         }))
             .SetStats({ baseHp: 150, baseShield: 90, baseCargo: 750 })
             .Build(),
@@ -93,6 +91,8 @@ function GENERATED_SHIPS() {
             minRarity: 0,
             maxRarity: 10,
             centralRarity: 7,
+            minTech: 0,
+            maxTech: 10,
         }))
             .SetStats({ baseHp: 200, baseShield: 170, baseCargo: 8000 })
             .SetWeapons({ generalCap: 5, heavyCap: 5, minerCap: 1, primaryCap: 5, shieldCap: 5 })

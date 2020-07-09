@@ -25,9 +25,9 @@ class BaseStore {
         return this.credits;
     }
     set MarketForceSettings(options) {
-        this.marketForceSettings.hiTechEffect = options.hiTechEffect ?? 25;
+        this.marketForceSettings.hiTechEffect = options.hiTechEffect ?? 30;
         this.marketForceSettings.loTechEffect = options.loTechEffect ?? 15;
-        this.marketForceSettings.randEffect = options.randEffect ?? 10;
+        this.marketForceSettings.randEffect = options.randEffect ?? 20;
     }
     setFaction(faction) {
         this.marketForceSettings.territory = faction;
@@ -205,6 +205,9 @@ class BaseStore {
     }
     get Name() {
         return this.name;
+    }
+    get Faction() {
+        return this.marketForceSettings.territory;
     }
     /**
      * Clears the current inventory, and sets it to what is given in the input parameter.

@@ -78,6 +78,7 @@ export declare abstract class BaseStore implements IStoreUpdatable {
     update(): void;
     generateInventory(): void;
     get Name(): string;
+    get Faction(): Faction | undefined;
     abstract populateInventory(): void;
     /**
      * Clears the current inventory, and sets it to what is given in the input parameter.

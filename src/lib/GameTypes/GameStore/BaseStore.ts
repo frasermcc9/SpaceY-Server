@@ -30,9 +30,9 @@ export abstract class BaseStore implements IStoreUpdatable {
 	};
 
 	public set MarketForceSettings(options: { randEffect?: number; loTechEffect?: number; hiTechEffect?: number }) {
-		this.marketForceSettings.hiTechEffect = options.hiTechEffect ?? 25;
+		this.marketForceSettings.hiTechEffect = options.hiTechEffect ?? 30;
 		this.marketForceSettings.loTechEffect = options.loTechEffect ?? 15;
-		this.marketForceSettings.randEffect = options.randEffect ?? 10;
+		this.marketForceSettings.randEffect = options.randEffect ?? 20;
 	}
 
 	public constructor(collection: GameCollectionBase, options: BaseStoreOptions) {
@@ -81,8 +81,8 @@ export abstract class BaseStore implements IStoreUpdatable {
 		if (!storeResult.success) return { code: 500 };
 		trader.CreditsDecrement({ amount: cpi * quantity });
 		this.credits += cpi * quantity;
-        const m = await trader.AutoInventoryEdit(item, quantity);
-        trader.save();
+		const m = await trader.AutoInventoryEdit(item, quantity);
+		trader.save();
 		return { itemAmount: m.amount, playerCredits: trader.Credits, code: 200 };
 	}
 	/**
@@ -147,8 +147,8 @@ export abstract class BaseStore implements IStoreUpdatable {
 		this.collection.Increase(item, quantity);
 		trader.CreditsIncrement({ amount: storeCreditsToSpend });
 		const playerNew = (await trader.AutoInventoryEdit(item, -quantity)).amount;
-        if (playerNew == undefined) return { code: 500 };
-        trader.save();
+		if (playerNew == undefined) return { code: 500 };
+		trader.save();
 		return { itemAmount: playerNew, playerCredits: trader.Credits, code: 200 };
 	}
 
@@ -216,6 +216,10 @@ export abstract class BaseStore implements IStoreUpdatable {
 
 	public get Name(): string {
 		return this.name;
+	}
+
+	public get Faction() {
+		return this.marketForceSettings.territory;
 	}
 
 	public abstract populateInventory(): void;

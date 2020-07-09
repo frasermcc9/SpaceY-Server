@@ -51,11 +51,11 @@ export declare class Player {
      */
     addSkillPoint(type: "Weapons" | "Engineering" | "Technology"): Promise<boolean>;
     pollSkillPoints(): number[];
-    CreditsIncrement({ amount, implicitSave, }: {
+    CreditsIncrement({ amount, implicitSave }: {
         amount: number;
         implicitSave?: boolean;
     }): Promise<boolean>;
-    CreditsDecrement({ amount, implicitSave, }: {
+    CreditsDecrement({ amount, implicitSave }: {
         amount: number;
         implicitSave?: boolean;
     }): Promise<boolean>;

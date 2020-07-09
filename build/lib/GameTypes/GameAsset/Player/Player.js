@@ -133,7 +133,7 @@ class Player {
     //#endregion EXP and Skills
     //#region - INVENTORY
     //#region - Credits
-    async CreditsIncrement({ amount, implicitSave = true, }) {
+    async CreditsIncrement({ amount, implicitSave = true }) {
         if (amount < 0)
             throw new Error("Only positive values can be passed to the incrementCredits method. Consider using decrement to remove credits.");
         const success = this.inventory.AddCredits({ amount: amount });
@@ -142,7 +142,7 @@ class Player {
         }
         return success;
     }
-    async CreditsDecrement({ amount, implicitSave = true, }) {
+    async CreditsDecrement({ amount, implicitSave = true }) {
         if (amount < 0)
             throw new Error("Only positive values can be passed to the decrementCredits method. Consider using increment to add credits.");
         const success = this.inventory.AddCredits({ amount: -amount });
@@ -531,10 +531,7 @@ class Player {
     //#endregion SHIP
     //#region LOCATION
     get Location() {
-        let node;
-        if (typeof this.location == "string")
-            node = Client_1.Client.Reg.Spacemap.resolveNodeFromName(this.location);
-        return util_1.util.throwUndefined(node, "Player does not have location");
+        return util_1.util.throwUndefined(this.location, "Player does not have location");
     }
     async travelTo(node) {
         if (!this.adjacentLocations().includes(node))
@@ -582,10 +579,5 @@ class Player {
     }
 }
 exports.Player = Player;
-Player.RegistryTypes = [
-    "MaterialRegistry",
-    "FactionRegistry",
-    "AttachmentRegistry",
-    "ShipRegistry",
-];
+Player.RegistryTypes = ["MaterialRegistry", "FactionRegistry", "AttachmentRegistry", "ShipRegistry"];
 Player.InventoryTypes = ["materials", "reputation", "attachments", "ships"];

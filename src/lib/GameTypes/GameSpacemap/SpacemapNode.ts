@@ -5,6 +5,7 @@ import { Player } from "../GameAsset/Player/Player";
 import { MaterialStore } from "../GameStore/MaterialStore";
 import { ShipStore } from "../GameStore/ShipStore";
 import { AttachmentStore } from "../GameStore/AttachmentStore";
+import { util } from "../../Util/util";
 
 export class SpacemapNode {
 	private name: string;
@@ -48,8 +49,22 @@ export class SpacemapNode {
 	public get Asteroids(): Asteroid[] {
 		return this.asteroids;
 	}
+	public asteroidDisplayNames(): string[] {
+		return this.asteroids.map((A) => A.Name);
+	}
 	public availableAsteroids(player: Player): Asteroid[] {
 		return this.asteroids.filter((val) => val.isAvailableForUser(player));
+	}
+	public unavailableAsteroids(player: Player): Asteroid[] {
+		return this.asteroids.filter((val) => !val.isAvailableForUser(player));
+	}
+	public addAsteroid(asteroid: Asteroid) {
+		this.asteroids.push(asteroid);
+	}
+	public async mineAsteroid(player: Player, asteroidName: string): Promise<boolean> {
+		const asteroid = util.throwUndefined(this.asteroids.find((A) => A.Name == asteroidName));
+		const success = await asteroid.mine(player, 30);
+		return success.code == 200;
 	}
 	//#endregion - Asteroids
 
@@ -58,10 +73,6 @@ export class SpacemapNode {
 	public addStore(store: BaseStore) {
 		store.setFaction(this.faction);
 		this.stores.push(store);
-	}
-
-	public addAsteroid(asteroid: Asteroid) {
-		this.asteroids.push(asteroid);
 	}
 
 	public storeDisplayNames(): string[] {

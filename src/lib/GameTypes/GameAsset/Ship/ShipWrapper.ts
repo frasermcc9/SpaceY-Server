@@ -159,7 +159,7 @@ export class ShipWrapper {
 
 		if (result == undefined) return false;
 		if (result.length > 1) return false;
-		return result[0].success;
+		return result[0]?.success;
 	}
 	public warp(warpRequired: number): boolean {
 		const result: AttachmentReport[] = [];
@@ -170,7 +170,7 @@ export class ShipWrapper {
 
 		if (result == undefined) return false;
 		if (result.length > 1) return false;
-		return result[0].success;
+		return result[0]?.success;
 	}
 	public mineEvent(asteroid: Asteroid): void {
 		this.attachments.forEach((attachment) => {

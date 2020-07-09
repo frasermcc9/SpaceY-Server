@@ -46,7 +46,7 @@ class Asteroid extends MaterialCollection_1.MaterialCollection {
      * @param cooldownOverride
      * @returns codes:<br />  \
      * 200 - success<br />  \
-     * 403 - on cooldown<br />  \
+     * 403 - on cooldown
      */
     async mine(player, percent, cooldownOverride) {
         //check cooldown

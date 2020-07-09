@@ -19,9 +19,12 @@ export declare class SpacemapNode {
     get RequiredWarp(): WarpPower;
     get TechLevel(): number;
     get Asteroids(): Asteroid[];
+    asteroidDisplayNames(): string[];
     availableAsteroids(player: Player): Asteroid[];
-    addStore(store: BaseStore): void;
+    unavailableAsteroids(player: Player): Asteroid[];
     addAsteroid(asteroid: Asteroid): void;
+    mineAsteroid(player: Player, asteroidName: string): Promise<boolean>;
+    addStore(store: BaseStore): void;
     storeDisplayNames(): string[];
     nodeAllStores(): BaseStore[];
     nodeMaterialStores(): MaterialStore[];

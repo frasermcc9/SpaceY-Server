@@ -155,7 +155,7 @@ class ShipWrapper {
             return false;
         if (result.length > 1)
             return false;
-        return result[0].success;
+        return result[0]?.success;
     }
     warp(warpRequired) {
         const result = [];
@@ -168,7 +168,7 @@ class ShipWrapper {
             return false;
         if (result.length > 1)
             return false;
-        return result[0].success;
+        return result[0]?.success;
     }
     mineEvent(asteroid) {
         this.attachments.forEach((attachment) => {

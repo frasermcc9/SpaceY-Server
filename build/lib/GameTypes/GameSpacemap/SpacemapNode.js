@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.WarpPower = exports.SpacemapNodeBuilder = exports.SpacemapNode = void 0;
 const BaseStore_1 = require("../GameStore/BaseStore");
+const util_1 = require("../../Util/util");
 class SpacemapNode {
     constructor({ name, faction, requiredWarp, stores, techLevel, asteroids }) {
         this.name = name;
@@ -32,17 +33,28 @@ class SpacemapNode {
     get Asteroids() {
         return this.asteroids;
     }
+    asteroidDisplayNames() {
+        return this.asteroids.map((A) => A.Name);
+    }
     availableAsteroids(player) {
         return this.asteroids.filter((val) => val.isAvailableForUser(player));
+    }
+    unavailableAsteroids(player) {
+        return this.asteroids.filter((val) => !val.isAvailableForUser(player));
+    }
+    addAsteroid(asteroid) {
+        this.asteroids.push(asteroid);
+    }
+    async mineAsteroid(player, asteroidName) {
+        const asteroid = util_1.util.throwUndefined(this.asteroids.find((A) => A.Name == asteroidName));
+        const success = await asteroid.mine(player, 30);
+        return success.code == 200;
     }
     //#endregion - Asteroids
     //#region - Stores
     addStore(store) {
         store.setFaction(this.faction);
         this.stores.push(store);
-    }
-    addAsteroid(asteroid) {
-        this.asteroids.push(asteroid);
     }
     storeDisplayNames() {
         return this.stores.map((el) => el.identity());

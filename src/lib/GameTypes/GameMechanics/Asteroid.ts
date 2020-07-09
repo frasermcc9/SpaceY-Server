@@ -53,7 +53,7 @@ export class Asteroid extends MaterialCollection {
 	 * @param cooldownOverride
 	 * @returns codes:<br />  \
 	 * 200 - success<br />  \
-	 * 403 - on cooldown<br />  \
+	 * 403 - on cooldown
 	 */
 	public async mine(player: Player, percent?: number, cooldownOverride?: boolean): Promise<{ code: 200 | 403; cooldown?: number }> {
 		//check cooldown

@@ -63,6 +63,10 @@ export declare class Player {
     }): Promise<boolean>;
     get Credits(): number;
     /**
+     * Returns a formatted string of the users current cargo status
+     */
+    cargoString(): string;
+    /**
      * Increases the given item by the amount.
      * @param itemName
      * @param quantity

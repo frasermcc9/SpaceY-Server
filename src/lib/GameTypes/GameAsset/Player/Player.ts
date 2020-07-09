@@ -157,6 +157,13 @@ export class Player {
 	//#region - Materials
 
 	/**
+	 * Returns a formatted string of the users current cargo status
+	 */
+	public cargoString(): string {
+		return `${this.inventory.Materials.CollectionSize}/${this.inventory.Materials.maxCollectionSize()}`;
+	}
+
+	/**
 	 * Increases the given item by the amount.
 	 * @param itemName
 	 * @param quantity

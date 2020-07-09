@@ -743,6 +743,11 @@ export class Player {
 		});
 		const skin = new Skin(data.skin?.skinName ?? "", data.skin?.skinUri ?? "");
 		this.skin = skin.SkinName == "" ? undefined : skin;
+
+		data.skins?.forEach((skin) => {
+			this.allSkins.push(new Skin(skin.skinName, skin.skinUri));
+		});
+
 		this.inventory = new InventoryBuilder()
 			.SetCredits(data.inventory.credits)
 			.SetReputation({ data: data.inventory.reputation })

@@ -52,18 +52,14 @@ export class Asteroid extends MaterialCollection {
 	 * 200 - success<br />  \
 	 * 403 - on cooldown<br />  \
 	 */
-	public async mine(
-		player: Player,
-		percent?: number,
-		cooldownOverride?: boolean
-	): Promise<{ code: 200 | 403; cooldown?: number }> {
+	public async mine(player: Player, percent?: number, cooldownOverride?: boolean): Promise<{ code: 200 | 403; cooldown?: number }> {
 		//check cooldown
 		const cd = this.remainingCooldown(player);
 		if (cd > 0 && !cooldownOverride) return { code: 403, cooldown: cd };
 		//apply probabilities
 		if (percent != undefined) this.applyDeviation(percent);
 		//apply mining laser
-		player.getShipWrapper().dispatch(GameEvent.MINE, { asteroid: this });
+		player.getShipWrapper().mineEvent(this);
 		//set cooldown
 		this.cooldownManager(player, this.cooldown);
 		//add to player

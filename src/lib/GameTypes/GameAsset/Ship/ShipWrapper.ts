@@ -172,6 +172,11 @@ export class ShipWrapper {
 		if (result.length > 1) return false;
 		return result[0].success;
 	}
+	public mineEvent(asteroid: Asteroid): void {
+		this.attachments.forEach((attachment) => {
+			attachment.dispatch(GameEvent.MINE, asteroid);
+		});
+	}
 }
 
 type BonusStatChanger = {

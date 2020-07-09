@@ -1,7 +1,8 @@
 import { Battleship } from "../GameAsset/Ship/Battleship";
 import { GameEvent } from "../GameAsset/Attachment/Attachment";
+import { IBattleData } from "./Battle";
 
-export class Battle implements IBattleData {
+export class MockBattle implements IBattleData {
 	private playerShip: Battleship;
 	private aiShip: Battleship;
 
@@ -45,9 +46,9 @@ export class Battle implements IBattleData {
 
 	//#endregion IBattleData
 
-	public constructor(player: Battleship) {
+	public constructor(player: Battleship, enemy: Battleship) {
 		this.playerShip = player;
-		this.aiShip = this.generateOpponentShip();
+		this.aiShip = enemy;
 
 		this.activeShip = player;
 		this.inactiveShip = this.aiShip;
@@ -138,10 +139,4 @@ export class Battle implements IBattleData {
 		const playerStrength = this.playerShip.Ship.Strength;
 		return;
 	}
-}
-
-export interface IBattleData {
-	TurnNumber: number;
-	Friendly: Battleship;
-	Enemy: Battleship;
 }

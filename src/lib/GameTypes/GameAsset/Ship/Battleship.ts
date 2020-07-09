@@ -210,8 +210,8 @@ export class Battleship extends EventEmitter {
 		};
 
 		this.currentStats = {
-			hp: ~~(maxStats.totalHp / 4),
-			shield: ~~(maxStats.totalShield / 4),
+			hp: ~~maxStats.totalHp,
+			shield: ~~maxStats.totalShield,
 
 			weapon: ~~(maxStats.totalEnergy[0] / 4) + this.startFn(points[0]),
 			engine: ~~(maxStats.totalEnergy[1] / 4) + this.startFn(points[1]),

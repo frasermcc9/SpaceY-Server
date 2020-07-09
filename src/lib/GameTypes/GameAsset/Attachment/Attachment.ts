@@ -5,7 +5,7 @@ import { ShipWrapper } from "../Ship/ShipWrapper";
 import { MaterialCollection } from "../../GameCollections/MaterialCollection";
 import { Asteroid } from "../../GameMechanics/Asteroid";
 import { StrengthComparable } from "../AssetDecorators";
-import { Battleship } from "../Ship/BattleShip";
+import { Battleship } from "../Ship/Battleship";
 import { IBattleData } from "../../GameBattle/Battle";
 
 export class Attachment extends GameAsset implements IAttachment, StrengthComparable {

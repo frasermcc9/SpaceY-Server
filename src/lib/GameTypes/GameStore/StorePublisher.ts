@@ -1,4 +1,4 @@
-import { EventEmitter } from "events";
+/* import { EventEmitter } from "events";
 import { BaseStore } from "./BaseStore";
 import { GameAsset } from "../GameAsset/GameAsset";
 
@@ -29,3 +29,4 @@ export class StorePublisher extends EventEmitter {
 		return this.TerminateLoop(Store);
 	}
 }
+ */

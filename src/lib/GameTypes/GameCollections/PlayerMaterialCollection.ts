@@ -7,6 +7,7 @@ export class PlayerMaterialCollection extends MaterialCollection {
 
 	public maxCollectionSize(): number {
 		if (this.owner == undefined) return Infinity;
+		//console.log(this.owner.getShipWrapper());
 		return this.owner.getShipWrapper().ShipStatistics.totalCargo;
 	}
 
@@ -14,8 +15,11 @@ export class PlayerMaterialCollection extends MaterialCollection {
 	public set(key: string, value: number): this {
 		const current = this.get(key);
 		const diff = this.maxCollectionSize() - (this.CollectionSize - (current ?? 0) + value);
-		if (diff >= 0) return super.set(key, value);
-		else return super.set(key, value + diff);
+		if (diff >= 0) {
+			return super.set(key, value);
+		} else {
+			return super.set(key, value + diff);
+		}
 	}
 
 	public constructor(options?: IMaterialCollectionOptions) {

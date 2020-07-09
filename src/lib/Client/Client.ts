@@ -26,9 +26,9 @@ export class Client {
 		this.uri = clientSettings.databaseUri;
 		this.dbName = clientSettings.databaseName;
 		this.ConsoleLogging = clientSettings.consoleLogging ?? false;
-		this.registry.DefaultCredits = clientSettings.defaultCredits ?? 0;
-		this.registry.MaxRarity = clientSettings.maximumRarity;
-		this.registry.MaxTech = clientSettings.maximumTechLevel;
+		//this.registry.DefaultCredits = clientSettings.defaultCredits ?? 0;
+		//this.registry.MaxRarity = clientSettings.maximumRarity;
+		//this.registry.MaxTech = clientSettings.maximumTechLevel;
 
 		Client.TEST = clientSettings.testMode ?? false;
 	}
@@ -73,12 +73,12 @@ export class Client {
 	//#endregion EventManager
 }
 
-interface IClientSettings {
+export interface IClientSettings {
 	databaseName: string;
 	databaseUri: string;
 	consoleLogging?: boolean;
-	defaultCredits?: number;
+/* 	defaultCredits?: number;
 	maximumRarity: number;
-	maximumTechLevel: number;
+	maximumTechLevel: number; */
 	testMode?: boolean;
 }

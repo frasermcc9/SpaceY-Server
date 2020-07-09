@@ -21,6 +21,7 @@ export declare class ShipWrapper {
     get Owner(): Player;
     get Strength(): number;
     get WeaponCapacities(): Map<AttachmentType, number>;
+    get Uri(): string;
     copyAttachments(): Attachment[];
     get ShipStatistics(): {
         totalHp: number;

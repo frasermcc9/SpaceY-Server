@@ -40,6 +40,9 @@ class ShipWrapper {
     get WeaponCapacities() {
         return this.ship.WeaponCapacities;
     }
+    get Uri() {
+        return this.ship.ImageUri;
+    }
     copyAttachments() {
         return this.attachments.slice();
     }

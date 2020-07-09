@@ -8,7 +8,7 @@ export interface IPlayer {
         name: string;
         equipped: string[];
     };
-    skin: Skin;
+    skin?: Skin;
     inventory: {
         credits: number;
         tokens: number;

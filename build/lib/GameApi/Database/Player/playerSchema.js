@@ -8,7 +8,10 @@ const PlayerSchema = new mongoose_1.Schema({
         name: String,
         equipped: [String],
     },
-    skin: {},
+    skin: {
+        skinUri: String,
+        skinName: String,
+    },
     inventory: {
         credits: Number,
         tokens: Number,

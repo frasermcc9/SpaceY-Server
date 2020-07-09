@@ -14,7 +14,7 @@ exports.ShipGenerator = () => {
             .SetWeapons({ primaryCap: 0, shieldCap: 0, heavyCap: 1, minerCap: 0, generalCap: 1 })
             .EnableSell(61000)
             .EnableBuildable(new Blueprint_1.BlueprintBuilder().DefinedBuild(Blueprint_1.BlueprintBuilder.SIMPLE_BUILD(40000), "Recovered Shuttle"))
-            .SetMisc({ uri: "", subclass: "Shuttle" })
+            .SetMisc({ uri: "https://cdn.discordapp.com/attachments/730728698478854275/730746756135911434/0.jpg", subclass: "Shuttle" })
             .Build(),
         new Ship_1.ShipBuilder({
             name: "Kalen Tradeship",
@@ -25,7 +25,7 @@ exports.ShipGenerator = () => {
             .SetWeapons({ primaryCap: 1, shieldCap: 1, heavyCap: 3, minerCap: 1, generalCap: 1 })
             .EnableSell(349000)
             .EnableBuildable(new Blueprint_1.BlueprintBuilder().DefinedBuild(Blueprint_1.BlueprintBuilder.SIMPLE_BUILD(280000), "Kalen Transport"))
-            .SetMisc({ uri: "", subclass: "Frigate" })
+            .SetMisc({ uri: "https://cdn.discordapp.com/attachments/730728698478854275/730746802910920754/6.jpg", subclass: "Frigate" })
             .Build(),
         new Ship_1.ShipBuilder({
             name: "Terrian Homeship",
@@ -36,7 +36,10 @@ exports.ShipGenerator = () => {
             .SetWeapons({ primaryCap: 1, shieldCap: 1, heavyCap: 4, minerCap: 1, generalCap: 2 })
             .EnableSell(753000)
             .EnableBuildable(new Blueprint_1.BlueprintBuilder().DefinedBuild(Blueprint_1.BlueprintBuilder.SIMPLE_BUILD(640000), "Terrian Homeship"))
-            .SetMisc({ uri: "", subclass: "Heavy Frigate" })
+            .SetMisc({
+            uri: "https://cdn.discordapp.com/attachments/730728698478854275/730746832317317141/11.jpg",
+            subclass: "Heavy Frigate",
+        })
             .Build(),
         new Ship_1.ShipBuilder({
             name: "Quargic Cruiser",
@@ -47,7 +50,10 @@ exports.ShipGenerator = () => {
             .SetWeapons({ primaryCap: 2, shieldCap: 2, heavyCap: 4, minerCap: 1, generalCap: 4 })
             .EnableSell(2121000)
             .EnableBuildable(new Blueprint_1.BlueprintBuilder().DefinedBuild(Blueprint_1.BlueprintBuilder.MODERATE_BUILD(1821000), "Quargic Cruiser"))
-            .SetMisc({ uri: "", subclass: "Light Cruiser" })
+            .SetMisc({
+            uri: "https://cdn.discordapp.com/attachments/730728698478854275/730746866693701632/16.png",
+            subclass: "Light Cruiser",
+        })
             .Build(),
         new Ship_1.ShipBuilder({
             name: "Ty'Linic Crawler",
@@ -58,7 +64,10 @@ exports.ShipGenerator = () => {
             .SetWeapons({ primaryCap: 2, shieldCap: 2, heavyCap: 5, minerCap: 1, generalCap: 5 })
             .EnableSell(3307000)
             .EnableBuildable(new Blueprint_1.BlueprintBuilder().DefinedBuild(Blueprint_1.BlueprintBuilder.MODERATE_BUILD(2607000), "Ty'Linic Crawler"))
-            .SetMisc({ uri: "", subclass: "Heavy Cruiser" })
+            .SetMisc({
+            uri: "https://cdn.discordapp.com/attachments/730728698478854275/730746900873084998/23.jpg",
+            subclass: "Heavy Cruiser",
+        })
             .Build(),
         new Ship_1.ShipBuilder({
             name: "Asarin Enforcer",
@@ -69,7 +78,10 @@ exports.ShipGenerator = () => {
             .SetWeapons({ primaryCap: 3, shieldCap: 3, heavyCap: 5, minerCap: 1, generalCap: 4 })
             .EnableSell(5134000)
             .EnableBuildable(new Blueprint_1.BlueprintBuilder().DefinedBuild(Blueprint_1.BlueprintBuilder.ADVANCED_BUILD(280000), "Asarin Enforcer"))
-            .SetMisc({ uri: "", subclass: "Dreadnought" })
+            .SetMisc({
+            uri: "https://cdn.discordapp.com/attachments/730728698478854275/730746961824579692/31.png",
+            subclass: "Dreadnought",
+        })
             .Build(),
         new Ship_1.ShipBuilder({
             name: "The Celestial Destroyer",
@@ -80,7 +92,7 @@ exports.ShipGenerator = () => {
             .SetWeapons({ primaryCap: 4, shieldCap: 2, heavyCap: 7, minerCap: 1, generalCap: 7 })
             .EnableSell(9800000)
             .EnableBuildable(new Blueprint_1.BlueprintBuilder().DefinedBuild(Blueprint_1.BlueprintBuilder.ADVANCED_BUILD(9000000), "The Celestial Destroyer"))
-            .SetMisc({ uri: "", subclass: "CAPITAL" })
+            .SetMisc({ uri: "https://cdn.discordapp.com/attachments/730728698478854275/730746992808165416/40.png", subclass: "CAPITAL" })
             .Build(),
     ];
 };

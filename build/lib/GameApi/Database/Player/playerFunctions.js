@@ -3,7 +3,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.findOneOrCreate = exports.getCredits = exports.decrementCredits = exports.incrementCredits = exports.setLastUpdated = void 0;
 const Client_1 = require("../../../Client/Client");
 const PlayerInventory_1 = require("../../../GameTypes/GameAsset/Player/PlayerInventory");
-const Skin_1 = require("../../../GameTypes/GameAsset/Player/Skin");
 const Player_1 = require("../../../GameTypes/GameAsset/Player/Player");
 //Section: Instance Methods (for document)
 async function setLastUpdated() {
@@ -60,7 +59,6 @@ async function findOneOrCreate({ uId }) {
             uId: uId,
             inventory: new PlayerInventory_1.InventoryBuilder().GenericBuild(),
             ship: { name: Client_1.Client.Get().Registry.DefaultShip.Name, equipped: [] },
-            skin: new Skin_1.Skin(),
             location: Client_1.Client.Reg.DefaultLocation.Name,
             blueprints: new Array(),
             exp: 30,

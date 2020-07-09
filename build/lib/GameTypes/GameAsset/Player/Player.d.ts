@@ -9,7 +9,7 @@ export declare class Player {
     private readonly uId;
     get UId(): string;
     private ship;
-    private skin;
+    private skin?;
     private inventory;
     get Inventory(): PlayerInventory;
     private location;
@@ -331,6 +331,19 @@ export declare class Player {
      * @param item
      */
     discoverBlueprint(item: string | GameAsset): Promise<boolean>;
+    get PlayerImage(): string;
+    applySkin(name: string, uri: string): void;
+    profile(): {
+        credits: number;
+        skills: number[];
+        image: string;
+        bestFaction: import("../Faction/Faction").Faction | undefined;
+        ship: ShipWrapper;
+        level: number;
+        location: SpacemapNode;
+        exp: number;
+        expToNext: number;
+    };
     save(): Promise<void>;
     constructor(data: IPlayerDocument);
     private static readonly RegistryTypes;

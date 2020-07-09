@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Player = void 0;
 const PlayerModel_1 = require("../../../GameApi/Database/Player/PlayerModel");
 const PlayerInventory_1 = require("./PlayerInventory");
+const Skin_1 = require("./Skin");
 const Client_1 = require("../../../Client/Client");
 const ShipWrapper_1 = require("../Ship/ShipWrapper");
 const util_1 = require("../../../Util/util");
@@ -15,7 +16,7 @@ class Player {
         this.uId = data.uId; //ID
         const Ship = Client_1.Client.Reg.ResolveShipFromName(data.ship.name);
         if (Ship == undefined)
-            throw new Error(`Mismatch between database and server. No item ${this.ship} exists in server, but does in db for ${this.uId}.`);
+            throw new Error(`Mismatch between database and server. No item ${data.ship} exists in server, but does in db for ${this.uId}.`);
         this.ship = new ShipWrapper_1.ShipWrapper(Ship, this);
         this.location = util_1.util.throwUndefined(Client_1.Client.Reg.Spacemap.resolveNodeFromName(data.location), `Mismatch between database and server for location ${data.location}`);
         this.blueprints = new Set(data.blueprints);
@@ -566,6 +567,32 @@ class Player {
         return true;
     }
     //#endregion blueprint
+    //#region Character
+    get PlayerImage() {
+        if (this.skin != undefined) {
+            return this.skin.SkinUri;
+        }
+        else {
+            return this.ship.Uri;
+        }
+    }
+    applySkin(name, uri) {
+        this.skin = new Skin_1.Skin(name, uri);
+    }
+    profile() {
+        return {
+            credits: this.Credits,
+            skills: this.skillPoints,
+            image: this.PlayerImage,
+            bestFaction: Client_1.Client.Reg.ResolveFactionFromName(this.inventory.Reputation.keyArray().reduce((a, b) => this.inventory.Reputation.get(a) > this.inventory.Reputation.get(b) ? a : b)),
+            ship: this.ship,
+            level: this.Level,
+            location: this.location,
+            exp: this.exp,
+            expToNext: this.ExpToNextLevel,
+        };
+    }
+    //#endregion Character
     async save() {
         await PlayerModel_1.PlayerModel.updateOne({ uId: this.uId }, {
             uId: this.uId,

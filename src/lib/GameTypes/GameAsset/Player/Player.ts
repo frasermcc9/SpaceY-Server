@@ -16,8 +16,8 @@ export class Player {
 		return this.uId;
 	}
 
-	private ship!: ShipWrapper;
-	private skin!: Skin;
+	private ship: ShipWrapper;
+	private skin?: Skin;
 
 	private inventory!: PlayerInventory;
 	public get Inventory(): PlayerInventory {
@@ -687,7 +687,7 @@ export class Player {
 
 		const Ship = Client.Reg.ResolveShipFromName(data.ship.name);
 		if (Ship == undefined)
-			throw new Error(`Mismatch between database and server. No item ${this.ship} exists in server, but does in db for ${this.uId}.`);
+			throw new Error(`Mismatch between database and server. No item ${data.ship} exists in server, but does in db for ${this.uId}.`);
 
 		this.ship = new ShipWrapper(Ship, this);
 

@@ -11,7 +11,7 @@ export const PlayerModel = model<IPlayerDocument>("players", PlayerSchema) as IP
 export interface IPlayer {
 	uId: string;
 	ship: { name: string; equipped: string[] };
-	skin: Skin;
+	skin?: Skin;
 	inventory: {
 		credits: number;
 		tokens: number;

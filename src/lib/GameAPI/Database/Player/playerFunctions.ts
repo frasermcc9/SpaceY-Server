@@ -60,7 +60,6 @@ export async function findOneOrCreate(this: IPlayerModel, { uId }: { uId: string
 			uId: uId,
 			inventory: new InventoryBuilder().GenericBuild(),
 			ship: { name: Client.Get().Registry.DefaultShip.Name, equipped: [] },
-			skin: new Skin(),
 			location: Client.Reg.DefaultLocation.Name,
 			blueprints: new Array<string>(),
 			exp: 30,

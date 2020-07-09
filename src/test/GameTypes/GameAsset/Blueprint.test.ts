@@ -1,4 +1,4 @@
-import { Client, connect, disconnect } from "../../../lib/main";
+/* import { Client, connect, disconnect } from "../../../lib/main";
 import { GenerateClientSet, GENERATED_SHIPS } from "../../TestUtil";
 import { PlayerModel } from "../../../lib/GameApi/Database/Player/PlayerModel";
 import { AsteroidBuilder } from "../../../lib/GameTypes/GameMechanics/Asteroid";
@@ -27,3 +27,4 @@ describe("Blueprint Tests", async () => {
 		});
 	});
 });
+ */

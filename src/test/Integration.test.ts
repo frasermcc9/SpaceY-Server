@@ -9,39 +9,6 @@ import { Faction, FactionBuilder } from "../lib/GameTypes/GameAsset/Faction/Fact
 import { Spacemap } from "../lib/GameTypes/GameSpacemap/Spacemap";
 require("must/register");
 
-const DEFAULT_CREDITS = 10000;
-
-before(async () => {
-	Client.Create({
-		databaseName: "testSpaceY",
-		databaseUri: "mongodb://localhost:27017",
-		defaultCredits: DEFAULT_CREDITS,
-		consoleLogging: false,
-		maximumRarity: 10,
-		maximumTechLevel: 10,
-		testMode: true,
-	});
-	GenerateClientSet();
-	connect();
-	const SM = new Spacemap();
-	const SN = new SpacemapNodeBuilder({
-		name: "Default",
-		requiredWarp: WarpPower.NONE,
-		faction: new FactionBuilder({ name: "G", techLevel: 4, description: "Test" }).Build(),
-	}).build();
-	SM.addNode(SN);
-	Client.Reg.registerSpacemap(SM);
-	Client.Reg.DefaultLocation = SN;
-});
-
-beforeEach(async () => {
-	await PlayerModel.deleteMany({});
-});
-
-after(async () => {
-	disconnect();
-});
-
 xit("Should run the integration test", () => {
 	Client.Destroy();
 	Client.Create({

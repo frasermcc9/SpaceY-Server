@@ -69,11 +69,12 @@ describe("Integration tests between player, laser and attachment", async () => {
 	});
 	it("Should alter numbers from deviation (could fail despite being right)", async () => {
 		const Player = await PlayerModel.findOneOrCreate({ uId: "1" });
-		Player.setShip("Destroyer");
+		await Player.setShip("Destroyer");
 		const asteroidMaterials = new Map<string, number>().set("Iron", 100).set("Gold", 100).set("Tech", 100);
 		const asteroid = new AsteroidBuilder().BuildCustom({ data: asteroidMaterials });
 		(await asteroid.mine(Player, 100)).code.must.eql(200);
 		Player.Inventory.Materials.CollectionSize.must.not.eql(300);
+		asteroid.clearCooldowns();
 	});
 	it("Should use the mining laser and alter from deviation", async () => {
 		const Player = await PlayerModel.findOneOrCreate({ uId: "1" });
@@ -82,5 +83,6 @@ describe("Integration tests between player, laser and attachment", async () => {
 		const asteroidMaterials = new Map<string, number>().set("Iron", 100).set("Gold", 100).set("Tech", 100);
 		const asteroid = new AsteroidBuilder().BuildCustom({ data: asteroidMaterials });
 		(await asteroid.mine(Player, 100)).code.must.eql(200);
+		asteroid.clearCooldowns();
 	});
 });

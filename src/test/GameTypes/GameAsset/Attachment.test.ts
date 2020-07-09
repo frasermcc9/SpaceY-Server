@@ -1,14 +1,12 @@
 import { PlayerModel } from "../../../lib/GameApi/Database/Player/PlayerModel";
-import {
-	AttachmentBuilder,
-	AttachmentReport,
-	AttachmentType,
-	GameEvent,
-} from "../../../lib/GameTypes/GameAsset/Attachment/Attachment";
+import { AttachmentBuilder, AttachmentReport, AttachmentType, GameEvent } from "../../../lib/GameTypes/GameAsset/Attachment/Attachment";
 import { Ship } from "../../../lib/GameTypes/GameAsset/Ship/Ship";
 import { ShipWrapper } from "../../../lib/GameTypes/GameAsset/Ship/ShipWrapper";
 import { default as must } from "must";
 import { Client } from "../../../lib/main";
+import { MockBattle } from "../../../lib/GameTypes/GameBattle/MockBattle";
+import { Battle, IBattleData } from "../../../lib/GameTypes/GameBattle/Battle";
+import { Battleship } from "../../../lib/GameTypes/GameAsset/Ship/Battleship";
 require("must/register");
 
 describe("Attachment Tests", async () => {
@@ -19,8 +17,8 @@ describe("Attachment Tests", async () => {
 			await P1.setShip("Shuttle");
 			await P2.setShip("Warship");
 
-			const fn: (friendly: ShipWrapper, opponent: ShipWrapper) => AttachmentReport = (friend, opponent) => {
-				return { message: friend.ShipStatistics.totalHp + opponent.ShipStatistics.totalShield + "", success: true };
+			const fn: (battle: IBattleData) => AttachmentReport = (battle) => {
+				return { message: battle.Friendly.Hp + battle.Enemy.Ship.ShipStatistics.totalShield + "", success: true };
 			};
 			const attachment = new AttachmentBuilder({
 				name: "Blaster",
@@ -31,7 +29,7 @@ describe("Attachment Tests", async () => {
 			})
 				.BattleStartFn(fn)
 				.Build()
-				.dispatch(GameEvent.BATTLE_START, P1.getShipWrapper(), P2.getShipWrapper())[0]
+				.dispatch(GameEvent.BATTLE_START, new MockBattle(new Battleship(P1.getShipWrapper()), new Battleship(P2.getShipWrapper())))
 				.message.must.eql("190");
 		});
 

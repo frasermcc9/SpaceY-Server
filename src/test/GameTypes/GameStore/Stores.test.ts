@@ -241,8 +241,8 @@ describe("Store Testing", async () => {
 				storeName: "MaterialStoreS2",
 				marketForces: false,
 			});
-			Client.Reg.Spacemap.resolveNodeFromName("Default").addStore(S1);
-			Client.Reg.Spacemap.resolveNodeFromName("Default").addStore(S2);
+			Client.Reg.Spacemap.resolveNodeFromName("Grus").addStore(S1);
+			Client.Reg.Spacemap.resolveNodeFromName("Grus").addStore(S2);
 			S1.MarketForceSettings = { randEffect: 0, hiTechEffect: 50 };
 			S1.update();
 			S2.update();
@@ -264,8 +264,8 @@ describe("Store Testing", async () => {
 				storeName: "MaterialStoreS2",
 				marketForces: false,
 			});
-			Client.Reg.Spacemap.resolveNodeFromName("Default").addStore(S1);
-			Client.Reg.Spacemap.resolveNodeFromName("Default").addStore(S2);
+			Client.Reg.Spacemap.resolveNodeFromName("Grus").addStore(S1);
+			Client.Reg.Spacemap.resolveNodeFromName("Grus").addStore(S2);
 			S1.MarketForceSettings = { randEffect: 0, hiTechEffect: 50 };
 			S1.update();
 			S2.update();
@@ -286,7 +286,7 @@ describe("Store Testing", async () => {
 				storeName: "Default Material Store",
 				type: StoreType.MATERIAL_STORE,
 			});
-			Client.Reg.Spacemap.resolveNodeFromName("Default").addStore(MS1);
+			Client.Reg.Spacemap.resolveNodeFromName("Scorpius").addStore(MS1);
 			const MS1_Collection = new Map().set("Iron", 15).set("Gold", 10);
 			MS1.setInventory(MS1_Collection);
 			MS1.INTERNAL_GetCollection().get("Iron").must.eql(15);

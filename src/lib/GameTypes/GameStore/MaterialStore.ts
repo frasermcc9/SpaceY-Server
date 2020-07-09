@@ -5,27 +5,36 @@ import { IGenerationOptions } from "../GameCollections/GameCollectionBase";
 
 export class MaterialStore extends BaseStore {
 	private genValue?: number;
-	private genMinRarity: number;
-	private genMaxRarity: number;
-	private genCentralRarity: number;
+
 	private rarity: boolean = true;
+	private minTech: number;
+	private maxTech: number;
+
+	private genCentralRarity: number;
+	private minRarity: number;
+	private maxRarity: number;
 
 	public constructor(options: IMaterialStoreOptions) {
 		super(new MaterialCollection(), options);
 		this.genValue = options.generationValue;
-		this.genMinRarity = options.minRarity ?? 0;
-		this.genMaxRarity = options.maxRarity ?? Client.Reg.MaxRarity;
-		this.genCentralRarity = options.centralRarity ?? (this.genMaxRarity - this.genMinRarity) / 2;
+
+		this.minTech = options.minTech ?? 0;
+		this.maxTech = options.maxTech ?? Client.Reg.MaxTech;
+		this.minRarity = options.minRarity ?? 0;
+		this.maxRarity = options.maxRarity ?? Client.Reg.MaxRarity;
+		this.genCentralRarity = options.centralRarity ?? (this.maxTech - this.minTech) / 2;
+
 		this.rarity = options.enableRarityEffects ?? true;
 	}
 
 	public populateInventory() {
-		if (this.genValue == undefined)
-			throw new Error("Cannot generate inventory of MaterialStore that had no value option passed.");
+		if (this.genValue == undefined) throw new Error("Cannot generate inventory of MaterialStore that had no value option passed.");
 		return this.collection.GenerateCollection({
 			value: this.genValue,
-			minRarity: this.genMinRarity,
-			maxRarity: this.genMaxRarity,
+			minTech: this.minTech,
+			maxTech: this.maxTech,
+			minRarity: this.minRarity,
+			maxRarity: this.maxRarity,
 			centralRarity: this.genCentralRarity,
 			rarity: this.rarity,
 		});
@@ -33,31 +42,29 @@ export class MaterialStore extends BaseStore {
 
 	public editGenSettings(options: IGenOptions) {
 		this.genValue = options.generationValue ?? this.genValue;
-		this.genMinRarity = options.minRarity ?? this.genMinRarity;
-		this.genMaxRarity = options.maxRarity ?? this.genMaxRarity;
+		this.minTech = options.minTech ?? this.minTech;
+		this.maxTech = options.maxTech ?? this.maxTech;
 		this.genCentralRarity = options.centralRarity ?? this.genCentralRarity;
 		this.rarity = options.enableRarityEffects ?? this.rarity;
 	}
 }
 
-interface IMaterialStoreOptions extends BaseStoreOptions {
-	generationValue?: number;
-	minRarity?: number;
-	maxRarity?: number;
-	centralRarity?: number;
-	enableRarityEffects?: boolean;
-}
+interface IMaterialStoreOptions extends BaseStoreOptions, IGenOptions {}
 
 interface IGenOptions {
 	/**The minimum value of the collection*/
 	generationValue?: number;
 	/**If item rarity should effect the inventory generation frequencies*/
 	enableRarityEffects?: boolean;
-	/**The minimum rarity an item must be to appear (independent from rarity property)*/
-	minRarity?: number;
-	/**The maximum rarity an item can be to appear (independent from rarity property)*/
-	maxRarity?: number;
+	/**The minimum tech an item must be to appear (independent from rarity property)*/
+	minTech?: number;
+	/**The maximum tech an item can be to appear (independent from rarity property)*/
+	maxTech?: number;
 	/**The most common rarity to generate (i.e. if this is 5, then 5 will be the most common generation).
 	 * Only used if rarity is enabled.*/
 	centralRarity?: number;
+	/**The minimum rarity of items that should be generated */
+	minRarity?: number;
+	/**the maximum rarity of items that should be generated */
+	maxRarity?: number;
 }

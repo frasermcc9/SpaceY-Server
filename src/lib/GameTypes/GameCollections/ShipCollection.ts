@@ -1,5 +1,5 @@
 import { Client } from "../../Client/Client";
-import { GameCollectionBase } from "./GameCollectionBase";
+import { GameCollectionBase, ICompatible } from "./GameCollectionBase";
 import { MapCollection } from "../../Extensions/Collections";
 import { Ship } from "../GameAsset/Ship/Ship";
 
@@ -19,8 +19,8 @@ export class ShipCollection extends GameCollectionBase {
 	}
 
 	/** @override */
-	public GetCompatibleItems(minRarity: number, maxRarity: number): MapCollection<string, Ship> {
-		return Client.Reg.ShipRegistry.filter((val) => val.Cost != undefined && val.TechLevel <= maxRarity && val.TechLevel >= minRarity);
+	public GetCompatibleItems({ minTech, maxTech }: ICompatible): MapCollection<string, Ship> {
+		return Client.Reg.ShipRegistry.filter((val) => val.Cost != undefined && val.TechLevel <= maxTech && val.TechLevel >= minTech);
 	}
 
 	/** @override */

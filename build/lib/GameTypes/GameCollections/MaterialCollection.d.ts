@@ -1,5 +1,5 @@
 import { Material } from "../GameAsset/Material/Material";
-import { GameCollectionBase } from "./GameCollectionBase";
+import { GameCollectionBase, ICompatible } from "./GameCollectionBase";
 import { MapCollection } from "../../Extensions/Collections";
 export declare class MaterialCollection extends GameCollectionBase {
     constructor(options?: IMaterialCollectionOptions);
@@ -12,7 +12,7 @@ export declare class MaterialCollection extends GameCollectionBase {
     GetCollectionValue(): number;
     static GenerateMineableCollection(value: number): MaterialCollection;
     /** @override */
-    GetCompatibleItems(minRarity: number, maxRarity: number): MapCollection<string, Material>;
+    GetCompatibleItems({ minRarity, maxRarity, minTech, maxTech }: ICompatible): MapCollection<string, Material>;
     /** @override */
     GenerateWeights(items: Material[], centralRarity: number, minRarity: number, maxRarity: number): number[];
 }

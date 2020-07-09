@@ -74,7 +74,7 @@ export declare abstract class GameCollectionBase extends MapCollection<string, n
      * @param minRarity the minimum rarity that a valid item can be
      * @param maxRarity the maximum rarity that a valid item can be
      */
-    abstract GetCompatibleItems(minRarity: number, maxRarity: number): MapCollection<string, GameAsset>;
+    abstract GetCompatibleItems({ minRarity, maxRarity, minTech, maxTech }: ICompatible): MapCollection<string, GameAsset>;
     /**
      * Required method for GenerateCollection
      * @param items array of input items
@@ -88,18 +88,24 @@ export declare abstract class GameCollectionBase extends MapCollection<string, n
      */
     RandomNumber(): number;
 }
-export interface IGenerationOptions {
+export interface IGenerationOptions extends ICompatible {
     /**The minimum value of the collection*/
     value: number;
     /**If item rarity should effect the inventory generation frequencies*/
     rarity: boolean;
-    /**The minimum rarity an item must be to appear (independent from rarity property)*/
-    minRarity: number;
-    /**The maximum rarity an item can be to appear (independent from rarity property)*/
-    maxRarity: number;
     /**The most common rarity to generate (i.e. if this is 5, then 5 will be the most common generation).
      * Only used if rarity is enabled.*/
     centralRarity: number;
+}
+export interface ICompatible {
+    /**The minimum rarity of items that should be generated */
+    minRarity: number;
+    /**the maximum rarity of items that should be generated */
+    maxRarity: number;
+    /**The minimum tech an item must be to appear (independent from rarity property)*/
+    minTech: number;
+    /**The maximum tech an item can be to appear (independent from rarity property)*/
+    maxTech: number;
 }
 interface ReduceToNonNegativeOutput {
     success: boolean;

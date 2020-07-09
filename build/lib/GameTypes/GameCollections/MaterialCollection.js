@@ -76,8 +76,12 @@ class MaterialCollection extends GameCollectionBase_1.GameCollectionBase {
         return MineableCollection;
     }
     /** @override */
-    GetCompatibleItems(minRarity, maxRarity) {
-        return Client_1.Client.Reg.MaterialRegistry.filter((val) => val.Cost != undefined && val.GetMaterialRarity() <= maxRarity && val.GetMaterialRarity() >= minRarity);
+    GetCompatibleItems({ minRarity, maxRarity, minTech, maxTech }) {
+        return Client_1.Client.Reg.MaterialRegistry.filter((val) => val.Cost != undefined &&
+            val.TechLevel <= maxTech &&
+            val.TechLevel >= minTech &&
+            val.GetMaterialRarity() <= maxRarity &&
+            val.GetMaterialRarity() >= minRarity);
     }
     /** @override */
     GenerateWeights(items, centralRarity, minRarity, maxRarity) {

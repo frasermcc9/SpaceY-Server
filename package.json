@@ -2,7 +2,7 @@
 	"name": "space-y",
 	"version": "0.1.0",
 	"description": "a space-rpg game in typescript",
-	"main": "example/index.js",
+	"main": "build/lib/main.js",
 	"scripts": {
         "test": "ts-mocha src/test/**/*.test.ts",
         "dependency-diagram":"npx arkit -d src/lib",

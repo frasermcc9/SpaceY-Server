@@ -1,6 +1,6 @@
 import { Client } from "../../Client/Client";
 import { Faction } from "../GameAsset/Faction/Faction";
-import { GameCollectionBase } from "./GameCollectionBase";
+import { GameCollectionBase, ICompatible } from "./GameCollectionBase";
 import { MapCollection } from "../../Extensions/Collections";
 
 export class ReputationCollection extends GameCollectionBase {
@@ -18,8 +18,8 @@ export class ReputationCollection extends GameCollectionBase {
 	}
 
 	/** @override */
-	public GetCompatibleItems(minRarity: number, maxRarity: number): MapCollection<string, Faction> {
-		return Client.Reg.FactionRegistry.filter((val) => val.Cost != undefined && val.TechLevel <= maxRarity && val.TechLevel >= minRarity);
+	public GetCompatibleItems({ minTech, maxTech }: ICompatible): MapCollection<string, Faction> {
+		return Client.Reg.FactionRegistry.filter((val) => val.Cost != undefined && val.TechLevel <= maxTech && val.TechLevel >= minTech);
 	}
 
 	/** @override */

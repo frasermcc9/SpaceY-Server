@@ -1,5 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+var PlayerModel_1 = require("./GameApi/Database/Player/PlayerModel");
+Object.defineProperty(exports, "PlayerModel", { enumerable: true, get: function () { return PlayerModel_1.PlayerModel; } });
 var Client_1 = require("./Client/Client");
 Object.defineProperty(exports, "Client", { enumerable: true, get: function () { return Client_1.Client; } });
 var Setup_1 = require("./Client/Setup");

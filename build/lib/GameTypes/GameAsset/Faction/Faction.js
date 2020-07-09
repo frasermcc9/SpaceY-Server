@@ -37,24 +37,53 @@ class FactionBuilder {
         this.options.soldAttachments = options.soldAttachments ?? [];
         this.options.usedAttachments = options.usedAttachments ?? [];
     }
+    /**
+     * Adds a ship that this faction can sell, and adds it to its usable ships
+     * as well. Sold ships are ships this faction will sell in their stores.
+     * @param ship
+     */
     addSoldShips(ship) {
         if (!Array.isArray(ship))
             ship = [ship];
         this.options.soldShips?.push(...ship);
+        this.options.usedShips?.push(...ship);
         return this;
     }
+    /**
+     * Note that sold ships are added to used implicitly, so do not add a sold
+     * ship and then add the same ship as a used ship.
+     *
+     * Used ships are ships that this faction uses - i.e. ships that can be
+     * fought in their region.
+     * @param ship
+     */
     addUsedShips(ship) {
         if (!Array.isArray(ship))
             ship = [ship];
         this.options.usedShips?.push(...ship);
         return this;
     }
+    /**
+     * Adds an attachment that this faction can sell, and adds it to its usable
+     * attachments as well. Sold attachments are attachments this faction will
+     * sell in their stores.
+     * @param attachment
+     */
     addSoldAttachments(attachment) {
         if (!Array.isArray(attachment))
             attachment = [attachment];
         this.options.soldAttachments?.push(...attachment);
+        this.options.usedAttachments?.push(...attachment);
         return this;
     }
+    /**
+     * Note that sold attachments are added to used implicitly, so do not add a
+     * sold attachment and then add the same attachment as a used attachment.
+     *
+     * Used attachment are attachment that this faction uses - i.e. their ships
+     * will use these attachments.
+     * @param attachment
+     */
     addUsedAttachments(attachment) {
         if (!Array.isArray(attachment))
             attachment = [attachment];

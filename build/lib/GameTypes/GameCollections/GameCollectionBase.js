@@ -184,7 +184,12 @@ class GameCollectionBase extends Collections_1.MapCollection {
      */
     GenerateCollection(options) {
         let intermediatePrice = this.GetCollectionValue();
-        const CompatibleItems = this.GetCompatibleItems(options.minRarity, options.maxRarity);
+        const CompatibleItems = this.GetCompatibleItems({
+            minRarity: options.minRarity,
+            maxRarity: options.maxRarity,
+            minTech: options.minTech,
+            maxTech: options.maxTech,
+        });
         const ItemNames = CompatibleItems.array();
         const Weights = this.GenerateWeights(ItemNames, options.centralRarity, options.minRarity, options.maxRarity);
         let FlatArray = new Array();

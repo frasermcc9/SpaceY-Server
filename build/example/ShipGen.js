@@ -6,11 +6,22 @@ const Blueprint_1 = require("../lib/GameTypes/GameAsset/Blueprint/Blueprint");
 exports.ShipGenerator = () => {
     return [
         new Ship_1.ShipBuilder({
+            name: "Recovered Escape Pod",
+            description: "An escape pod from a much larger ship. Not great but it can fly... sort of.",
+            techLevel: 0,
+        })
+            .SetStats({ baseHp: 35, baseShield: 8, baseEnergy: [2, 2, 6], baseCargo: 30, baseHandling: 4 })
+            .SetWeapons({ primaryCap: 0, shieldCap: 0, heavyCap: 1, minerCap: 0, generalCap: 1 })
+            .EnableSell(61000)
+            .EnableBuildable(new Blueprint_1.BlueprintBuilder().DefinedBuild(Blueprint_1.BlueprintBuilder.SIMPLE_BUILD(40000), "Recovered Shuttle"))
+            .SetMisc({ uri: "", subclass: "Shuttle" })
+            .Build(),
+        new Ship_1.ShipBuilder({
             name: "Kalen Tradeship",
             description: "A ship that is prevalent within the Kalen alliance. It was designed for traders, often used by rural farmers for getting to and from markets.",
             techLevel: 2,
         })
-            .SetStats({ baseHp: 75, baseShield: 8, baseEnergy: [9, 7, 13], baseCargo: 950, baseHandling: 6 })
+            .SetStats({ baseHp: 75, baseShield: 45, baseEnergy: [9, 7, 13], baseCargo: 950, baseHandling: 6 })
             .SetWeapons({ primaryCap: 1, shieldCap: 1, heavyCap: 3, minerCap: 1, generalCap: 1 })
             .EnableSell(349000)
             .EnableBuildable(new Blueprint_1.BlueprintBuilder().DefinedBuild(Blueprint_1.BlueprintBuilder.SIMPLE_BUILD(280000), "Kalen Transport"))

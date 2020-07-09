@@ -2,10 +2,11 @@ import { MaterialCollection, IMaterialCollectionOptions } from "../GameCollectio
 import { Player } from "../GameAsset/Player/Player";
 export declare class Asteroid extends MaterialCollection {
     private cooldown;
+    private autoCd;
     private timeoutMap;
     private timeoutIntervals;
     private name;
-    constructor(options: IMaterialCollectionOptions, cooldown: number | undefined, name: string);
+    constructor(options: IMaterialCollectionOptions, cooldown: number | undefined, autoCd: boolean, name: string);
     /**
      * Asynchronously adds and then removes players from the cooldown map after
      * the duration provided. Stores the player uid for the timeout, and keeps
@@ -20,7 +21,7 @@ export declare class Asteroid extends MaterialCollection {
      * @param player the player to query.
      * @returns time in seconds (rounded to nearest second) remaining.
      */
-    private remainingCooldown;
+    remainingCooldown(player: Player): number;
     isAvailableForUser(player: Player): boolean;
     /**
      *
@@ -59,6 +60,7 @@ export declare class Asteroid extends MaterialCollection {
     get Name(): string;
 }
 export declare class AsteroidBuilder {
+    autoCooldown: boolean;
     cooldown?: number;
     name: string;
     constructor(name: string);

@@ -4,11 +4,12 @@ exports.AsteroidBuilder = exports.Asteroid = void 0;
 const MaterialCollection_1 = require("../GameCollections/MaterialCollection");
 const Client_1 = require("../../Client/Client");
 class Asteroid extends MaterialCollection_1.MaterialCollection {
-    constructor(options, cooldown = Client_1.Client.Reg.DefaultAsteroidCooldown, name) {
+    constructor(options, cooldown = Client_1.Client.Reg.DefaultAsteroidCooldown, autoCd, name) {
         super(options);
         this.timeoutMap = new Map();
         this.timeoutIntervals = new Set();
         this.cooldown = cooldown;
+        this.autoCd = autoCd;
         this.name = name;
     }
     /**
@@ -49,6 +50,8 @@ class Asteroid extends MaterialCollection_1.MaterialCollection {
      * 403 - on cooldown
      */
     async mine(player, percent, cooldownOverride) {
+        if (this.autoCd)
+            this.cooldown = Client_1.Client.Reg.DefaultAsteroidCooldown;
         //check cooldown
         const cd = this.remainingCooldown(player);
         if (cd > 0 && !cooldownOverride)
@@ -106,9 +109,11 @@ class Asteroid extends MaterialCollection_1.MaterialCollection {
 exports.Asteroid = Asteroid;
 class AsteroidBuilder {
     constructor(name) {
+        this.autoCooldown = true;
         this.name = name;
     }
     setCooldown(seconds) {
+        this.autoCooldown = false;
         this.cooldown = seconds;
         return this;
     }
@@ -116,10 +121,10 @@ class AsteroidBuilder {
         if (value < 0 && Client_1.Client.Get().ConsoleLogging)
             console.warn("Negative asteroid value passed.");
         const collection = MaterialCollection_1.MaterialCollection.GenerateMineableCollection(value);
-        return new Asteroid({ data: collection }, this.cooldown, this.name);
+        return new Asteroid({ data: collection }, this.cooldown, this.autoCooldown, this.name);
     }
     BuildCustom(materialCollection) {
-        return new Asteroid(materialCollection, this.cooldown, this.name);
+        return new Asteroid(materialCollection, this.cooldown, this.autoCooldown, this.name);
     }
 }
 exports.AsteroidBuilder = AsteroidBuilder;

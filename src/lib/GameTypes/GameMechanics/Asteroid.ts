@@ -5,14 +5,17 @@ import { GameEvent } from "../GameAsset/Attachment/Attachment";
 
 export class Asteroid extends MaterialCollection {
 	private cooldown: number;
+	private autoCd: boolean;
+
 	private timeoutMap = new Map<string, number>();
 	private timeoutIntervals = new Set<NodeJS.Timeout>();
 
 	private name: string;
 
-	constructor(options: IMaterialCollectionOptions, cooldown: number = Client.Reg.DefaultAsteroidCooldown, name: string) {
+	constructor(options: IMaterialCollectionOptions, cooldown: number = Client.Reg.DefaultAsteroidCooldown, autoCd: boolean, name: string) {
 		super(options);
 		this.cooldown = cooldown;
+		this.autoCd = autoCd;
 		this.name = name;
 	}
 	/**
@@ -36,7 +39,7 @@ export class Asteroid extends MaterialCollection {
 	 * @param player the player to query.
 	 * @returns time in seconds (rounded to nearest second) remaining.
 	 */
-	private remainingCooldown(player: Player): number {
+	public remainingCooldown(player: Player): number {
 		const now = Date.now(),
 			started = this.timeoutMap.get(player.UId) ?? now,
 			inMap = (started - now) / 1000;
@@ -56,6 +59,7 @@ export class Asteroid extends MaterialCollection {
 	 * 403 - on cooldown
 	 */
 	public async mine(player: Player, percent?: number, cooldownOverride?: boolean): Promise<{ code: 200 | 403; cooldown?: number }> {
+		if (this.autoCd) this.cooldown = Client.Reg.DefaultAsteroidCooldown;
 		//check cooldown
 		const cd = this.remainingCooldown(player);
 		if (cd > 0 && !cooldownOverride) return { code: 403, cooldown: cd };
@@ -115,6 +119,7 @@ export class Asteroid extends MaterialCollection {
 }
 
 export class AsteroidBuilder {
+	public autoCooldown: boolean = true;
 	public cooldown?: number;
 	public name: string;
 
@@ -123,6 +128,7 @@ export class AsteroidBuilder {
 	}
 
 	public setCooldown(seconds: number): this {
+		this.autoCooldown = false;
 		this.cooldown = seconds;
 		return this;
 	}
@@ -130,10 +136,10 @@ export class AsteroidBuilder {
 	public BuildRandom({ value }: { value: number }): Asteroid {
 		if (value < 0 && Client.Get().ConsoleLogging) console.warn("Negative asteroid value passed.");
 		const collection = MaterialCollection.GenerateMineableCollection(value);
-		return new Asteroid({ data: collection }, this.cooldown, this.name);
+		return new Asteroid({ data: collection }, this.cooldown, this.autoCooldown, this.name);
 	}
 
 	public BuildCustom(materialCollection: IMaterialCollectionOptions): Asteroid {
-		return new Asteroid(materialCollection, this.cooldown, this.name);
+		return new Asteroid(materialCollection, this.cooldown, this.autoCooldown, this.name);
 	}
 }

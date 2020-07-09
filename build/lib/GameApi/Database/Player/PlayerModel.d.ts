@@ -1,5 +1,4 @@
 import { Document, Model } from "mongoose";
-import { Skin } from "../../../GameTypes/GameAsset/Player/Skin";
 import { Player } from "../../../GameTypes/GameAsset/Player/Player";
 export declare const PlayerModel: IPlayerModel;
 export interface IPlayer {
@@ -8,7 +7,14 @@ export interface IPlayer {
         name: string;
         equipped: string[];
     };
-    skin?: Skin;
+    skin?: {
+        skinUri: string;
+        skinName: string;
+    };
+    skins?: {
+        skinUri: string;
+        skinName: string;
+    }[];
     inventory: {
         credits: number;
         tokens: number;

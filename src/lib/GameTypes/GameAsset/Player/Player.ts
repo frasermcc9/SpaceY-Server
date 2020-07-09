@@ -18,6 +18,7 @@ export class Player {
 
 	private ship: ShipWrapper;
 	private skin?: Skin;
+	private allSkins: Skin[] = new Array();
 
 	private inventory!: PlayerInventory;
 	public get Inventory(): PlayerInventory {
@@ -642,8 +643,12 @@ export class Player {
 		}
 	}
 
-	public applySkin(name: string, uri: string): void {
-		this.skin = new Skin(name, uri);
+	public applySkin(name: string, uri: string): boolean {
+		if (this.inventory.removeTokens({ amount: 1 })) {
+			this.skin = new Skin(name, uri);
+			return true;
+		}
+		return false;
 	}
 
 	public profile() {
@@ -673,7 +678,10 @@ export class Player {
 				uId: this.uId,
 				inventory: this.inventory.GetGeneric(),
 				ship: { name: this.ship.stringifyName(), equipped: this.ship.stringifyAttachments() },
-				skin: this.skin,
+				skin: { skinName: this.skin?.SkinName ?? "", skinUri: this.skin?.SkinUri ?? "" },
+				skins: this.allSkins.map((s) => {
+					return { skinName: s.SkinName, skinUri: s.SkinUri };
+				}),
 				location: this.location.Name,
 				blueprints: Array.from(this.blueprints),
 				exp: this.exp,
@@ -712,7 +720,7 @@ export class Player {
 					`Mismatch between database and server. Player '${this.uId}' has more items equipped in database than possible on ship.`
 				);
 		});
-		const skin = new Skin(data.skin?.SkinName ?? "", data.skin?.SkinUri ?? "");
+		const skin = new Skin(data.skin?.skinName ?? "", data.skin?.skinUri ?? "");
 		this.skin = skin.SkinName == "" ? undefined : skin;
 		this.inventory = new InventoryBuilder()
 			.SetCredits(data.inventory.credits)

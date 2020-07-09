@@ -9,6 +9,7 @@ const ShipWrapper_1 = require("../Ship/ShipWrapper");
 const util_1 = require("../../../Util/util");
 class Player {
     constructor(data) {
+        this.allSkins = new Array();
         this.location = Client_1.Client.Reg.DefaultLocation;
         this.blueprints = new Set();
         this.exp = 100;
@@ -29,7 +30,7 @@ class Player {
             if (result.code == 403)
                 throw new Error(`Mismatch between database and server. Player '${this.uId}' has more items equipped in database than possible on ship.`);
         });
-        const skin = new Skin_1.Skin(data.skin?.SkinName ?? "", data.skin?.SkinUri ?? "");
+        const skin = new Skin_1.Skin(data.skin?.skinName ?? "", data.skin?.skinUri ?? "");
         this.skin = skin.SkinName == "" ? undefined : skin;
         this.inventory = new PlayerInventory_1.InventoryBuilder()
             .SetCredits(data.inventory.credits)
@@ -578,7 +579,11 @@ class Player {
         }
     }
     applySkin(name, uri) {
-        this.skin = new Skin_1.Skin(name, uri);
+        if (this.inventory.removeTokens({ amount: 1 })) {
+            this.skin = new Skin_1.Skin(name, uri);
+            return true;
+        }
+        return false;
     }
     profile() {
         return {
@@ -599,7 +604,10 @@ class Player {
             uId: this.uId,
             inventory: this.inventory.GetGeneric(),
             ship: { name: this.ship.stringifyName(), equipped: this.ship.stringifyAttachments() },
-            skin: this.skin,
+            skin: { skinName: this.skin?.SkinName ?? "", skinUri: this.skin?.SkinUri ?? "" },
+            skins: this.allSkins.map((s) => {
+                return { skinName: s.SkinName, skinUri: s.SkinUri };
+            }),
             location: this.location.Name,
             blueprints: Array.from(this.blueprints),
             exp: this.exp,

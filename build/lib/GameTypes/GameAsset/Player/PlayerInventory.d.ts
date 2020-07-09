@@ -20,6 +20,12 @@ export declare class PlayerInventory {
     get Reputation(): ReputationCollection;
     get Tokens(): number;
     constructor(options: IPlayerInventoryOptions);
+    removeTokens({ amount }: {
+        amount: number;
+    }): boolean;
+    addTokens({ amount }: {
+        amount: number;
+    }): boolean;
     AddCredits({ amount }: {
         amount: number;
     }): boolean;

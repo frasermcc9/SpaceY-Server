@@ -49,6 +49,18 @@ export class PlayerInventory {
 		}
 	}
 
+	public removeTokens({ amount }: { amount: number }): boolean {
+		if (amount < 0) throw new Error("Cannot remove negative tokens");
+		if (this.tokens < amount) return false;
+		this.tokens -= amount;
+		return true;
+	}
+	public addTokens({ amount }: { amount: number }): boolean {
+		if (amount < 0) throw new Error("Cannot add negative tokens");
+		this.tokens += amount;
+		return true;
+	}
+
 	public AddCredits({ amount }: { amount: number }): boolean {
 		let checkAmount = this.credits;
 		checkAmount += amount;

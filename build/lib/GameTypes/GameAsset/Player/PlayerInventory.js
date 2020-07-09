@@ -41,6 +41,20 @@ class PlayerInventory {
     get Tokens() {
         return this.tokens;
     }
+    removeTokens({ amount }) {
+        if (amount < 0)
+            throw new Error("Cannot remove negative tokens");
+        if (this.tokens < amount)
+            return false;
+        this.tokens -= amount;
+        return true;
+    }
+    addTokens({ amount }) {
+        if (amount < 0)
+            throw new Error("Cannot add negative tokens");
+        this.tokens += amount;
+        return true;
+    }
     AddCredits({ amount }) {
         let checkAmount = this.credits;
         checkAmount += amount;

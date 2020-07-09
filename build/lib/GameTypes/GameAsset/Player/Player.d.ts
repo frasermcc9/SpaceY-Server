@@ -10,6 +10,7 @@ export declare class Player {
     get UId(): string;
     private ship;
     private skin?;
+    private allSkins;
     private inventory;
     get Inventory(): PlayerInventory;
     private location;
@@ -332,7 +333,7 @@ export declare class Player {
      */
     discoverBlueprint(item: string | GameAsset): Promise<boolean>;
     get PlayerImage(): string;
-    applySkin(name: string, uri: string): void;
+    applySkin(name: string, uri: string): boolean;
     profile(): {
         credits: number;
         skills: number[];

@@ -7,10 +7,12 @@ const PlayerSchema = new Schema({
 		name: String,
 		equipped: [String],
 	},
-	skin: {
-		skinUri: String,
-		skinName: String,
-	},
+	skin: [
+		{
+			skinUri: String,
+			skinName: String,
+		},
+	],
 	inventory: {
 		credits: Number,
 		tokens: Number,

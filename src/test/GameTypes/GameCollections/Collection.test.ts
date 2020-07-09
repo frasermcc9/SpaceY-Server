@@ -1,14 +1,6 @@
-import { Client, connect, disconnect } from "../../../lib/main";
-import { BaseStore } from "../../../lib/GameTypes/GameStore/BaseStore";
-import { MaterialStore } from "../../../lib/GameTypes/GameStore/MaterialStore";
-import { PlayerModel } from "../../../lib/GameApi/Database/Player/PlayerModel";
-import { default as must } from "must";
-import { Material } from "../../../lib/GameTypes/GameAsset/Material/Material";
-import { GameCollectionBase } from "../../../lib/GameTypes/GameCollections/GameCollectionBase";
 import { MaterialCollection } from "../../../lib/GameTypes/GameCollections/MaterialCollection";
-import { StorePublisher } from "../../../lib/GameTypes/GameStore/StorePublisher";
-import { SellableDecorator } from "../../../lib/GameTypes/GameAsset/AssetDecorators";
-import { GenerateClientSet } from "../../TestUtil";
+import { Client } from "../../../lib/main";
+import { default as must } from "must";
 require("must/register");
 
 describe("Collection Testing", async () => {
@@ -88,8 +80,8 @@ describe("Collection Testing", async () => {
 
 		it("Generator function should properly work (low chance to fail)", () => {
 			const MC = new MaterialCollection();
-			MC.GenerateCollection({ value: 10000, centralRarity: 1, maxRarity: 6, minRarity: 1, rarity: true });
-            MC.get("Food").must.be.gt(MC.get("Tech"));                      
+			MC.GenerateCollection({ value: 10000, centralRarity: 1, maxRarity: 6, minRarity: 1, rarity: true, minTech: 0, maxTech: 10 });
+			MC.get("Food").must.be.gt(MC.get("Tech"));
 		});
 	});
 });

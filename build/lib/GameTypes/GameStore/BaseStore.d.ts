@@ -64,11 +64,20 @@ export declare abstract class BaseStore implements IStoreUpdatable {
     getCollectionValue(): number;
     /**@deprecated */
     GetCollectionValue(): number;
-    get StoreItems(): MapCollection<string, number>;
+    /**
+     * Gets items in the store
+     * @returns Map<item name, amount available>
+     */
+    getStoreItems(includeEmpty?: boolean): MapCollection<string, number>;
+    /**
+     * Gets costs of items in the store
+     * @returns Map<item name, cost>
+     */
     get StoreItemCosts(): MapCollection<string, number>;
     isType(type: StoreType): boolean;
     update(): void;
     generateInventory(): void;
+    get Name(): string;
     abstract populateInventory(): void;
     /**
      * Clears the current inventory, and sets it to what is given in the input parameter.

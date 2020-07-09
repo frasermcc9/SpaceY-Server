@@ -157,9 +157,25 @@ class BaseStore {
     GetCollectionValue() {
         return this.getCollectionValue();
     }
-    get StoreItems() {
-        return new Collections_1.MapCollection(this.collection);
+    /**
+     * Gets items in the store
+     * @returns Map<item name, amount available>
+     */
+    getStoreItems(includeEmpty = false) {
+        const full = new Collections_1.MapCollection(this.collection);
+        if (includeEmpty)
+            return full;
+        const reduced = new Collections_1.MapCollection();
+        full.forEach((q, n) => {
+            if (q != 0)
+                reduced.set(n, q);
+        });
+        return reduced;
     }
+    /**
+     * Gets costs of items in the store
+     * @returns Map<item name, cost>
+     */
     get StoreItemCosts() {
         const output = new Collections_1.MapCollection();
         this.collection.forEach((_, item) => {
@@ -184,6 +200,9 @@ class BaseStore {
         this.manualEnabled = true;
         this.populateInventory();
     }
+    get Name() {
+        return this.name;
+    }
     /**
      * Clears the current inventory, and sets it to what is given in the input parameter.
      * @param data
@@ -197,7 +216,7 @@ class BaseStore {
         return this.collection.StrictSumCollection(data);
     }
     identity() {
-        return `${this.name}`;
+        return this.name;
     }
     //#region TESTING METHODS
     INTERNAL_AlterItem(item, n) {

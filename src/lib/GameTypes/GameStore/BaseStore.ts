@@ -166,9 +166,23 @@ export abstract class BaseStore implements IStoreUpdatable {
 		return this.getCollectionValue();
 	}
 
-	public get StoreItems(): MapCollection<string, number> {
-		return new MapCollection(this.collection);
+	/**
+	 * Gets items in the store
+	 * @returns Map<item name, amount available>
+	 */
+	public getStoreItems(includeEmpty: boolean = false): MapCollection<string, number> {
+		const full = new MapCollection(this.collection);
+		if (includeEmpty) return full;
+		const reduced = new MapCollection<string, number>();
+		full.forEach((q, n) => {
+			if (q != 0) reduced.set(n, q);
+		});
+		return reduced;
 	}
+	/**
+	 * Gets costs of items in the store
+	 * @returns Map<item name, cost>
+	 */
 	public get StoreItemCosts(): MapCollection<string, number> {
 		const output = new MapCollection<string, number>();
 		this.collection.forEach((_, item) => {
@@ -197,6 +211,10 @@ export abstract class BaseStore implements IStoreUpdatable {
 		this.populateInventory();
 	}
 
+	public get Name(): string {
+		return this.name;
+	}
+
 	public abstract populateInventory(): void;
 	/**
 	 * Clears the current inventory, and sets it to what is given in the input parameter.
@@ -212,7 +230,7 @@ export abstract class BaseStore implements IStoreUpdatable {
 	}
 
 	public identity(): string {
-		return `${this.name}`;
+		return this.name;
 	}
 
 	//#region TESTING METHODS

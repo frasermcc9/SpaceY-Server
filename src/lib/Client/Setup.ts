@@ -61,6 +61,7 @@ class LinkAdder {
 		return this;
 	}
 	finishMap(): Defaults {
+		Client.Reg.Spacemap.updateMap();
 		return new Defaults();
 	}
 }

@@ -712,7 +712,8 @@ export class Player {
 					`Mismatch between database and server. Player '${this.uId}' has more items equipped in database than possible on ship.`
 				);
 		});
-		this.skin = data.skin;
+		const skin = new Skin(data.skin?.SkinName ?? "", data.skin?.SkinUri ?? "");
+		this.skin = skin.SkinName == "" ? undefined : skin;
 		this.inventory = new InventoryBuilder()
 			.SetCredits(data.inventory.credits)
 			.SetReputation({ data: data.inventory.reputation })

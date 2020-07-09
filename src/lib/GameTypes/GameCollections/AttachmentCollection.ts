@@ -1,6 +1,6 @@
 import { Client } from "../../Client/Client";
 import { Attachment } from "../GameAsset/Attachment/Attachment";
-import { GameCollectionBase } from "./GameCollectionBase";
+import { GameCollectionBase, ICompatible } from "./GameCollectionBase";
 import { MapCollection } from "../../Extensions/Collections";
 
 export class AttachmentCollection extends GameCollectionBase {
@@ -18,8 +18,8 @@ export class AttachmentCollection extends GameCollectionBase {
 		}
 	}
 	/** @override */
-	public GetCompatibleItems(minRarity: number, maxRarity: number): MapCollection<string, Attachment> {
-		return Client.Reg.AttachmentRegistry.filter((val) => val.Cost != undefined && val.TechLevel <= maxRarity && val.TechLevel >= minRarity);
+	public GetCompatibleItems({ minTech, maxTech }: ICompatible): MapCollection<string, Attachment> {
+		return Client.Reg.AttachmentRegistry.filter((val) => val.Cost != undefined && val.TechLevel <= maxTech && val.TechLevel >= minTech);
 	}
 
 	/** @override */

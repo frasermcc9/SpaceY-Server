@@ -3,12 +3,7 @@ import { Material, MaterialBuilder } from "../lib/GameTypes/GameAsset/Material/M
 import { Blueprint, BlueprintBuilder } from "../lib/GameTypes/GameAsset/Blueprint/Blueprint";
 import { Ship, ShipBuilder } from "../lib/GameTypes/GameAsset/Ship/Ship";
 import { Faction, FactionBuilder } from "../lib/GameTypes/GameAsset/Faction/Faction";
-import {
-	Attachment,
-	AttachmentBuilder,
-	AttachmentType,
-	AttachmentReport,
-} from "../lib/GameTypes/GameAsset/Attachment/Attachment";
+import { Attachment, AttachmentBuilder, AttachmentType, AttachmentReport } from "../lib/GameTypes/GameAsset/Attachment/Attachment";
 import { ShipWrapper } from "../lib/GameTypes/GameAsset/Ship/ShipWrapper";
 import { Asteroid } from "../lib/GameTypes/GameMechanics/Asteroid";
 
@@ -50,14 +45,8 @@ export function GENERATED_MATERIALS() {
 			.EnableMine()
 			.SetRarity(10)
 			.Build(),
-		new MaterialBuilder({ name: "Food", description: "Food for one person.", techLevel: 1 })
-			.EnableSell(5)
-			.SetRarity(1)
-			.Build(),
-		new MaterialBuilder({ name: "Tech", description: "Pile of tech pieces.", techLevel: 7 })
-			.EnableSell(50)
-			.SetRarity(6)
-			.Build(),
+		new MaterialBuilder({ name: "Food", description: "Food for one person.", techLevel: 1 }).EnableSell(5).SetRarity(1).Build(),
+		new MaterialBuilder({ name: "Tech", description: "Pile of tech pieces.", techLevel: 7 }).EnableSell(50).SetRarity(6).Build(),
 	];
 }
 export function GENERATED_SHIPS() {
@@ -71,6 +60,8 @@ export function GENERATED_SHIPS() {
 					minRarity: 0,
 					maxRarity: 10,
 					centralRarity: 3,
+					minTech: 0,
+					maxTech: 10,
 				})
 			)
 			.SetStats({ baseHp: 100, baseShield: 50 })
@@ -85,6 +76,8 @@ export function GENERATED_SHIPS() {
 					minRarity: 0,
 					maxRarity: 10,
 					centralRarity: 5,
+					minTech: 0,
+					maxTech: 10,
 				})
 			)
 			.SetStats({ baseHp: 150, baseShield: 90, baseCargo: 750 })
@@ -98,6 +91,8 @@ export function GENERATED_SHIPS() {
 					minRarity: 0,
 					maxRarity: 10,
 					centralRarity: 7,
+					minTech: 0,
+					maxTech: 10,
 				})
 			)
 			.SetStats({ baseHp: 200, baseShield: 170, baseCargo: 8000 })
@@ -317,9 +312,7 @@ export function generateIntegrationSet() {
 		.SetStats({ baseHp: 450, baseShield: 450, baseEnergy: [72, 42, 28], baseCargo: 2400, baseHandling: 6 })
 		.SetWeapons({ primaryCap: 4, shieldCap: 2, heavyCap: 7, minerCap: 1, generalCap: 7 })
 		.EnableSell(9800000)
-		.EnableBuildable(
-			new BlueprintBuilder().DefinedBuild(BlueprintBuilder.ADVANCED_BUILD(9000000), "The Celestial Destroyer")
-		)
+		.EnableBuildable(new BlueprintBuilder().DefinedBuild(BlueprintBuilder.ADVANCED_BUILD(9000000), "The Celestial Destroyer"))
 		.SetMisc({ uri: "", subclass: "CAPITAL" })
 		.Build();
 

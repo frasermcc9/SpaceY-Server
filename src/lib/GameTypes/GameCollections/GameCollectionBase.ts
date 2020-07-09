@@ -40,8 +40,8 @@ export abstract class GameCollectionBase extends MapCollection<string, number> {
 		const amountOwned = this.get(itemName);
 		if (amountOwned == undefined) {
 			return { success: false, code: 2, error: "The given item could not be found.", amount: 0 };
-        }
-        this.set(itemName, amountOwned + quantity);
+		}
+		this.set(itemName, amountOwned + quantity);
 		return { success: true, code: 1, amount: amountOwned + quantity };
 	}
 
@@ -190,7 +190,12 @@ export abstract class GameCollectionBase extends MapCollection<string, number> {
 	 */
 	public GenerateCollection(options: IGenerationOptions): GameCollectionBase {
 		let intermediatePrice = this.GetCollectionValue();
-		const CompatibleItems = this.GetCompatibleItems(options.minRarity, options.maxRarity);
+		const CompatibleItems = this.GetCompatibleItems({
+			minRarity: options.minRarity,
+			maxRarity: options.maxRarity,
+			minTech: options.minTech,
+			maxTech: options.maxTech,
+		});
 		const ItemNames = CompatibleItems.array();
 		const Weights = this.GenerateWeights(ItemNames, options.centralRarity, options.minRarity, options.maxRarity);
 		let FlatArray = new Array<GameAsset>();
@@ -221,7 +226,7 @@ export abstract class GameCollectionBase extends MapCollection<string, number> {
 	 * @param minRarity the minimum rarity that a valid item can be
 	 * @param maxRarity the maximum rarity that a valid item can be
 	 */
-	public abstract GetCompatibleItems(minRarity: number, maxRarity: number): MapCollection<string, GameAsset>;
+	public abstract GetCompatibleItems({ minRarity, maxRarity, minTech, maxTech }: ICompatible): MapCollection<string, GameAsset>;
 	/**
 	 * Required method for GenerateCollection
 	 * @param items array of input items
@@ -238,18 +243,24 @@ export abstract class GameCollectionBase extends MapCollection<string, number> {
 	}
 }
 
-export interface IGenerationOptions {
+export interface IGenerationOptions extends ICompatible {
 	/**The minimum value of the collection*/
 	value: number;
 	/**If item rarity should effect the inventory generation frequencies*/
 	rarity: boolean;
-	/**The minimum rarity an item must be to appear (independent from rarity property)*/
-	minRarity: number;
-	/**The maximum rarity an item can be to appear (independent from rarity property)*/
-	maxRarity: number;
 	/**The most common rarity to generate (i.e. if this is 5, then 5 will be the most common generation).
 	 * Only used if rarity is enabled.*/
 	centralRarity: number;
+}
+export interface ICompatible {
+	/**The minimum rarity of items that should be generated */
+	minRarity: number;
+	/**the maximum rarity of items that should be generated */
+	maxRarity: number;
+	/**The minimum tech an item must be to appear (independent from rarity property)*/
+	minTech: number;
+	/**The maximum tech an item can be to appear (independent from rarity property)*/
+	maxTech: number;
 }
 
 interface ReduceToNonNegativeOutput {

@@ -34,7 +34,7 @@ before(async () => {
 		.defaultShip("Shuttle")
 		.maxMaterialRarity(10)
 		.maxTechLevel(10)
-        .finish();
+		.finish();
 });
 
 beforeEach(async () => {
@@ -72,6 +72,8 @@ const SHIPS = () => {
 					minRarity: 0,
 					maxRarity: 10,
 					centralRarity: 3,
+					minTech: 0,
+					maxTech: 10,
 				})
 			)
 			.SetStats({ baseHp: 100, baseShield: 50, baseCargo: 350 })
@@ -86,6 +88,8 @@ const SHIPS = () => {
 					minRarity: 0,
 					maxRarity: 10,
 					centralRarity: 5,
+					minTech: 0,
+					maxTech: 10,
 				})
 			)
 			.SetStats({ baseHp: 150, baseShield: 90, baseCargo: 750 })
@@ -99,6 +103,8 @@ const SHIPS = () => {
 					minRarity: 0,
 					maxRarity: 10,
 					centralRarity: 7,
+					minTech: 0,
+					maxTech: 10,
 				})
 			)
 			.SetStats({ baseHp: 200, baseShield: 170, baseCargo: 8000 })

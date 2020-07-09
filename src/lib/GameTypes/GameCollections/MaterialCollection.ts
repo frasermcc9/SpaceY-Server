@@ -1,7 +1,7 @@
 import { Client } from "../../Client/Client";
 import { util } from "../../Util/util";
 import { IMaterial, Material } from "../GameAsset/Material/Material";
-import { GameCollectionBase } from "./GameCollectionBase";
+import { GameCollectionBase, IGenerationOptions, ICompatible } from "./GameCollectionBase";
 import { SellableDecorator } from "../GameAsset/AssetDecorators";
 import { MapCollection } from "../../Extensions/Collections";
 
@@ -78,9 +78,14 @@ export class MaterialCollection extends GameCollectionBase {
 	}
 
 	/** @override */
-	public GetCompatibleItems(minRarity: number, maxRarity: number): MapCollection<string, Material> {
+	public GetCompatibleItems({ minRarity, maxRarity, minTech, maxTech }: ICompatible): MapCollection<string, Material> {
 		return Client.Reg.MaterialRegistry.filter(
-			(val) => val.Cost != undefined && val.GetMaterialRarity() <= maxRarity && val.GetMaterialRarity() >= minRarity
+			(val) =>
+				val.Cost != undefined &&
+				val.TechLevel <= maxTech &&
+				val.TechLevel >= minTech &&
+				val.GetMaterialRarity() <= maxRarity &&
+				val.GetMaterialRarity() >= minRarity
 		);
 	}
 

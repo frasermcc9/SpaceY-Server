@@ -534,6 +534,7 @@ class Player {
         return util_1.util.throwUndefined(this.location, "Player does not have location");
     }
     async travelTo(node) {
+        node = util_1.util.throwUndefined(Client_1.Client.Reg.Spacemap.resolveNodeFromName(node));
         if (!this.adjacentLocations().includes(node))
             return false;
         if (this.getShipWrapper().pollWarp(node.RequiredWarp)) {

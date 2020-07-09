@@ -595,7 +595,8 @@ export class Player {
 		return util.throwUndefined(this.location, "Player does not have location");
 	}
 
-	public async travelTo(node: SpacemapNode): Promise<boolean> {
+	public async travelTo(node: SpacemapNode | string): Promise<boolean> {
+		node = util.throwUndefined(Client.Reg.Spacemap.resolveNodeFromName(node));
 		if (!this.adjacentLocations().includes(node)) return false;
 		if (this.getShipWrapper().pollWarp(node.RequiredWarp)) {
 			this.location = node;

@@ -322,7 +322,7 @@ export declare class Player {
         code: 200 | 403 | 404;
     }>;
     get Location(): SpacemapNode;
-    travelTo(node: SpacemapNode): Promise<boolean>;
+    travelTo(node: SpacemapNode | string): Promise<boolean>;
     adjacentLocations(): SpacemapNode[];
     hasBlueprintFor(item: string | GameAsset): boolean;
     /**

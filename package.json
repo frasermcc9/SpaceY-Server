@@ -5,7 +5,8 @@
 	"main": "example/index.js",
 	"scripts": {
         "test": "ts-mocha src/test/**/*.test.ts",
-        "dependency-diagram":"npx arkit -d src/lib"
+        "dependency-diagram":"npx arkit -d src/lib",
+        "compile":"tsc"
 	},
 	"repository": {
 		"type": "git",

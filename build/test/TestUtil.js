@@ -252,14 +252,14 @@ function generateIntegrationSet() {
         .SetMisc({ uri: "", subclass: "Frigate" })
         .Build();
     const S2 = new Ship_1.ShipBuilder({
-        name: "Terrian Homeship",
-        description: "A ship that is used freqently by Terrian civilians. This one has had some modifications to make it a bit more able in battle.",
+        name: "Terran Homeship",
+        description: "A ship that is used freqently by Terran civilians. This one has had some modifications to make it a bit more able in battle.",
         techLevel: 4,
     })
         .SetStats({ baseHp: 115, baseShield: 60, baseEnergy: [12, 15, 18], baseCargo: 1200, baseHandling: 6 })
         .SetWeapons({ primaryCap: 1, shieldCap: 1, heavyCap: 4, minerCap: 1, generalCap: 2 })
         .EnableSell(753000)
-        .EnableBuildable(new Blueprint_1.BlueprintBuilder().DefinedBuild(Blueprint_1.BlueprintBuilder.SIMPLE_BUILD(640000), "Terrian Homeship"))
+        .EnableBuildable(new Blueprint_1.BlueprintBuilder().DefinedBuild(Blueprint_1.BlueprintBuilder.SIMPLE_BUILD(640000), "Terran Homeship"))
         .SetMisc({ uri: "", subclass: "Heavy Frigate" })
         .Build();
     const S3 = new Ship_1.ShipBuilder({

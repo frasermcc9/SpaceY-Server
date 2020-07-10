@@ -11,6 +11,7 @@ export declare class GameAsset implements IGameAsset {
     get Cost(): number | undefined;
     private blueprint?;
     get Blueprint(): IBlueprintInfo;
+    addBlueprint(blueprint: Blueprint): void;
     constructor(gameAssetOptions: IGameAssetOptions);
     toString(): string;
     stringDetails(): string;

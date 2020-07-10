@@ -8,6 +8,7 @@ export class Blueprint extends MaterialCollection {
 		super({ data: materials });
 		if (key) this.seed = util.hashCode(key);
 	}
+
 	public RandomNumber(): number {
 		return Math.abs(this.predictableRandom(0, 1));
 	}

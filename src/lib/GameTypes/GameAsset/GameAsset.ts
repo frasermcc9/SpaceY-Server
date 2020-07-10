@@ -28,6 +28,11 @@ export class GameAsset implements IGameAsset {
 		return { success: true, blueprint: this.blueprint };
 	}
 
+	public addBlueprint(blueprint: Blueprint): void {
+		if (this.blueprint == undefined) this.blueprint == blueprint;
+		else throw new Error("Cannot replace a blueprint of an item that already has a blueprint.");
+	}
+
 	public constructor(gameAssetOptions: IGameAssetOptions) {
 		this.name = gameAssetOptions.name;
 		this.description = gameAssetOptions.description;

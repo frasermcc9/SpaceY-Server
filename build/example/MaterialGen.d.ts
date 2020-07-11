@@ -1,1 +1,2 @@
-export declare const MaterialGenerator: () => (import("../lib/GameTypes/GameAsset/Material/Material").Material | undefined)[];
+import { Material } from "../lib/GameTypes/GameAsset/Material/Material";
+export declare const MaterialGenerator: () => Material[];

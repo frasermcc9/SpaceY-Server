@@ -1,1 +1,2 @@
-export declare const ShipGenerator: () => import("../lib/GameTypes/GameAsset/Ship/Ship").Ship[];
+import { Ship } from "../lib/GameTypes/GameAsset/Ship/Ship";
+export declare const ShipGenerator: () => Ship[];

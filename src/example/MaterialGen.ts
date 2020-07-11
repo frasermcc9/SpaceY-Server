@@ -1,6 +1,6 @@
-import { MaterialBuilder } from "../lib/GameTypes/GameAsset/Material/Material";
+import { MaterialBuilder, Material } from "../lib/GameTypes/GameAsset/Material/Material";
 
-export const MaterialGenerator = () => {
+export const MaterialGenerator = (): Material[] => {
 	return [
 		new MaterialBuilder({
 			name: "Basic Food",
@@ -150,7 +150,7 @@ export const MaterialGenerator = () => {
 		})
 			.EnableMine()
 			.Build(),
-		,
+
 		new MaterialBuilder({
 			name: "Gold Ore",
 			description: "A rare and precious metal with niche applications.",
@@ -178,7 +178,7 @@ export const MaterialGenerator = () => {
 		})
 			.EnableMine()
 			.Build(),
-		,
+
 		new MaterialBuilder({
 			name: "Copper Ore",
 			description: "Copper remains useful for its electrical and heat properties.",

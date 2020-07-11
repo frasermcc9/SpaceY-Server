@@ -1,1 +1,2 @@
-export declare const AttachmentGenerator: () => import("../lib/GameTypes/GameAsset/Attachment/Attachment").Attachment[];
+import { Attachment } from "../lib/GameTypes/GameAsset/Attachment/Attachment";
+export declare const AttachmentGenerator: () => Attachment[];

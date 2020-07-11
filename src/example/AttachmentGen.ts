@@ -1,6 +1,6 @@
-import { AttachmentBuilder, AttachmentType } from "../lib/GameTypes/GameAsset/Attachment/Attachment";
+import { AttachmentBuilder, AttachmentType, Attachment } from "../lib/GameTypes/GameAsset/Attachment/Attachment";
 
-export const AttachmentGenerator = () => {
+export const AttachmentGenerator = (): Attachment[] => {
 	return [
 		new AttachmentBuilder({
 			name: "Iron Plating",
@@ -19,5 +19,5 @@ export const AttachmentGenerator = () => {
 				return { message: `New Health: ${friendly.ShipStatistics.totalHp}`, success: true };
 			})
 			.Build(),
-	];
+	] as Attachment[];
 };

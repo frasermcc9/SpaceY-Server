@@ -1,7 +1,7 @@
-import { ShipBuilder } from "../lib/GameTypes/GameAsset/Ship/Ship";
+import { ShipBuilder, Ship } from "../lib/GameTypes/GameAsset/Ship/Ship";
 import { BlueprintBuilder } from "../lib/GameTypes/GameAsset/Blueprint/Blueprint";
 
-export const ShipGenerator = () => {
+export const ShipGenerator = (): Ship[] => {
 	return [
 		//#region Shuttle
 		new ShipBuilder({
@@ -132,8 +132,7 @@ export const ShipGenerator = () => {
 
 		new ShipBuilder({
 			name: "Alairan Patroller",
-			description:
-				"A beautifully crafted ship, crafted by the Alairan alliance. It is high tech, well equipped, and very expensive.",
+			description: "A beautifully crafted ship, crafted by the Alairan alliance. It is high tech, well equipped, and very expensive.",
 			techLevel: 9,
 		})
 			.SetStats({ baseHp: 104, baseShield: 84, baseEnergy: [14, 14, 20], baseCargo: 350, baseHandling: 7 })

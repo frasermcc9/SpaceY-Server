@@ -84,7 +84,7 @@ exports.FactionGenerator = () => {
                 "after warping into an anarchic system. A galactic-wide analysis on the technology revealed technology so advanced it was even foreign to the advanced Alairan ",
             techLevel: 11,
         })
-            .setImageUri("https://cdn.discordapp.com/attachments/730728698478854275/730728732355985498/anarchy.png")
+            .setImageUri("https://cdn.discordapp.com/attachments/730728698478854275/730728745643802664/unknown.png")
             .Build(),
     ];
 };

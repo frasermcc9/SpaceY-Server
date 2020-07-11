@@ -1,1 +1,2 @@
-export declare const FactionGenerator: () => import("../lib/GameTypes/GameAsset/Faction/Faction").Faction[];
+import { Faction } from "../lib/GameTypes/GameAsset/Faction/Faction";
+export declare const FactionGenerator: () => Faction[];

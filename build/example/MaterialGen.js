@@ -150,7 +150,6 @@ exports.MaterialGenerator = () => {
         })
             .EnableMine()
             .Build(),
-        ,
         new Material_1.MaterialBuilder({
             name: "Gold Ore",
             description: "A rare and precious metal with niche applications.",
@@ -178,7 +177,6 @@ exports.MaterialGenerator = () => {
         })
             .EnableMine()
             .Build(),
-        ,
         new Material_1.MaterialBuilder({
             name: "Copper Ore",
             description: "Copper remains useful for its electrical and heat properties.",

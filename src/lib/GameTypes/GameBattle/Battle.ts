@@ -34,7 +34,7 @@ export class Battle implements IBattleData {
 	//#region IBattleData
 
 	public get TurnNumber(): number {
-		return Math.ceil(this.battleTurn / 2);
+		return ~~(this.battleTurn / 2);
 	}
 	public get Friendly(): Battleship {
 		return this.activeShip;
@@ -136,7 +136,7 @@ export class Battle implements IBattleData {
 		const faction = this.playerShip.Ship.Owner.Location.Faction;
 		const pool = faction.UsableShips;
 		const playerStrength = this.playerShip.Ship.Strength;
-		return;
+		return (1 as any) as Battleship;
 	}
 }
 

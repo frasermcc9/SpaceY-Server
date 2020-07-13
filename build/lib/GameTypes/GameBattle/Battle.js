@@ -78,7 +78,7 @@ class Battle {
     }
     //#region IBattleData
     get TurnNumber() {
-        return Math.ceil(this.battleTurn / 2);
+        return ~~(this.battleTurn / 2);
     }
     get Friendly() {
         return this.activeShip;
@@ -110,7 +110,7 @@ class Battle {
         const faction = this.playerShip.Ship.Owner.Location.Faction;
         const pool = faction.UsableShips;
         const playerStrength = this.playerShip.Ship.Strength;
-        return;
+        return 1;
     }
 }
 exports.Battle = Battle;

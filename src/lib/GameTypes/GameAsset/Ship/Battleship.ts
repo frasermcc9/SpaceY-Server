@@ -34,6 +34,18 @@ export class Battleship extends EventEmitter {
 	public get Hp(): number {
 		return this.currentStats.hp;
 	}
+	public get Shield(): number {
+		return this.currentStats.shield;
+	}
+	public get W(): number {
+		return this.currentStats.weapon;
+	}
+	public get E(): number {
+		return this.currentStats.engine;
+	}
+	public get C(): number {
+		return this.currentStats.cpu;
+	}
 	//#endregion gets
 
 	//#region - Stat Modifiers

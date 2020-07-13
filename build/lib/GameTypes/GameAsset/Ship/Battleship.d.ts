@@ -21,6 +21,10 @@ export declare class Battleship extends EventEmitter {
     private criticalDamage;
     get Ship(): ShipWrapper;
     get Hp(): number;
+    get Shield(): number;
+    get W(): number;
+    get E(): number;
+    get C(): number;
     weaponIncrease(n: number, emit?: boolean): this;
     weaponDecrease(n: number, emit?: boolean): this;
     engineIncrease(n: number, emit?: boolean): this;

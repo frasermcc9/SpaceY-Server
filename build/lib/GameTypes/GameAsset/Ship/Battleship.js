@@ -28,6 +28,18 @@ class Battleship extends events_1.EventEmitter {
     get Hp() {
         return this.currentStats.hp;
     }
+    get Shield() {
+        return this.currentStats.shield;
+    }
+    get W() {
+        return this.currentStats.weapon;
+    }
+    get E() {
+        return this.currentStats.engine;
+    }
+    get C() {
+        return this.currentStats.cpu;
+    }
     //#endregion gets
     //#region - Stat Modifiers
     weaponIncrease(n, emit = true) {

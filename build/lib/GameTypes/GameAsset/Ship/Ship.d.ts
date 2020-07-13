@@ -23,7 +23,7 @@ export declare class Ship extends GameAsset implements IShip, StrengthComparable
     get ShipStatistics(): {
         baseHp: number;
         baseShield: number;
-        baseEnergy: number[];
+        baseEnergy: [number, number, number];
         baseCargo: number;
         baseHandling: number;
     };
@@ -61,7 +61,7 @@ interface ShipOptions extends IGameAssetOptions, ShipStats, WeaponOptions {
 interface ShipStats {
     baseHp?: number;
     baseShield?: number;
-    baseEnergy?: number[];
+    baseEnergy?: [number, number, number];
     baseCargo?: number;
     baseHandling?: number;
 }

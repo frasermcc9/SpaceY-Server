@@ -11,7 +11,7 @@ export class Ship extends GameAsset implements IShip, StrengthComparable {
 
 	private baseHp: number;
 	private baseShield: number;
-	private baseEnergy: number[];
+	private baseEnergy: [number, number, number];
 	private baseCargo: number;
 	private baseHandling: number;
 
@@ -82,14 +82,14 @@ export class Ship extends GameAsset implements IShip, StrengthComparable {
 	public get ShipStatistics(): {
 		baseHp: number;
 		baseShield: number;
-		baseEnergy: number[];
+		baseEnergy: [number, number, number];
 		baseCargo: number;
 		baseHandling: number;
 	} {
 		return {
 			baseHp: this.baseHp,
 			baseShield: this.baseShield,
-			baseEnergy: this.baseEnergy.slice(),
+			baseEnergy: this.baseEnergy.slice() as [number, number, number],
 			baseCargo: this.baseCargo,
 			baseHandling: this.baseHandling,
 		};
@@ -162,7 +162,7 @@ interface ShipOptions extends IGameAssetOptions, ShipStats, WeaponOptions {
 interface ShipStats {
 	baseHp?: number;
 	baseShield?: number;
-	baseEnergy?: number[];
+	baseEnergy?: [number, number, number];
 	baseCargo?: number;
 	baseHandling?: number;
 }

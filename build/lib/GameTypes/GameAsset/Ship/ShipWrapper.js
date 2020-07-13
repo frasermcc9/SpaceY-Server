@@ -56,6 +56,9 @@ class ShipWrapper {
             totalHandling: Base.baseHandling + this.bonusHandling,
         };
     }
+    get BaseStatistics() {
+        return this.ship.ShipStatistics;
+    }
     incrementStatistics(stats) {
         if (stats.hp)
             this.bonusHp += stats.hp ?? 0;
@@ -91,7 +94,7 @@ class ShipWrapper {
         const oldAttachments = this.attachments.slice();
         const oldShip = this.ship;
         //Unequip all attachments
-        this.attachments = [];
+        this.attachments.forEach((el) => this.removeAttachment(el));
         this.Slots.forEach((_, key) => this.Slots.set(key, 0));
         //Change ship
         this.ship = newShip;

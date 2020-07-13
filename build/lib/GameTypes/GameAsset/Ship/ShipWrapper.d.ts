@@ -30,6 +30,13 @@ export declare class ShipWrapper {
         totalCargo: number;
         totalHandling: number;
     };
+    get BaseStatistics(): {
+        baseHp: number;
+        baseShield: number;
+        baseEnergy: [number, number, number];
+        baseCargo: number;
+        baseHandling: number;
+    };
     incrementStatistics(stats: BonusStatChanger): void;
     decrementStatistics(stats: BonusStatChanger): void;
     /**
@@ -70,7 +77,7 @@ export declare class ShipWrapper {
 declare type BonusStatChanger = {
     hp?: number;
     shield?: number;
-    energy?: number[];
+    energy?: [number, number, number];
     cargo?: number;
     handling?: number;
 };

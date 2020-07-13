@@ -73,6 +73,15 @@ export class ShipWrapper {
 			totalHandling: Base.baseHandling + this.bonusHandling,
 		};
 	}
+	public get BaseStatistics(): {
+		baseHp: number;
+		baseShield: number;
+		baseEnergy: [number, number, number];
+		baseCargo: number;
+		baseHandling: number;
+	} {
+		return this.ship.ShipStatistics;
+	}
 	public incrementStatistics(stats: BonusStatChanger): void {
 		if (stats.hp) this.bonusHp += stats.hp ?? 0;
 		if (stats.shield) this.bonusShield += stats.shield ?? 0;
@@ -99,7 +108,7 @@ export class ShipWrapper {
 		const oldAttachments = this.attachments.slice();
 		const oldShip = this.ship;
 		//Unequip all attachments
-		this.attachments = [];
+		this.attachments.forEach((el) => this.removeAttachment(el));
 		this.Slots.forEach((_, key) => this.Slots.set(key, 0));
 		//Change ship
 		this.ship = newShip;
@@ -186,7 +195,7 @@ export class ShipWrapper {
 type BonusStatChanger = {
 	hp?: number;
 	shield?: number;
-	energy?: number[];
+	energy?: [number, number, number];
 	cargo?: number;
 	handling?: number;
 };

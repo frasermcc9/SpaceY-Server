@@ -17,6 +17,17 @@ export const FactionGenerator = (): Faction[] => {
 			techLevel: 2,
 		})
 			.addSoldShips([Client.Reg.ResolveShipFromName("Kalen Tradeship")!])
+			.addSoldAttachments(
+				Client.Reg.ResolveAttachmentsFromName(
+					"Iron Plating",
+					"Steel Plating",
+					"Standard Blaster",
+					"Hardened Blaster",
+					"Basic Weapon Reserves",
+					"Basic Engine Reserves",
+					"Basic Computer Reserves"
+				)
+			)
 			.setImageUri("https://cdn.discordapp.com/attachments/730728698478854275/730728735631867944/kalen.png")
 			.Build(),
 

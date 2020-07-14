@@ -37,6 +37,9 @@ class ShipWrapper {
         this.attachments.forEach((attachment) => (strength += attachment.Strength));
         return strength;
     }
+    /**
+     * Gets weapon capacities (copy - does not mutate)
+     */
     get WeaponCapacities() {
         return this.ship.WeaponCapacities;
     }
@@ -45,6 +48,14 @@ class ShipWrapper {
     }
     copyAttachments() {
         return this.attachments.slice();
+    }
+    availableSlots() {
+        /**value: capacity, key: type */
+        const capacity = this.WeaponCapacities;
+        capacity.forEach((v, k) => {
+            capacity.set(k, v - this.Slots.get(k));
+        });
+        return capacity;
     }
     get ShipStatistics() {
         const Base = this.ship.ShipStatistics;

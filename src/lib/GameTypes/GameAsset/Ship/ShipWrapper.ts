@@ -45,6 +45,9 @@ export class ShipWrapper {
 		return strength;
 	}
 
+	/**
+	 * Gets weapon capacities (copy - does not mutate)
+	 */
 	public get WeaponCapacities(): Map<AttachmentType, number> {
 		return this.ship.WeaponCapacities;
 	}
@@ -55,6 +58,15 @@ export class ShipWrapper {
 
 	public copyAttachments(): Attachment[] {
 		return this.attachments.slice();
+	}
+
+	public availableSlots() {
+		/**value: capacity, key: type */
+		const capacity = this.WeaponCapacities;
+		capacity.forEach((v, k) => {
+			capacity.set(k, v - this.Slots.get(k)!);
+		});
+		return capacity;
 	}
 
 	public get ShipStatistics(): {

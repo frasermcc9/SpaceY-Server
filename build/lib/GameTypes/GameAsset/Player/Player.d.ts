@@ -305,6 +305,9 @@ export declare class Player {
     setShip(ship: Ship | string): Promise<void>;
     /**@internal */
     getShipWrapper(): ShipWrapper;
+    availableShips(): import("../../GameCollections/ShipCollection").ShipCollection;
+    availableAttachments(): import("../../GameCollections/AttachmentCollection").AttachmentCollection;
+    availableAttachmentSlots(): Map<import("../Attachment/Attachment").AttachmentType, number>;
     equipAttachment(attachment: Attachment | string): Promise<{
         code: 200 | 403 | 404;
     }>;
@@ -312,15 +315,15 @@ export declare class Player {
         code: 200 | 404;
     }>;
     /**
-     * **FORCE** adds attachment to ship. Does nothing else. For normal add from
-     * inventory, use equipAttachment()
+     * **FORCE** adds attachment to ship, even if the player does not own it.
+     * Does nothing else. For normal add from inventory, use equipAttachment()
      * @param attachment any attachment in client registry
      */
     addAttachmentToShip(attachment: Attachment | string): Promise<{
         code: 200 | 403 | 404;
     }>;
     /**
-     * **FORCE** adds attachment to ship. Does nothing else. For normal remove
+     * **FORCE** removes attachment to ship. Does nothing else. For normal remove
      * from ship and add to inventory, use unequipAttachment().
      * @param attachment any attachment in client registry
      */

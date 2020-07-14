@@ -20,9 +20,13 @@ export declare class ShipWrapper {
     stringifyAttachments(): string[];
     get Owner(): Player;
     get Strength(): number;
+    /**
+     * Gets weapon capacities (copy - does not mutate)
+     */
     get WeaponCapacities(): Map<AttachmentType, number>;
     get Uri(): string;
     copyAttachments(): Attachment[];
+    availableSlots(): Map<AttachmentType, number>;
     get ShipStatistics(): {
         totalHp: number;
         totalShield: number;

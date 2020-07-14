@@ -548,6 +548,18 @@ export class Player {
 		return this.ship;
 	}
 
+	public availableShips() {
+		return this.Inventory.Ships.filter((s) => s > 0);
+	}
+
+	public availableAttachments() {
+		return this.Inventory.Attachments.filter((s) => s > 0);
+	}
+
+	public availableAttachmentSlots() {
+		return this.ship.availableSlots();
+	}
+
 	public async equipAttachment(attachment: Attachment | string): Promise<{ code: 200 | 403 | 404 }> {
 		const inInventory = this.inventory.Attachments.get(attachment.toString());
 		if (inInventory == undefined || inInventory < 1) return { code: 403 };
@@ -572,8 +584,8 @@ export class Player {
 		return { code: 404 };
 	}
 	/**
-	 * **FORCE** adds attachment to ship. Does nothing else. For normal add from
-	 * inventory, use equipAttachment()
+	 * **FORCE** adds attachment to ship, even if the player does not own it.
+	 * Does nothing else. For normal add from inventory, use equipAttachment()
 	 * @param attachment any attachment in client registry
 	 */
 	public async addAttachmentToShip(attachment: Attachment | string): Promise<{ code: 200 | 403 | 404 }> {
@@ -582,7 +594,7 @@ export class Player {
 		return Result;
 	}
 	/**
-	 * **FORCE** adds attachment to ship. Does nothing else. For normal remove
+	 * **FORCE** removes attachment to ship. Does nothing else. For normal remove
 	 * from ship and add to inventory, use unequipAttachment().
 	 * @param attachment any attachment in client registry
 	 */

@@ -4,13 +4,15 @@ exports.AsteroidBuilder = exports.Asteroid = void 0;
 const MaterialCollection_1 = require("../GameCollections/MaterialCollection");
 const Client_1 = require("../../Client/Client");
 class Asteroid extends MaterialCollection_1.MaterialCollection {
-    constructor(options, cooldown = Client_1.Client.Reg.DefaultAsteroidCooldown, autoCd, name) {
+    constructor(options, cooldown = Client_1.Client.Reg.DefaultAsteroidCooldown, autoCd, name, tags) {
         super(options);
         this.timeoutMap = new Map();
         this.timeoutIntervals = new Set();
+        this.tags = new Set();
         this.cooldown = cooldown;
         this.autoCd = autoCd;
         this.name = name;
+        this.tags = tags;
     }
     /**
      * Asynchronously adds and then removes players from the cooldown map after
@@ -105,11 +107,17 @@ class Asteroid extends MaterialCollection_1.MaterialCollection {
     get Name() {
         return this.name;
     }
+    hasTag(tag) {
+        return this.tags.has(tag);
+    }
 }
 exports.Asteroid = Asteroid;
 class AsteroidBuilder {
     constructor(name) {
         this.autoCooldown = true;
+        /**Tags are for use with attachments, if you want to make certain
+         * attachments give bonuses to asteroids with particular tags. */
+        this.tags = new Set();
         this.name = name;
     }
     setCooldown(seconds) {
@@ -117,14 +125,17 @@ class AsteroidBuilder {
         this.cooldown = seconds;
         return this;
     }
+    addTag(tag) {
+        this.tags.add(tag);
+    }
     BuildRandom({ value }) {
         if (value < 0 && Client_1.Client.Get().ConsoleLogging)
             console.warn("Negative asteroid value passed.");
         const collection = MaterialCollection_1.MaterialCollection.GenerateMineableCollection(value);
-        return new Asteroid({ data: collection }, this.cooldown, this.autoCooldown, this.name);
+        return new Asteroid({ data: collection }, this.cooldown, this.autoCooldown, this.name, this.tags);
     }
     BuildCustom(materialCollection) {
-        return new Asteroid(materialCollection, this.cooldown, this.autoCooldown, this.name);
+        return new Asteroid(materialCollection, this.cooldown, this.autoCooldown, this.name, this.tags);
     }
 }
 exports.AsteroidBuilder = AsteroidBuilder;

@@ -12,11 +12,20 @@ export class Asteroid extends MaterialCollection {
 
 	private name: string;
 
-	constructor(options: IMaterialCollectionOptions, cooldown: number = Client.Reg.DefaultAsteroidCooldown, autoCd: boolean, name: string) {
+	private tags = new Set<string>();
+
+	constructor(
+		options: IMaterialCollectionOptions,
+		cooldown: number = Client.Reg.DefaultAsteroidCooldown,
+		autoCd: boolean,
+		name: string,
+		tags: Set<string>
+	) {
 		super(options);
 		this.cooldown = cooldown;
 		this.autoCd = autoCd;
 		this.name = name;
+		this.tags = tags;
 	}
 	/**
 	 * Asynchronously adds and then removes players from the cooldown map after
@@ -116,12 +125,19 @@ export class Asteroid extends MaterialCollection {
 	public get Name(): string {
 		return this.name;
 	}
+
+	public hasTag(tag: string): boolean {
+		return this.tags.has(tag);
+	}
 }
 
 export class AsteroidBuilder {
 	public autoCooldown: boolean = true;
 	public cooldown?: number;
 	public name: string;
+	/**Tags are for use with attachments, if you want to make certain
+	 * attachments give bonuses to asteroids with particular tags. */
+	public tags = new Set<string>();
 
 	public constructor(name: string) {
 		this.name = name;
@@ -133,13 +149,17 @@ export class AsteroidBuilder {
 		return this;
 	}
 
+	public addTag(tag: string) {
+		this.tags.add(tag);
+	}
+
 	public BuildRandom({ value }: { value: number }): Asteroid {
 		if (value < 0 && Client.Get().ConsoleLogging) console.warn("Negative asteroid value passed.");
 		const collection = MaterialCollection.GenerateMineableCollection(value);
-		return new Asteroid({ data: collection }, this.cooldown, this.autoCooldown, this.name);
+		return new Asteroid({ data: collection }, this.cooldown, this.autoCooldown, this.name, this.tags);
 	}
 
 	public BuildCustom(materialCollection: IMaterialCollectionOptions): Asteroid {
-		return new Asteroid(materialCollection, this.cooldown, this.autoCooldown, this.name);
+		return new Asteroid(materialCollection, this.cooldown, this.autoCooldown, this.name, this.tags);
 	}
 }

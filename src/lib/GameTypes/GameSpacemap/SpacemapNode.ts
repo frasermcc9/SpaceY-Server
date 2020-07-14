@@ -11,19 +11,21 @@ export class SpacemapNode {
 	private name: string;
 	private faction: Faction;
 	private requiredWarp: WarpPower;
+	private imageUri?: string;
 
 	private stores: BaseStore[];
 	private techLevel: number;
 
 	private asteroids: Asteroid[];
 
-	public constructor({ name, faction, requiredWarp, stores, techLevel, asteroids }: TSpaceMapNode) {
+	public constructor({ name, faction, requiredWarp, stores, techLevel, asteroids, imageUri }: TSpaceMapNode) {
 		this.name = name;
 		this.faction = faction;
 		this.requiredWarp = requiredWarp;
 		this.stores = stores;
 		this.techLevel = techLevel ?? 0;
 		this.asteroids = asteroids;
+		this.imageUri = imageUri;
 	}
 
 	public toString(): string {
@@ -42,6 +44,9 @@ export class SpacemapNode {
 	}
 	public get TechLevel(): number {
 		return this.techLevel;
+	}
+	public get ImageUri(): string | undefined {
+		return this.imageUri;
 	}
 	//#endregion - Gets
 
@@ -103,12 +108,20 @@ export class SpacemapNodeBuilder {
 	private stores: BaseStore[] = [];
 	private techLevel?: number;
 
+	private imageUri?: string;
+
 	private asteroids: Asteroid[] = [];
 
-	public constructor({ name, faction, requiredWarp }: { name: string; faction: Faction; requiredWarp: WarpPower }) {
+	public constructor({ name, faction, requiredWarp, img }: { name: string; faction: Faction; requiredWarp: WarpPower; img?: string }) {
 		this.name = name;
 		this.faction = faction;
 		this.requiredWarp = requiredWarp;
+		this.imageUri = img;
+	}
+
+	public setImage(uri: string): this {
+		this.imageUri = uri;
+		return this;
 	}
 
 	public addStore(store: BaseStore): this {
@@ -130,6 +143,7 @@ export class SpacemapNodeBuilder {
 			stores: this.stores,
 			techLevel: this.techLevel,
 			asteroids: this.asteroids,
+			imageUri: this.imageUri,
 		});
 	}
 }
@@ -144,6 +158,7 @@ export enum WarpPower {
 type TSpaceMapNode = {
 	name: string;
 	faction: Faction;
+	imageUri?: string;
 
 	asteroids: Asteroid[];
 

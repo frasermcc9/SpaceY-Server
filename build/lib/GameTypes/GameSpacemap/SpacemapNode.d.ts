@@ -9,15 +9,17 @@ export declare class SpacemapNode {
     private name;
     private faction;
     private requiredWarp;
+    private imageUri?;
     private stores;
     private techLevel;
     private asteroids;
-    constructor({ name, faction, requiredWarp, stores, techLevel, asteroids }: TSpaceMapNode);
+    constructor({ name, faction, requiredWarp, stores, techLevel, asteroids, imageUri }: TSpaceMapNode);
     toString(): string;
     get Name(): string;
     get Faction(): Faction;
     get RequiredWarp(): WarpPower;
     get TechLevel(): number;
+    get ImageUri(): string | undefined;
     get Asteroids(): Asteroid[];
     asteroidDisplayNames(): string[];
     availableAsteroids(player: Player): Asteroid[];
@@ -37,12 +39,15 @@ export declare class SpacemapNodeBuilder {
     private requiredWarp;
     private stores;
     private techLevel?;
+    private imageUri?;
     private asteroids;
-    constructor({ name, faction, requiredWarp }: {
+    constructor({ name, faction, requiredWarp, img }: {
         name: string;
         faction: Faction;
         requiredWarp: WarpPower;
+        img?: string;
     });
+    setImage(uri: string): this;
     addStore(store: BaseStore): this;
     addAsteroid(asteroid: Asteroid): this;
     build(): SpacemapNode;
@@ -56,6 +61,7 @@ export declare enum WarpPower {
 declare type TSpaceMapNode = {
     name: string;
     faction: Faction;
+    imageUri?: string;
     asteroids: Asteroid[];
     requiredWarp: WarpPower;
     stores: BaseStore[];

@@ -4,13 +4,14 @@ exports.WarpPower = exports.SpacemapNodeBuilder = exports.SpacemapNode = void 0;
 const BaseStore_1 = require("../GameStore/BaseStore");
 const util_1 = require("../../Util/util");
 class SpacemapNode {
-    constructor({ name, faction, requiredWarp, stores, techLevel, asteroids }) {
+    constructor({ name, faction, requiredWarp, stores, techLevel, asteroids, imageUri }) {
         this.name = name;
         this.faction = faction;
         this.requiredWarp = requiredWarp;
         this.stores = stores;
         this.techLevel = techLevel ?? 0;
         this.asteroids = asteroids;
+        this.imageUri = imageUri;
     }
     toString() {
         return `${this.faction.Name}: ${this.name}`;
@@ -27,6 +28,9 @@ class SpacemapNode {
     }
     get TechLevel() {
         return this.techLevel;
+    }
+    get ImageUri() {
+        return this.imageUri;
     }
     //#endregion - Gets
     //#region - Asteroids
@@ -74,12 +78,17 @@ class SpacemapNode {
 }
 exports.SpacemapNode = SpacemapNode;
 class SpacemapNodeBuilder {
-    constructor({ name, faction, requiredWarp }) {
+    constructor({ name, faction, requiredWarp, img }) {
         this.stores = [];
         this.asteroids = [];
         this.name = name;
         this.faction = faction;
         this.requiredWarp = requiredWarp;
+        this.imageUri = img;
+    }
+    setImage(uri) {
+        this.imageUri = uri;
+        return this;
     }
     addStore(store) {
         store.setFaction(this.faction);
@@ -98,6 +107,7 @@ class SpacemapNodeBuilder {
             stores: this.stores,
             techLevel: this.techLevel,
             asteroids: this.asteroids,
+            imageUri: this.imageUri,
         });
     }
 }

@@ -307,7 +307,7 @@ export declare class Player {
     getShipWrapper(): ShipWrapper;
     availableShips(): import("../../GameCollections/ShipCollection").ShipCollection;
     availableAttachments(): import("../../GameCollections/AttachmentCollection").AttachmentCollection;
-    availableAttachmentSlots(): Map<import("../Attachment/Attachment").AttachmentType, number>;
+    availableAttachmentSlots(): import("../../../Extensions/Collections").MapCollection<import("../Attachment/Attachment").AttachmentType, number>;
     equipAttachment(attachment: Attachment | string): Promise<{
         code: 200 | 403 | 404;
     }>;

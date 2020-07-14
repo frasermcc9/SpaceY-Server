@@ -3,6 +3,7 @@ import { Asteroid } from "../../GameMechanics/Asteroid";
 import { Attachment, AttachmentReport, AttachmentType, GameEvent } from "../Attachment/Attachment";
 import { Player } from "../Player/Player";
 import { Ship } from "./Ship";
+import { MapCollection } from "../../../Extensions/Collections";
 
 export class ShipWrapper {
 	private ship: Ship;
@@ -66,16 +67,35 @@ export class ShipWrapper {
 		capacity.forEach((v, k) => {
 			capacity.set(k, v - this.Slots.get(k)!);
 		});
-		return capacity;
+		return new MapCollection(capacity);
 	}
 
-	public get ShipStatistics(): {
-		totalHp: number;
-		totalShield: number;
-		totalEnergy: number[];
-		totalCargo: number;
-		totalHandling: number;
-	} {
+	public get Statistics(): IShipStats {
+		const base = this.ShipStatistics;
+		const e = base.totalEnergy;
+		const levels = this.Owner.pollSkillPoints();
+		return {
+			hp: base.totalHp,
+			shield: base.totalShield,
+			handling: base.totalHandling,
+			cargo: base.totalHandling,
+			energy: [e[0] + this.lvlIncrease(levels[0]), e[1] + this.lvlIncrease(levels[1]), e[2] + this.lvlIncrease(levels[2])],
+		};
+	}
+	/**
+	 * Gets the increase in energy capacity based on the number of skill points
+	 * the player has in the relevant field.
+	 * @param i the number of points in the skill
+	 */
+	private lvlIncrease(i: number) {
+		i -= 1;
+		return 2 * ~~(i / 5) + Math.ceil((i % 5) / 2);
+	}
+	/**
+	 * Gets the ship statistics from the ship, with the effects from attachments
+	 * taken into account
+	 */
+	public get ShipStatistics() {
 		const Base = this.ship.ShipStatistics;
 		return {
 			totalHp: Base.baseHp + this.bonusHp,
@@ -85,15 +105,13 @@ export class ShipWrapper {
 			totalHandling: Base.baseHandling + this.bonusHandling,
 		};
 	}
-	public get BaseStatistics(): {
-		baseHp: number;
-		baseShield: number;
-		baseEnergy: [number, number, number];
-		baseCargo: number;
-		baseHandling: number;
-	} {
+	/**
+	 * Gets base statistics that are from the standard ship without adjustments
+	 */
+	public get BaseStatistics() {
 		return this.ship.ShipStatistics;
 	}
+
 	public incrementStatistics(stats: BonusStatChanger): void {
 		if (stats.hp) this.bonusHp += stats.hp ?? 0;
 		if (stats.shield) this.bonusShield += stats.shield ?? 0;
@@ -211,3 +229,11 @@ type BonusStatChanger = {
 	cargo?: number;
 	handling?: number;
 };
+
+interface IShipStats {
+	hp: number;
+	shield: number;
+	energy: [number, number, number];
+	handling: number;
+	cargo: number;
+}

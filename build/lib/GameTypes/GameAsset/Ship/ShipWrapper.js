@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.ShipWrapper = void 0;
 const Client_1 = require("../../../Client/Client");
 const Attachment_1 = require("../Attachment/Attachment");
+const Collections_1 = require("../../../Extensions/Collections");
 class ShipWrapper {
     constructor(ship, player) {
         this.bonusHp = 0;
@@ -55,8 +56,33 @@ class ShipWrapper {
         capacity.forEach((v, k) => {
             capacity.set(k, v - this.Slots.get(k));
         });
-        return capacity;
+        return new Collections_1.MapCollection(capacity);
     }
+    get Statistics() {
+        const base = this.ShipStatistics;
+        const e = base.totalEnergy;
+        const levels = this.Owner.pollSkillPoints();
+        return {
+            hp: base.totalHp,
+            shield: base.totalShield,
+            handling: base.totalHandling,
+            cargo: base.totalHandling,
+            energy: [e[0] + this.lvlIncrease(levels[0]), e[1] + this.lvlIncrease(levels[1]), e[2] + this.lvlIncrease(levels[2])],
+        };
+    }
+    /**
+     * Gets the increase in energy capacity based on the number of skill points
+     * the player has in the relevant field.
+     * @param i the number of points in the skill
+     */
+    lvlIncrease(i) {
+        i -= 1;
+        return 2 * ~~(i / 5) + Math.ceil((i % 5) / 2);
+    }
+    /**
+     * Gets the ship statistics from the ship, with the effects from attachments
+     * taken into account
+     */
     get ShipStatistics() {
         const Base = this.ship.ShipStatistics;
         return {
@@ -67,6 +93,9 @@ class ShipWrapper {
             totalHandling: Base.baseHandling + this.bonusHandling,
         };
     }
+    /**
+     * Gets base statistics that are from the standard ship without adjustments
+     */
     get BaseStatistics() {
         return this.ship.ShipStatistics;
     }

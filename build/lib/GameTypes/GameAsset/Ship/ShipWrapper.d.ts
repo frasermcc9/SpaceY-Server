@@ -2,6 +2,7 @@ import { Asteroid } from "../../GameMechanics/Asteroid";
 import { Attachment, AttachmentType } from "../Attachment/Attachment";
 import { Player } from "../Player/Player";
 import { Ship } from "./Ship";
+import { MapCollection } from "../../../Extensions/Collections";
 export declare class ShipWrapper {
     private ship;
     private owner;
@@ -26,7 +27,18 @@ export declare class ShipWrapper {
     get WeaponCapacities(): Map<AttachmentType, number>;
     get Uri(): string;
     copyAttachments(): Attachment[];
-    availableSlots(): Map<AttachmentType, number>;
+    availableSlots(): MapCollection<AttachmentType, number>;
+    get Statistics(): IShipStats;
+    /**
+     * Gets the increase in energy capacity based on the number of skill points
+     * the player has in the relevant field.
+     * @param i the number of points in the skill
+     */
+    private lvlIncrease;
+    /**
+     * Gets the ship statistics from the ship, with the effects from attachments
+     * taken into account
+     */
     get ShipStatistics(): {
         totalHp: number;
         totalShield: number;
@@ -34,6 +46,9 @@ export declare class ShipWrapper {
         totalCargo: number;
         totalHandling: number;
     };
+    /**
+     * Gets base statistics that are from the standard ship without adjustments
+     */
     get BaseStatistics(): {
         baseHp: number;
         baseShield: number;
@@ -85,4 +100,11 @@ declare type BonusStatChanger = {
     cargo?: number;
     handling?: number;
 };
+interface IShipStats {
+    hp: number;
+    shield: number;
+    energy: [number, number, number];
+    handling: number;
+    cargo: number;
+}
 export {};

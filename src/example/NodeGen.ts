@@ -125,7 +125,7 @@ const KalenGen = () => {
 				new AttachmentStore({
 					initialCredits: 2650,
 					storeName: "Orion Ordinance",
-					maxToSell: 1,
+					maxToSell: 3,
 					storeFaction: Client.Reg.ResolveFactionFromName("Kalen")!,
 					type: StoreType.SHIP_STORE,
 					marketForces: true,

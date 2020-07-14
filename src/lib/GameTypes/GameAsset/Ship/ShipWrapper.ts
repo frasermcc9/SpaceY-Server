@@ -62,6 +62,9 @@ export class ShipWrapper {
 	public get Description() {
 		return this.ship.Description;
 	}
+	public get MaxTech() {
+		return this.ship.MaxTech;
+	}
 
 	public copyAttachments(): Attachment[] {
 		return this.attachments.slice();

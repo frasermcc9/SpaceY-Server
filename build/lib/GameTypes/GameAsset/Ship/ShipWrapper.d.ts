@@ -28,6 +28,7 @@ export declare class ShipWrapper {
     get Uri(): string;
     get Name(): string;
     get Description(): string;
+    get MaxTech(): number;
     copyAttachments(): Attachment[];
     availableSlots(): MapCollection<AttachmentType, number>;
     get Statistics(): IShipStats;
@@ -56,10 +57,7 @@ export declare class ShipWrapper {
         baseShield: number;
         baseEnergy: [number, number, number];
         baseCargo: number;
-        baseHandling: number; /**
-         * Gets the ship statistics from the ship, with the effects from attachments
-         * taken into account
-         */
+        baseHandling: number;
     };
     incrementStatistics(stats: BonusStatChanger): void;
     decrementStatistics(stats: BonusStatChanger): void;

@@ -53,6 +53,9 @@ class ShipWrapper {
     get Description() {
         return this.ship.Description;
     }
+    get MaxTech() {
+        return this.ship.MaxTech;
+    }
     copyAttachments() {
         return this.attachments.slice();
     }

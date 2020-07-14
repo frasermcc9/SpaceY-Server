@@ -35,7 +35,7 @@ class Asteroid extends MaterialCollection_1.MaterialCollection {
         const now = Date.now(), started = this.timeoutMap.get(player.UId) ?? now, inMap = (started - now) / 1000;
         if (started == now)
             return 0;
-        return Math.floor(this.cooldown - inMap);
+        return Math.floor(this.cooldown + inMap);
     }
     isAvailableForUser(player) {
         return this.remainingCooldown(player) == 0;

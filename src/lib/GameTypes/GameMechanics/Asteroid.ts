@@ -44,7 +44,7 @@ export class Asteroid extends MaterialCollection {
 			started = this.timeoutMap.get(player.UId) ?? now,
 			inMap = (started - now) / 1000;
 		if (started == now) return 0;
-		return Math.floor(this.cooldown - inMap);
+		return Math.floor(this.cooldown + inMap);
 	}
 	public isAvailableForUser(player: Player): boolean {
 		return this.remainingCooldown(player) == 0;

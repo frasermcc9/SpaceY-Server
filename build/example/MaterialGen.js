@@ -200,7 +200,7 @@ exports.MaterialGenerator = () => {
             description: "A highly precious, brittle metal.",
             techLevel: 4,
             rarity: 7,
-            cost: 355,
+            cost: 1260,
         })
             .EnableMine()
             .Build(),

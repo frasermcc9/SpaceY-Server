@@ -48,7 +48,9 @@ export declare class Registry {
     RegisterFactions(data: IFactions): Registry;
     RegisterMaterials(data: IMaterials): Registry;
     ResolveShipFromName(name: string): Ship | undefined;
+    ResolveShipsFromName(...names: string[]): Ship[];
     ResolveAttachmentFromName(name: string): Attachment | undefined;
+    ResolveAttachmentsFromName(...names: string[]): Attachment[];
     ResolveMaterialFromName(name: string): Material | undefined;
     ResolveFactionFromName(name: string): Faction | undefined;
     /**

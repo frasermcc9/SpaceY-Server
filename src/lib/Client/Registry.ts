@@ -39,10 +39,7 @@ export class Registry {
 
 	private spacemap?: Spacemap;
 	public get Spacemap() {
-		return util.throwUndefined(
-			this.spacemap,
-			"The spacemap has not been registered. Register a spacemap with registerSpacemap."
-		);
+		return util.throwUndefined(this.spacemap, "The spacemap has not been registered. Register a spacemap with registerSpacemap.");
 	}
 	public registerSpacemap(spacemap: Spacemap) {
 		this.spacemap = spacemap;
@@ -164,10 +161,24 @@ export class Registry {
 		if (!result) return undefined;
 		return result;
 	}
+	public ResolveShipsFromName(...names: string[]): Ship[] {
+		const returnValue: Ship[] = new Array();
+		names.forEach((n) => {
+			returnValue.push(util.throwUndefined(this.NameResolver<Ship>(n, this.ShipRegistry)));
+		});
+		return returnValue;
+	}
 	public ResolveAttachmentFromName(name: string): Attachment | undefined {
 		const result = this.NameResolver<Attachment>(name, this.AttachmentRegistry);
 		if (!result) return undefined;
 		return result;
+	}
+	public ResolveAttachmentsFromName(...names: string[]): Attachment[] {
+		const returnValue: Attachment[] = new Array();
+		names.forEach((n) => {
+			returnValue.push(util.throwUndefined(this.NameResolver<Attachment>(n, this.AttachmentRegistry)));
+		});
+		return returnValue;
 	}
 	public ResolveMaterialFromName(name: string): Material | undefined {
 		const result = this.NameResolver<Material>(name, this.MaterialRegistry);

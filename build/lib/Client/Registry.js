@@ -133,11 +133,25 @@ class Registry {
             return undefined;
         return result;
     }
+    ResolveShipsFromName(...names) {
+        const returnValue = new Array();
+        names.forEach((n) => {
+            returnValue.push(util_1.util.throwUndefined(this.NameResolver(n, this.ShipRegistry)));
+        });
+        return returnValue;
+    }
     ResolveAttachmentFromName(name) {
         const result = this.NameResolver(name, this.AttachmentRegistry);
         if (!result)
             return undefined;
         return result;
+    }
+    ResolveAttachmentsFromName(...names) {
+        const returnValue = new Array();
+        names.forEach((n) => {
+            returnValue.push(util_1.util.throwUndefined(this.NameResolver(n, this.AttachmentRegistry)));
+        });
+        return returnValue;
     }
     ResolveMaterialFromName(name) {
         const result = this.NameResolver(name, this.MaterialRegistry);

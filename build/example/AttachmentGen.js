@@ -313,6 +313,9 @@ exports.AttachmentGenerator = () => {
         //#endregion plating
         //#region RESERVES
         ...ReserveGenerator(),
+        //#endregion reserves
+        //#region CARGO
+        ...CargoGenerator(),
     ];
 };
 const ReserveGenerator = () => {
@@ -744,6 +747,105 @@ const ReserveGenerator = () => {
                 message: `New Shield: ${ship.ShipStatistics.totalShield}. New Energy: ${ship.ShipStatistics.totalEnergy}.`,
                 success: true,
             };
+        })
+            .Build(),
+    ];
+};
+const CargoGenerator = () => {
+    const levelOne = 750;
+    const levelTwo = 1500;
+    const levelThree = 3000;
+    const levelFour = 6000;
+    const levelFive = 12000;
+    return [
+        new Attachment_1.AttachmentBuilder({
+            name: "Small Cargo Hold",
+            description: `A small cargo hold so you can carry more items. Max cargo: +${levelOne}.`,
+            strength: 0,
+            techLevel: 1,
+            type: Attachment_1.AttachmentType.GENERAL,
+        })
+            .EnableSellable(70000)
+            .EnableBuildable(new Blueprint_1.BlueprintBuilder().DefinedBuild(Blueprint_1.BlueprintBuilder.SIMPLE_BUILD(45000), "Small Cargo Hold"))
+            .EquipFn((ship) => {
+            ship.incrementStatistics({ cargo: levelOne });
+            return { message: `New Cargo: ${ship.ShipStatistics.totalCargo}`, success: true };
+        })
+            .UnequipFn((ship) => {
+            ship.decrementStatistics({ cargo: levelOne });
+            return { message: `New Cargo: ${ship.ShipStatistics.totalCargo}`, success: true };
+        })
+            .Build(),
+        new Attachment_1.AttachmentBuilder({
+            name: "Medium Cargo Hold",
+            description: `A medium sized cargo hold that carries more items whilst using more lightweight materials. Max cargo: +${levelTwo}.`,
+            strength: 0,
+            techLevel: 2,
+            type: Attachment_1.AttachmentType.GENERAL,
+        })
+            .EnableSellable(380000)
+            .EnableBuildable(new Blueprint_1.BlueprintBuilder().DefinedBuild(Blueprint_1.BlueprintBuilder.SIMPLE_BUILD(300000), "Medium Cargo Hold"))
+            .EquipFn((ship) => {
+            ship.incrementStatistics({ cargo: levelTwo });
+            return { message: `New Cargo: ${ship.ShipStatistics.totalCargo}`, success: true };
+        })
+            .UnequipFn((ship) => {
+            ship.decrementStatistics({ cargo: levelTwo });
+            return { message: `New Cargo: ${ship.ShipStatistics.totalCargo}`, success: true };
+        })
+            .Build(),
+        new Attachment_1.AttachmentBuilder({
+            name: "Large Cargo Hold",
+            description: `A large cargo hold that uses high tech, lightweight materials. Max cargo: +${levelThree}.`,
+            strength: 0,
+            techLevel: 4,
+            type: Attachment_1.AttachmentType.GENERAL,
+        })
+            .EnableSellable(680000)
+            .EnableBuildable(new Blueprint_1.BlueprintBuilder().DefinedBuild(Blueprint_1.BlueprintBuilder.MODERATE_BUILD(560000), "Large Cargo Hold"))
+            .EquipFn((ship) => {
+            ship.incrementStatistics({ cargo: levelThree });
+            return { message: `New Cargo: ${ship.ShipStatistics.totalCargo}`, success: true };
+        })
+            .UnequipFn((ship) => {
+            ship.decrementStatistics({ cargo: levelThree });
+            return { message: `New Cargo: ${ship.ShipStatistics.totalCargo}`, success: true };
+        })
+            .Build(),
+        new Attachment_1.AttachmentBuilder({
+            name: "Compressing Cargo Hold",
+            description: `An advanced cargo hold that physically compresses items, without causing damage. Max cargo: +${levelFour}.`,
+            strength: 0,
+            techLevel: 6,
+            type: Attachment_1.AttachmentType.GENERAL,
+        })
+            .EnableSellable(1120000)
+            .EnableBuildable(new Blueprint_1.BlueprintBuilder().DefinedBuild(Blueprint_1.BlueprintBuilder.MODERATE_BUILD(975000), "Compressing Cargo Hold"))
+            .EquipFn((ship) => {
+            ship.incrementStatistics({ cargo: levelFour });
+            return { message: `New Cargo: ${ship.ShipStatistics.totalCargo}`, success: true };
+        })
+            .UnequipFn((ship) => {
+            ship.decrementStatistics({ cargo: levelFour });
+            return { message: `New Cargo: ${ship.ShipStatistics.totalCargo}`, success: true };
+        })
+            .Build(),
+        new Attachment_1.AttachmentBuilder({
+            name: "Interdimensional Cargo Hold",
+            description: `A miniature wormhole that links to another dimension, allowing for extremely more cargo space. Max cargo: +${levelFive}.`,
+            strength: 0,
+            techLevel: 8,
+            type: Attachment_1.AttachmentType.GENERAL,
+        })
+            .EnableSellable(3800000)
+            .EnableBuildable(new Blueprint_1.BlueprintBuilder().DefinedBuild(Blueprint_1.BlueprintBuilder.ADVANCED_BUILD(3200000), "Interdimensional Cargo Hold"))
+            .EquipFn((ship) => {
+            ship.incrementStatistics({ cargo: levelFive });
+            return { message: `New Cargo: ${ship.ShipStatistics.totalCargo}`, success: true };
+        })
+            .UnequipFn((ship) => {
+            ship.decrementStatistics({ cargo: levelFive });
+            return { message: `New Cargo: ${ship.ShipStatistics.totalCargo}`, success: true };
         })
             .Build(),
     ];

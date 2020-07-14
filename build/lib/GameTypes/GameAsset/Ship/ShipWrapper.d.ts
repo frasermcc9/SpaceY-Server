@@ -26,6 +26,8 @@ export declare class ShipWrapper {
      */
     get WeaponCapacities(): Map<AttachmentType, number>;
     get Uri(): string;
+    get Name(): string;
+    get Description(): string;
     copyAttachments(): Attachment[];
     availableSlots(): MapCollection<AttachmentType, number>;
     get Statistics(): IShipStats;
@@ -54,7 +56,10 @@ export declare class ShipWrapper {
         baseShield: number;
         baseEnergy: [number, number, number];
         baseCargo: number;
-        baseHandling: number;
+        baseHandling: number; /**
+         * Gets the ship statistics from the ship, with the effects from attachments
+         * taken into account
+         */
     };
     incrementStatistics(stats: BonusStatChanger): void;
     decrementStatistics(stats: BonusStatChanger): void;

@@ -56,6 +56,12 @@ export class ShipWrapper {
 	public get Uri() {
 		return this.ship.ImageUri;
 	}
+	public get Name() {
+		return this.ship.Name;
+	}
+	public get Description() {
+		return this.ship.Description;
+	}
 
 	public copyAttachments(): Attachment[] {
 		return this.attachments.slice();
@@ -78,7 +84,7 @@ export class ShipWrapper {
 			hp: base.totalHp,
 			shield: base.totalShield,
 			handling: base.totalHandling,
-			cargo: base.totalHandling,
+			cargo: base.totalCargo,
 			energy: [e[0] + this.lvlIncrease(levels[0]), e[1] + this.lvlIncrease(levels[1]), e[2] + this.lvlIncrease(levels[2])],
 		};
 	}

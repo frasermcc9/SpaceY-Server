@@ -149,8 +149,9 @@ export class AsteroidBuilder {
 		return this;
 	}
 
-	public addTag(tag: string) {
+	public addTag(tag: string): this {
 		this.tags.add(tag);
+		return this;
 	}
 
 	public BuildRandom({ value }: { value: number }): Asteroid {

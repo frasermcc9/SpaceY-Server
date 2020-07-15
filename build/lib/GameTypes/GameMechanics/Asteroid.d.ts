@@ -70,7 +70,7 @@ export declare class AsteroidBuilder {
     tags: Set<string>;
     constructor(name: string);
     setCooldown(seconds: number): this;
-    addTag(tag: string): void;
+    addTag(tag: string): this;
     BuildRandom({ value }: {
         value: number;
     }): Asteroid;

@@ -127,6 +127,7 @@ class AsteroidBuilder {
     }
     addTag(tag) {
         this.tags.add(tag);
+        return this;
     }
     BuildRandom({ value }) {
         if (value < 0 && Client_1.Client.Get().ConsoleLogging)

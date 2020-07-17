@@ -199,6 +199,9 @@ exports.AttachmentGenerator = () => {
         })
             .Build(),
         //#endregion Primary
+        //#region SHIELDS
+        ...ShieldGenerator(),
+        //#endregion shields
         //#region PLATING
         new Attachment_1.AttachmentBuilder({
             name: "Iron Plating",
@@ -316,6 +319,9 @@ exports.AttachmentGenerator = () => {
         //#endregion reserves
         //#region CARGO
         ...CargoGenerator(),
+        //#endregion cargo
+        //#region THRUSTERS
+        ...ThrusterGenerator(),
     ];
 };
 const ReserveGenerator = () => {
@@ -846,6 +852,129 @@ const CargoGenerator = () => {
             .UnequipFn((ship) => {
             ship.decrementStatistics({ cargo: levelFive });
             return { message: `New Cargo: ${ship.ShipStatistics.totalCargo}`, success: true };
+        })
+            .Build(),
+    ];
+};
+const ThrusterGenerator = () => {
+    const levelOne = 1;
+    const levelTwo = 2;
+    return [
+        new Attachment_1.AttachmentBuilder({
+            name: "Basic Thruster",
+            description: `A simple booster drive that is attached to your ship to make it handle better and move faster. Handling: +${levelOne}.`,
+            strength: 0,
+            techLevel: 4,
+            type: Attachment_1.AttachmentType.GENERAL,
+        })
+            .EnableSellable(1360000)
+            .EnableBuildable(new Blueprint_1.BlueprintBuilder().DefinedBuild(Blueprint_1.BlueprintBuilder.MODERATE_BUILD(1060000), "Basic Thruster"))
+            .EquipFn((ship) => {
+            ship.incrementStatistics({ handling: levelOne });
+            return { message: `New Handling: ${ship.ShipStatistics.totalHandling}`, success: true };
+        })
+            .UnequipFn((ship) => {
+            ship.decrementStatistics({ handling: levelOne });
+            return { message: `New Handling: ${ship.ShipStatistics.totalHandling}`, success: true };
+        })
+            .Build(),
+        new Attachment_1.AttachmentBuilder({
+            name: "Full Phase Thrusters",
+            description: `An advanced thruster setup that provides optimal speed and handling improvements. Handling: +${levelTwo}.`,
+            strength: 0,
+            techLevel: 8,
+            type: Attachment_1.AttachmentType.GENERAL,
+        })
+            .EnableSellable(4360000)
+            .EnableBuildable(new Blueprint_1.BlueprintBuilder().DefinedBuild(Blueprint_1.BlueprintBuilder.ADVANCED_BUILD(3860000), "Full Phase Thrusters"))
+            .EquipFn((ship) => {
+            ship.incrementStatistics({ handling: levelTwo });
+            return { message: `New Handling: ${ship.ShipStatistics.totalHandling}`, success: true };
+        })
+            .UnequipFn((ship) => {
+            ship.decrementStatistics({ handling: levelTwo });
+            return { message: `New Handling: ${ship.ShipStatistics.totalHandling}`, success: true };
+        })
+            .Build(),
+    ];
+};
+const ShieldGenerator = () => {
+    return [
+        new Attachment_1.AttachmentBuilder({
+            name: "Blink Shield",
+            description: `An emergency shield system that activates before ship destruction. If you would die: +15 shield & +1 hull.`,
+            strength: 5,
+            techLevel: 2,
+            type: Attachment_1.AttachmentType.SHIELD,
+        })
+            .EnableSellable(35000)
+            .EnableBuildable(new Blueprint_1.BlueprintBuilder().DefinedBuild(Blueprint_1.BlueprintBuilder.SIMPLE_BUILD(21000), "Blink Shield"))
+            .CriticalDamageFn((friendly, _opponent) => {
+            friendly.hpIncrease(1);
+            friendly.shieldIncrease(15);
+            return { message: "Critical Damage Taken! Adding 15 shield and 1 hull.", success: true };
+        })
+            .Build(),
+        new Attachment_1.AttachmentBuilder({
+            name: "Rusty Shield Charger",
+            description: `A rusty system used to charge up small shield systems, repurposed for ships. Shield recharge: 0-3.`,
+            strength: 3,
+            techLevel: 1,
+            type: Attachment_1.AttachmentType.SHIELD,
+        })
+            .EnableSellable(8790)
+            .BattlePreTurnFn((battle) => {
+            const rnd = rb(0, 3);
+            battle.Friendly.shieldIncrease(rnd);
+            return { message: `Shield increased by ${rnd}.`, success: true };
+        })
+            .Build(),
+        new Attachment_1.AttachmentBuilder({
+            name: "Emergency Shield Systems",
+            description: `Enhanced emergency shield system that improves your ships condition if facing immediate doom. If you would die: +30 shield & +1 hull.`,
+            strength: 11,
+            techLevel: 3,
+            type: Attachment_1.AttachmentType.SHIELD,
+        })
+            .EnableSellable(465000)
+            .EnableBuildable(new Blueprint_1.BlueprintBuilder().DefinedBuild(Blueprint_1.BlueprintBuilder.SIMPLE_BUILD(390000), "Emergency Shield Systems"))
+            .CriticalDamageFn((friendly, _opponent) => {
+            friendly.hpIncrease(1);
+            friendly.shieldIncrease(30);
+            return { message: "Critical Damage Taken! Adding 30 shield and 1 hull.", success: true };
+        })
+            .Build(),
+        new Attachment_1.AttachmentBuilder({
+            name: "Holo-Shield",
+            description: `A conventional ship shield charger. Shield recharge: 4-8.`,
+            strength: 14,
+            techLevel: 4,
+            type: Attachment_1.AttachmentType.SHIELD,
+        })
+            .EnableSellable(535000)
+            .EnableBuildable(new Blueprint_1.BlueprintBuilder().DefinedBuild(Blueprint_1.BlueprintBuilder.SIMPLE_BUILD(425000), "Holo-Shield"))
+            .BattlePreTurnFn((battle) => {
+            const rnd = rb(4, 8);
+            battle.Friendly.shieldIncrease(rnd);
+            return { message: `Shield increased by ${rnd}.`, success: true };
+        })
+            .Build(),
+        new Attachment_1.AttachmentBuilder({
+            name: "Energising Shield",
+            description: `An energy charging module that slightly regenerates all energy types (including shields). Energy recharge: 2-5.`,
+            strength: 16,
+            techLevel: 4,
+            type: Attachment_1.AttachmentType.SHIELD,
+        })
+            .EnableSellable(617000)
+            .EnableBuildable(new Blueprint_1.BlueprintBuilder().DefinedBuild(Blueprint_1.BlueprintBuilder.SIMPLE_BUILD(505000), "Energising Shield"))
+            .BattlePreTurnFn((battle) => {
+            const rnd = rb(2, 5);
+            battle.Friendly.shieldIncrease(rnd);
+            battle.Friendly.weaponIncrease(rnd);
+            battle.Friendly.engineIncrease(rnd);
+            battle.Friendly.cpuIncrease(rnd);
+            return { message: `All energy types (including shield) increased by ${rnd}.`, success: true };
         })
             .Build(),
     ];

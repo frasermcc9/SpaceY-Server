@@ -4,7 +4,6 @@ import { Ship } from "../../../lib/GameTypes/GameAsset/Ship/Ship";
 import { ShipWrapper } from "../../../lib/GameTypes/GameAsset/Ship/ShipWrapper";
 import { default as must } from "must";
 import { Client } from "../../../lib/main";
-import { MockBattle } from "../../../lib/GameTypes/GameBattle/MockBattle";
 import { Battle, IBattleData } from "../../../lib/GameTypes/GameBattle/Battle";
 import { Battleship } from "../../../lib/GameTypes/GameAsset/Ship/Battleship";
 require("must/register");
@@ -29,7 +28,11 @@ describe("Attachment Tests", async () => {
 			})
 				.BattleStartFn(fn)
 				.Build()
-				.dispatch(GameEvent.BATTLE_START, new MockBattle(new Battleship(P1.getShipWrapper()), new Battleship(P2.getShipWrapper())))
+				.dispatch(GameEvent.BATTLE_START, {
+					TurnNumber: 0,
+					Friendly: new Battleship(P1.getShipWrapper()),
+					Enemy: new Battleship(P2.getShipWrapper()),
+				})
 				.message.must.eql("190");
 		});
 

@@ -62,7 +62,7 @@ describe("Store Testing", async () => {
 			});
 			store.update();
 			store.getCollectionValue().must.be.gte(15000);
-			store.StoreItems.get("Gold").must.eql(0);
+			(store.getStoreItems().get("Gold") ?? 0).must.eql(0);
 		});
 		it("Should successfully buy item from store", async () => {
 			//Setup
@@ -77,8 +77,8 @@ describe("Store Testing", async () => {
 			store.setInventory(setInventory);
 			//Assert intermediate tests
 			Player.Credits.must.equal(DEFAULT_CREDITS);
-			store.StoreItems.get("Iron").must.equal(10);
-			store.StoreItems.get("Gold").must.equal(5);
+			store.getStoreItems().get("Iron").must.equal(10);
+			store.getStoreItems().get("Gold").must.equal(5);
 			store.Credits.must.equal(100);
 			//Main method call
 			const BuyResult = await store.buyFromStore({ trader: Player, item: "Iron", quantity: 5 });
@@ -88,8 +88,8 @@ describe("Store Testing", async () => {
 			BuyResult.code.must.eql(200);
 			Player.Credits.must.equal(DEFAULT_CREDITS - 25 * 5);
 			Player.Inventory.Materials.DataFromName("Iron").quantity.must.equal(5);
-			store.StoreItems.get("Iron").must.equal(5);
-			store.StoreItems.get("Gold").must.equal(5);
+			store.getStoreItems().get("Iron").must.equal(5);
+			store.getStoreItems().get("Gold").must.equal(5);
 			store.Credits.must.equal(25 * 5 + 100);
 			//Confirm database save
 			const PlayerInDb = await PlayerModel.findOneOrCreate({ uId: "1" });
@@ -111,8 +111,8 @@ describe("Store Testing", async () => {
 			store.setInventory(setInventory);
 			//Assert intermediate tests
 			Player.Credits.must.equal(25);
-			store.StoreItems.get("Iron").must.equal(10);
-			store.StoreItems.get("Gold").must.equal(5);
+			store.getStoreItems().get("Iron").must.equal(10);
+			store.getStoreItems().get("Gold").must.equal(5);
 			store.Credits.must.equal(100);
 			//Main method call
 			const BuyResult = await store.buyFromStore({ trader: Player, item: "Iron", quantity: 1 });
@@ -122,8 +122,8 @@ describe("Store Testing", async () => {
 			cost.must.equal(25);
 			Player.Credits.must.equal(0);
 			Player.Inventory.Materials.DataFromName("Iron").quantity.must.equal(1);
-			store.StoreItems.get("Iron").must.equal(9);
-			store.StoreItems.get("Gold").must.equal(5);
+			store.getStoreItems().get("Iron").must.equal(9);
+			store.getStoreItems().get("Gold").must.equal(5);
 			store.Credits.must.equal(25 + 100);
 			//Confirm database save
 			const PlayerInDb = await PlayerModel.findOneOrCreate({ uId: "1" });
@@ -145,7 +145,7 @@ describe("Store Testing", async () => {
 			store.setInventory(setInventory);
 			//Assert intermediate tests
 			Player.Credits.must.equal(DEFAULT_CREDITS - 9900);
-			store.StoreItems.get("Tech").must.equal(100);
+			store.getStoreItems().get("Tech").must.equal(100);
 			store.Credits.must.equal(100);
 			//Main method call
 			const BuyResult = await store.buyFromStore({ trader: Player, item: "Tech", quantity: 3 });
@@ -155,7 +155,7 @@ describe("Store Testing", async () => {
 			cost.must.equal(50);
 			Player.Credits.must.equal(DEFAULT_CREDITS - 9900);
 			Player.Inventory.Materials.DataFromName("Tech").quantity.must.equal(0);
-			store.StoreItems.get("Tech").must.equal(100);
+			store.getStoreItems().get("Tech").must.equal(100);
 			store.Credits.must.equal(100);
 			//Confirm no database save
 			const PlayerInDb = await PlayerModel.findOneOrCreate({ uId: "1" });
@@ -176,7 +176,7 @@ describe("Store Testing", async () => {
 			store.setInventory(setInventory);
 			//Assert intermediate tests
 			Player.Credits.must.equal(DEFAULT_CREDITS);
-			store.StoreItems.get("Food").must.equal(1);
+			store.getStoreItems().get("Food").must.equal(1);
 			store.Credits.must.equal(100);
 			//Main method call
 			const BuyResult = await store.buyFromStore({ trader: Player, item: "Food", quantity: 2 });
@@ -186,7 +186,7 @@ describe("Store Testing", async () => {
 			cost.must.equal(5);
 			Player.Credits.must.equal(DEFAULT_CREDITS);
 			Player.Inventory.Materials.DataFromName("Food").quantity.must.equal(0);
-			store.StoreItems.get("Food").must.equal(1);
+			store.getStoreItems().get("Food").must.equal(1);
 			store.Credits.must.equal(100);
 			//Confirm no database save
 			const PlayerInDb = await PlayerModel.findOneOrCreate({ uId: "1" });
@@ -207,7 +207,7 @@ describe("Store Testing", async () => {
 			store.setInventory(setInventory);
 			//Assert intermediate tests
 			Player.Credits.must.equal(DEFAULT_CREDITS);
-			store.StoreItems.get("Food").must.equal(1);
+			store.getStoreItems().get("Food").must.equal(1);
 			store.Credits.must.equal(100);
 			//Main method call
 			const BuyResult = await store.buyFromStore({ trader: Player, item: "Food", quantity: 1 });
@@ -217,7 +217,7 @@ describe("Store Testing", async () => {
 			cost.must.equal(5);
 			Player.Credits.must.equal(DEFAULT_CREDITS - 5);
 			Player.Inventory.Materials.DataFromName("Food").quantity.must.equal(1);
-			store.StoreItems.get("Food").must.equal(0);
+			(store.getStoreItems().get("Food") ?? 0).must.equal(0);
 			store.Credits.must.equal(105);
 			//Confirm no database save
 			const PlayerInDb = await PlayerModel.findOneOrCreate({ uId: "1" });

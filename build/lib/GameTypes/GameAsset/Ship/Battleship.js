@@ -143,6 +143,7 @@ class Battleship extends events_1.EventEmitter {
     }
     //#endregion stat modifiers
     startTurn() {
+        this.reduceCooldown();
         this.statGain();
         this.emit("turnStart", this);
         return this;

@@ -1,7 +1,7 @@
 import { Blueprint } from "./Blueprint/Blueprint";
 import { Player } from "./Player/Player";
 
-export class GameAsset implements IGameAsset {
+export abstract class GameAsset implements IGameAsset {
 	private name: string;
 	public get Name() {
 		return this.name;

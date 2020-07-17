@@ -1,6 +1,6 @@
 import { Blueprint } from "./Blueprint/Blueprint";
 import { Player } from "./Player/Player";
-export declare class GameAsset implements IGameAsset {
+export declare abstract class GameAsset implements IGameAsset {
     private name;
     get Name(): string;
     private description;

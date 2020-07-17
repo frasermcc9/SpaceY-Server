@@ -1,6 +1,6 @@
 import { MaterialCollection, IMaterialCollectionOptions } from "../GameCollections/MaterialCollection";
 import { Player } from "../GameAsset/Player/Player";
-import { Client } from "../../Client/Client";
+import { Server } from "../../Server/Server";
 import { GameEvent } from "../GameAsset/Attachment/Attachment";
 
 export class Asteroid extends MaterialCollection {
@@ -16,7 +16,7 @@ export class Asteroid extends MaterialCollection {
 
 	constructor(
 		options: IMaterialCollectionOptions,
-		cooldown: number = Client.Reg.DefaultAsteroidCooldown,
+		cooldown: number = Server.Reg.DefaultAsteroidCooldown,
 		autoCd: boolean,
 		name: string,
 		tags: Set<string>
@@ -68,7 +68,7 @@ export class Asteroid extends MaterialCollection {
 	 * 403 - on cooldown
 	 */
 	public async mine(player: Player, percent?: number, cooldownOverride?: boolean): Promise<{ code: 200 | 403; cooldown?: number }> {
-		if (this.autoCd) this.cooldown = Client.Reg.DefaultAsteroidCooldown;
+		if (this.autoCd) this.cooldown = Server.Reg.DefaultAsteroidCooldown;
 		//check cooldown
 		const cd = this.remainingCooldown(player);
 		if (cd > 0 && !cooldownOverride) return { code: 403, cooldown: cd };
@@ -155,7 +155,7 @@ export class AsteroidBuilder {
 	}
 
 	public BuildRandom({ value }: { value: number }): Asteroid {
-		if (value < 0 && Client.Get().ConsoleLogging) console.warn("Negative asteroid value passed.");
+		if (value < 0 && Server.Get().ConsoleLogging) console.warn("Negative asteroid value passed.");
 		const collection = MaterialCollection.GenerateMineableCollection(value);
 		return new Asteroid({ data: collection }, this.cooldown, this.autoCooldown, this.name, this.tags);
 	}

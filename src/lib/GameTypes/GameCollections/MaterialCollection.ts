@@ -1,4 +1,4 @@
-import { Client } from "../../Client/Client";
+import { Server } from "../../Server/Server";
 import { util } from "../../Util/util";
 import { IMaterial, Material } from "../GameAsset/Material/Material";
 import { GameCollectionBase, IGenerationOptions, ICompatible } from "./GameCollectionBase";
@@ -10,18 +10,18 @@ export class MaterialCollection extends GameCollectionBase {
 		super();
 		//Create map with all empty material values, but set defined materials to the given value.
 		if (options?.data) {
-			Client.Get().Registry.MaterialRegistry.forEach((material) => {
+			Server.Get().Registry.MaterialRegistry.forEach((material) => {
 				this.set(material.Name, options.data?.get(material.Name) || 0);
 			});
 		} else {
-			Client.Get().Registry.MaterialRegistry.forEach((material) => {
+			Server.Get().Registry.MaterialRegistry.forEach((material) => {
 				this.set(material.Name, 0);
 			});
 		}
 	}
 	/**@deprecated*/
 	public DataFromName(name: string): IMaterialQuantity {
-		const material = Client.Get().Registry.MaterialRegistry.get(name);
+		const material = Server.Get().Registry.MaterialRegistry.get(name);
 		if (material == undefined) return { success: false, name: name, quantity: -1, material: null, error: MAT_NOT_FOUND };
 
 		const quantity = this.get(material.Name);
@@ -31,7 +31,7 @@ export class MaterialCollection extends GameCollectionBase {
 	public DataFromNames(names: string[]): IMaterialQuantity[] {
 		let data = new Array<IMaterialQuantity>();
 		names.forEach((name) => {
-			const material = Client.Get().Registry.MaterialRegistry.get(name);
+			const material = Server.Get().Registry.MaterialRegistry.get(name);
 			if (material == undefined) {
 				data.push({ success: false, name: name, quantity: -1, material: null, error: MAT_NOT_FOUND });
 			} else {
@@ -53,14 +53,14 @@ export class MaterialCollection extends GameCollectionBase {
 	public GetCollectionValue(): number {
 		let total = 0;
 		this.forEach((amount, name) => {
-			const Material = Client.Get().Registry.MaterialRegistry.get(name)!;
+			const Material = Server.Get().Registry.MaterialRegistry.get(name)!;
 			total += (new SellableDecorator(Material).PriceData.cost || 0) * amount;
 		});
 		return total;
 	}
 
 	public static GenerateMineableCollection(value: number): MaterialCollection {
-		const Template = Array.from(Client.Get().Registry.MineableMaterialRegistry.values());
+		const Template = Array.from(Server.Get().Registry.MineableMaterialRegistry.values());
 		if (Template.length == 0) {
 			throw new Error("No Mineable Materials");
 		}
@@ -79,7 +79,7 @@ export class MaterialCollection extends GameCollectionBase {
 
 	/** @override */
 	public GetCompatibleItems({ minRarity, maxRarity, minTech, maxTech }: ICompatible): MapCollection<string, Material> {
-		return Client.Reg.MaterialRegistry.filter(
+		return Server.Reg.MaterialRegistry.filter(
 			(val) =>
 				val.Cost != undefined &&
 				val.TechLevel <= maxTech &&

@@ -1,4 +1,4 @@
-import { Client } from "../../../Client/Client";
+import { Server } from "../../../Server/Server";
 import { AttachmentCollection, IAttachmentCollectionOptions } from "../../GameCollections/AttachmentCollection";
 import { IMaterialCollectionOptions } from "../../GameCollections/MaterialCollection";
 import { IReputationCollectionOptions, ReputationCollection } from "../../GameCollections/ReputationCollection";
@@ -42,7 +42,7 @@ export class PlayerInventory {
 			this.ships = options.shipOptions;
 			this.attachments = options.attachmentOptions;
 			this.reputation = options.reputationOptions;
-			this.credits = options.credits ?? Client.Reg.DefaultCredits;
+			this.credits = options.credits ?? Server.Reg.DefaultCredits;
 			this.tokens = options.tokens ?? 0;
 		} else {
 			throw new Error("Invalid inventory creation.");
@@ -149,7 +149,7 @@ export class InventoryBuilder {
 	} {
 		return {
 			attachments: new AttachmentCollection(),
-			credits: Client.Get().Registry.DefaultCredits,
+			credits: Server.Get().Registry.DefaultCredits,
 			materials: new PlayerMaterialCollection(),
 			reputation: new ReputationCollection(),
 			ships: new ShipCollection(),

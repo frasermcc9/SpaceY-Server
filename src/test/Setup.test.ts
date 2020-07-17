@@ -1,5 +1,5 @@
 import { Client, connect, disconnect } from "../lib/main";
-import { Setup } from "../lib/Client/Setup";
+import { Setup } from "../lib/Server/Setup";
 import { GenerateClientSet } from "./TestUtil";
 import { Spacemap } from "../lib/GameTypes/GameSpacemap/Spacemap";
 import { SpacemapNodeBuilder, WarpPower } from "../lib/GameTypes/GameSpacemap/SpacemapNode";

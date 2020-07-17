@@ -1,7 +1,7 @@
 import { Ship, ShipBuilder } from "../GameTypes/GameAsset/Ship/Ship";
 import { Attachment } from "../GameTypes/GameAsset/Attachment/Attachment";
 import { Faction } from "../GameTypes/GameAsset/Faction/Faction";
-import { Material } from "../GameTypes/GameAsset//Material/Material";
+import { Material } from "../GameTypes/GameAsset/Material/Material";
 import { MapCollection } from "../Extensions/Collections";
 import { GameAsset } from "../GameTypes/GameAsset/GameAsset";
 import { BlueprintBuilder } from "../GameTypes/GameAsset/Blueprint/Blueprint";

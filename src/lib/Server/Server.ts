@@ -2,25 +2,25 @@ import { Registry } from "./Registry";
 import { connect } from "../GameApi/Database/Database";
 import { EventManager } from "./EventManager";
 
-export class Client {
+export class Server {
 	public static TEST = false;
 	//Section: Declared Constants
 	public readonly ConsoleLogging: boolean;
 	//Section: Client Singleton
-	public static Client: Client;
+	public static Server: Server;
 	public static Get() {
-		if (this.Client == null) {
+		if (this.Server == null) {
 			throw new Error("You must explicity create the client. Did you forget to go Client.CreateClient(IClientSettings)?");
 		}
-		return this.Client;
+		return this.Server;
 	}
 
 	public static Create(ClientSettings: IClientSettings) {
-		if (this.Client) return; //throw new Error("A client has already been made. Please use Client.Get() to access it.");
-		this.Client = new Client(ClientSettings);
+		if (this.Server) return; //throw new Error("A client has already been made. Please use Client.Get() to access it.");
+		this.Server = new Server(ClientSettings);
 	}
 	public static Destroy() {
-		delete this.Client;
+		delete this.Server;
 	}
 	private constructor(clientSettings: IClientSettings) {
 		this.uri = clientSettings.databaseUri;
@@ -30,7 +30,7 @@ export class Client {
 		//this.registry.MaxRarity = clientSettings.maximumRarity;
 		//this.registry.MaxTech = clientSettings.maximumTechLevel;
 
-		Client.TEST = clientSettings.testMode ?? false;
+		Server.TEST = clientSettings.testMode ?? false;
 	}
 
 	//#region Registry

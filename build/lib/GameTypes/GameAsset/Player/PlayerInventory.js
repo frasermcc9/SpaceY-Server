@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.InventoryBuilder = exports.PlayerInventory = void 0;
-const Client_1 = require("../../../Client/Client");
+const Server_1 = require("../../../Server/Server");
 const AttachmentCollection_1 = require("../../GameCollections/AttachmentCollection");
 const ReputationCollection_1 = require("../../GameCollections/ReputationCollection");
 const ShipCollection_1 = require("../../GameCollections/ShipCollection");
@@ -16,7 +16,7 @@ class PlayerInventory {
             this.ships = options.shipOptions;
             this.attachments = options.attachmentOptions;
             this.reputation = options.reputationOptions;
-            this.credits = options.credits ?? Client_1.Client.Reg.DefaultCredits;
+            this.credits = options.credits ?? Server_1.Server.Reg.DefaultCredits;
             this.tokens = options.tokens ?? 0;
         }
         else {
@@ -117,7 +117,7 @@ class InventoryBuilder {
     GenericBuild() {
         return {
             attachments: new AttachmentCollection_1.AttachmentCollection(),
-            credits: Client_1.Client.Get().Registry.DefaultCredits,
+            credits: Server_1.Server.Get().Registry.DefaultCredits,
             materials: new PlayerMaterialCollection_1.PlayerMaterialCollection(),
             reputation: new ReputationCollection_1.ReputationCollection(),
             ships: new ShipCollection_1.ShipCollection(),

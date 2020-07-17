@@ -1,6 +1,6 @@
 export { PlayerModel } from "./GameApi/Database/Player/PlayerModel";
-export { Client } from "./Client/Client";
-export { Setup } from "./Client/Setup";
+export { Server as Client } from "./Server/Server";
+export { Setup } from "./Server/Setup";
 export { AsteroidBuilder } from "./GameTypes/GameMechanics/Asteroid";
 export { connect, disconnect } from "./GameApi/Database/Database";
 export { AttachmentGenerator } from "../example/AttachmentGen";

@@ -4,22 +4,22 @@ exports.Player = void 0;
 const PlayerModel_1 = require("../../../GameApi/Database/Player/PlayerModel");
 const PlayerInventory_1 = require("./PlayerInventory");
 const Skin_1 = require("./Skin");
-const Client_1 = require("../../../Client/Client");
+const Server_1 = require("../../../Server/Server");
 const ShipWrapper_1 = require("../Ship/ShipWrapper");
 const util_1 = require("../../../Util/util");
 class Player {
     constructor(data) {
         this.allSkins = new Array();
-        this.location = Client_1.Client.Reg.DefaultLocation;
+        this.location = Server_1.Server.Reg.DefaultLocation;
         this.blueprints = new Set();
         this.exp = 100;
         this.skillPoints = [0, 0, 0];
         this.uId = data.uId; //ID
-        const Ship = Client_1.Client.Reg.ResolveShipFromName(data.ship.name);
+        const Ship = Server_1.Server.Reg.ResolveShipFromName(data.ship.name);
         if (Ship == undefined)
             throw new Error(`Mismatch between database and server. No item ${data.ship} exists in server, but does in db for ${this.uId}.`);
         this.ship = new ShipWrapper_1.ShipWrapper(Ship, this);
-        this.location = util_1.util.throwUndefined(Client_1.Client.Reg.Spacemap.resolveNodeFromName(data.location), `Mismatch between database and server for location ${data.location}`);
+        this.location = util_1.util.throwUndefined(Server_1.Server.Reg.Spacemap.resolveNodeFromName(data.location), `Mismatch between database and server for location ${data.location}`);
         this.blueprints = new Set(data.blueprints);
         this.exp = data.exp;
         this.skillPoints = data.skills;
@@ -65,7 +65,7 @@ class Player {
     addExp(exp) {
         if (this.exp + exp >= this.ExpToNextLevel) {
             //the player levelled up
-            Client_1.Client.EventMan.emit("LevelUp", { uId: this.uId, level: this.Level });
+            Server_1.Server.EventMan.emit("LevelUp", { uId: this.uId, level: this.Level });
         }
         this.exp += exp;
         this.save();
@@ -337,7 +337,7 @@ class Player {
             return true;
         }
         catch (e) {
-            if (Client_1.Client.Get().ConsoleLogging)
+            if (Server_1.Server.Get().ConsoleLogging)
                 console.warn(e);
             return false;
         }
@@ -360,7 +360,7 @@ class Player {
      * 4 - Registry Not Found.
      */
     async AutoInventoryEdit(name, quantity) {
-        const Reg = Client_1.Client.Get().Registry;
+        const Reg = Server_1.Server.Get().Registry;
         let result;
         //loops through registries. If one is found, then call inventory functions on that type
         for (let i = 0; i < 4; i++)
@@ -385,7 +385,7 @@ class Player {
         const ValidTest = this.BatchSufficientToDecrease(pairs);
         if (!ValidTest.success)
             return { success: false, code: ValidTest.code };
-        const Reg = Client_1.Client.Get().Registry;
+        const Reg = Server_1.Server.Get().Registry;
         for (const pair of pairs) {
             const name = pair.name;
             const quantity = pair.quantity;
@@ -419,7 +419,7 @@ class Player {
      * @returns codes: 1-Success, 2-Item not found, 3-Not enough items
      */
     BatchSufficientToDecrease(pairs, ignoreInvalid = false) {
-        const Reg = Client_1.Client.Get().Registry;
+        const Reg = Server_1.Server.Get().Registry;
         for (const pair of pairs) {
             for (let i = 0; i < 4; i++) {
                 if (Reg[Player.RegistryTypes[i]].get(pair.name) != undefined) {
@@ -443,7 +443,7 @@ class Player {
      * @return codes: 1-Success, 2-Item Not Found
      */
     AutoInventoryRetrieve(name) {
-        const Reg = Client_1.Client.Get().Registry;
+        const Reg = Server_1.Server.Get().Registry;
         for (let i = 0; i < 4; i++) {
             if (Reg[Player.RegistryTypes[i]].get(name) != undefined) {
                 return { success: true, code: 1, amount: this.inventory[Player.InventoryTypes[i]].get(name) };
@@ -459,7 +459,7 @@ class Player {
      * @return The array returned includes quantities in order they were provided. Items not found will be given quantity of 0.
      */
     BatchAutoInventoryRetrieve(names) {
-        const Reg = Client_1.Client.Get().Registry;
+        const Reg = Server_1.Server.Get().Registry;
         const quantity = new Array();
         for (const name of names) {
             for (let i = 0; i < 4; i++) {
@@ -478,7 +478,7 @@ class Player {
     //#region SHIP
     async setShip(ship) {
         if (typeof ship == "string") {
-            const candidate = Client_1.Client.Reg.ResolveShipFromName(ship);
+            const candidate = Server_1.Server.Reg.ResolveShipFromName(ship);
             if (candidate == undefined)
                 throw new TypeError(`Ship with name ${ship} does not exist in registry, despite trying to set it`);
             ship = candidate;
@@ -555,7 +555,7 @@ class Player {
         return util_1.util.throwUndefined(this.location, "Player does not have location");
     }
     async travelTo(node) {
-        node = util_1.util.throwUndefined(Client_1.Client.Reg.Spacemap.resolveNodeFromName(node));
+        node = util_1.util.throwUndefined(Server_1.Server.Reg.Spacemap.resolveNodeFromName(node));
         if (!this.adjacentLocations().includes(node))
             return false;
         if (this.getShipWrapper().pollWarp(node.RequiredWarp)) {
@@ -567,7 +567,7 @@ class Player {
         return false;
     }
     adjacentLocations() {
-        return Client_1.Client.Reg.Spacemap.getConnectedNodes(this.location);
+        return Server_1.Server.Reg.Spacemap.getConnectedNodes(this.location);
     }
     //#endregion - location
     //#region BLUEPRINT
@@ -623,7 +623,7 @@ class Player {
             tokens: this.inventory.Tokens,
             skills: this.skillPoints,
             image: this.PlayerImage,
-            bestFaction: Client_1.Client.Reg.ResolveFactionFromName(this.inventory.Reputation.keyArray().reduce((a, b) => this.inventory.Reputation.get(a) > this.inventory.Reputation.get(b) ? a : b)),
+            bestFaction: Server_1.Server.Reg.ResolveFactionFromName(this.inventory.Reputation.keyArray().reduce((a, b) => this.inventory.Reputation.get(a) > this.inventory.Reputation.get(b) ? a : b)),
             ship: this.ship,
             level: this.Level,
             location: this.location,

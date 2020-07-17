@@ -6,7 +6,7 @@ import { SellableDecorator, IMarketForces } from "../GameAsset/AssetDecorators";
 import { Faction } from "../GameAsset/Faction/Faction";
 import { util } from "../../Util/util";
 import { SpacemapNode } from "../GameSpacemap/SpacemapNode";
-import { Client } from "../../Client/Client";
+import { Server } from "../../Server/Server";
 
 export abstract class BaseStore implements IStoreUpdatable {
 	protected collection: GameCollectionBase;
@@ -243,7 +243,7 @@ export abstract class BaseStore implements IStoreUpdatable {
 	//#region TESTING METHODS
 
 	public INTERNAL_AlterItem(item: string, n: number): void {
-		if (!Client.TEST) throw new Error("Internal prefix functions can only be used in test mode.");
+		if (!Server.TEST) throw new Error("Internal prefix functions can only be used in test mode.");
 		const currentAmount = this.collection.get(item);
 		this.collection.set(item, (currentAmount ?? 0) + n);
 	}

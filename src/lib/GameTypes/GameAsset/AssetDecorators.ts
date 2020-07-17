@@ -1,5 +1,5 @@
 import { GameAsset, Sellable, ISellInfo, IGameAsset, IBlueprintInfo, Buildable } from "./GameAsset";
-import { Client } from "../../Client/Client";
+import { Server } from "../../Server/Server";
 import { Player } from "./Player/Player";
 import { Faction } from "./Faction/Faction";
 import { util } from "../../Util/util";
@@ -22,7 +22,7 @@ export abstract class GameAssetDecorator implements IGameAsset {
 export class SellableDecorator extends GameAssetDecorator implements Sellable {
 	public constructor(item: string | GameAsset) {
 		if (typeof item == "string") {
-			const obj = Client.Reg.AnyResolve(item);
+			const obj = Server.Reg.AnyResolve(item);
 			if (obj == undefined)
 				throw new TypeError(
 					`Item named ${item} instantiated as SellableDecorator when item does not exist in registry.`
@@ -49,7 +49,7 @@ export class SellableDecorator extends GameAssetDecorator implements Sellable {
 			baseCost += rnd * (max - min) - (max - min) / 2;
 		}
 		if (loTechEffect || hiTechEffect) {
-			const maxTechDelta = Client.Reg.MaxTech;
+			const maxTechDelta = Server.Reg.MaxTech;
 			const delta = Math.abs(territory!.TechLevel - this.asset.TechLevel);
 			const percentOfDelta = delta / maxTechDelta;
 			//Apply percent change if faction tech level is higher

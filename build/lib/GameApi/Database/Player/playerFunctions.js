@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.findOneOrCreate = exports.getCredits = exports.decrementCredits = exports.incrementCredits = exports.setLastUpdated = void 0;
-const Client_1 = require("../../../Client/Client");
+const Server_1 = require("../../../Server/Server");
 const PlayerInventory_1 = require("../../../GameTypes/GameAsset/Player/PlayerInventory");
 const Player_1 = require("../../../GameTypes/GameAsset/Player/Player");
 //Section: Instance Methods (for document)
@@ -58,8 +58,8 @@ async function findOneOrCreate({ uId }) {
         const record = await this.create({
             uId: uId,
             inventory: new PlayerInventory_1.InventoryBuilder().GenericBuild(),
-            ship: { name: Client_1.Client.Get().Registry.DefaultShip.Name, equipped: [] },
-            location: Client_1.Client.Reg.DefaultLocation.Name,
+            ship: { name: Server_1.Server.Get().Registry.DefaultShip.Name, equipped: [] },
+            location: Server_1.Server.Reg.DefaultLocation.Name,
             blueprints: new Array(),
             exp: 30,
             skills: [0, 0, 0],

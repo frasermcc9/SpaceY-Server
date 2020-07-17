@@ -2,9 +2,9 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 var PlayerModel_1 = require("./GameApi/Database/Player/PlayerModel");
 Object.defineProperty(exports, "PlayerModel", { enumerable: true, get: function () { return PlayerModel_1.PlayerModel; } });
-var Client_1 = require("./Client/Client");
-Object.defineProperty(exports, "Client", { enumerable: true, get: function () { return Client_1.Client; } });
-var Setup_1 = require("./Client/Setup");
+var Server_1 = require("./Server/Server");
+Object.defineProperty(exports, "Client", { enumerable: true, get: function () { return Server_1.Server; } });
+var Setup_1 = require("./Server/Setup");
 Object.defineProperty(exports, "Setup", { enumerable: true, get: function () { return Setup_1.Setup; } });
 var Asteroid_1 = require("./GameTypes/GameMechanics/Asteroid");
 Object.defineProperty(exports, "AsteroidBuilder", { enumerable: true, get: function () { return Asteroid_1.AsteroidBuilder; } });

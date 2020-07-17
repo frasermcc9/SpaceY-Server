@@ -1,13 +1,13 @@
 import Mongoose = require("mongoose");
-import { Client } from "../../Client/Client";
+import { Server } from "../../Server/Server";
 
 let database: Mongoose.Connection;
 
 export const connect = () => {
 	//const uri = "mongodb://localhost:27017";
-	const uri = Client.Get().Uri;
+	const uri = Server.Get().Uri;
 	//const dbName = "stocksim";
-	const dbName = Client.Get().DbName;
+	const dbName = Server.Get().DbName;
 
 	if (database) {
 		return;
@@ -23,7 +23,7 @@ export const connect = () => {
 	database = Mongoose.connection;
 
 	database.once("open", async () => {
-		if (Client.Get().ConsoleLogging) console.log("Connected to database");
+		if (Server.Get().ConsoleLogging) console.log("Connected to database");
 	});
 
 	database.on("error", () => {
@@ -38,5 +38,5 @@ export const disconnect = () => {
 		return;
 	}
 	Mongoose.disconnect();
-	if (Client.Get().ConsoleLogging) console.log("Closed database");
+	if (Server.Get().ConsoleLogging) console.log("Closed database");
 };

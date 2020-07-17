@@ -1,4 +1,4 @@
-import { Client } from "../lib/Client/Client";
+import { Server } from "../lib/Server/Server";
 import { Material, MaterialBuilder } from "../lib/GameTypes/GameAsset/Material/Material";
 import { Blueprint, BlueprintBuilder } from "../lib/GameTypes/GameAsset/Blueprint/Blueprint";
 import { Ship, ShipBuilder } from "../lib/GameTypes/GameAsset/Ship/Ship";
@@ -8,19 +8,19 @@ import { ShipWrapper } from "../lib/GameTypes/GameAsset/Ship/ShipWrapper";
 import { Asteroid } from "../lib/GameTypes/GameMechanics/Asteroid";
 
 export function GenerateMaterialsForActiveClient() {
-	const client = Client.Get();
+	const client = Server.Get();
 	client.Registry.RegisterMaterials({ materials: GENERATED_MATERIALS() });
 }
 export function GenerateShipsForActiveClient() {
-	const client = Client.Get();
+	const client = Server.Get();
 	client.Registry.RegisterShips({ ships: GENERATED_SHIPS() });
 }
 export function GenerateFactionsForActiveClient() {
-	const client = Client.Get();
+	const client = Server.Get();
 	client.Registry.RegisterFactions({ factions: GENERATED_FACTIONS() });
 }
 export function GenerateAttachmentsForActiveClient() {
-	const client = Client.Get();
+	const client = Server.Get();
 	client.Registry.RegisterAttachments({ attachments: GENERATED_ATTACHMENTS() });
 }
 
@@ -225,7 +225,7 @@ export function generateIntegrationSet() {
 		cost: 1850,
 	}).Build();
 
-	Client.Reg.RegisterMaterials({ materials: [M1, M2, M3, M4, M5, M6, M7, M8] });
+	Server.Reg.RegisterMaterials({ materials: [M1, M2, M3, M4, M5, M6, M7, M8] });
 
 	//#endregion Materials
 
@@ -316,7 +316,7 @@ export function generateIntegrationSet() {
 		.SetMisc({ uri: "", subclass: "CAPITAL" })
 		.Build();
 
-	Client.Reg.RegisterShips({ ships: [S1, S2, S3, S4, S5, S6] });
+	Server.Reg.RegisterShips({ ships: [S1, S2, S3, S4, S5, S6] });
 
 	//#endregion Ships
 

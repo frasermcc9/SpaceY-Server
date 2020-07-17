@@ -2,13 +2,13 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.disconnect = exports.connect = void 0;
 const Mongoose = require("mongoose");
-const Client_1 = require("../../Client/Client");
+const Server_1 = require("../../Server/Server");
 let database;
 exports.connect = () => {
     //const uri = "mongodb://localhost:27017";
-    const uri = Client_1.Client.Get().Uri;
+    const uri = Server_1.Server.Get().Uri;
     //const dbName = "stocksim";
-    const dbName = Client_1.Client.Get().DbName;
+    const dbName = Server_1.Server.Get().DbName;
     if (database) {
         return;
     }
@@ -21,7 +21,7 @@ exports.connect = () => {
     });
     database = Mongoose.connection;
     database.once("open", async () => {
-        if (Client_1.Client.Get().ConsoleLogging)
+        if (Server_1.Server.Get().ConsoleLogging)
             console.log("Connected to database");
     });
     database.on("error", () => {
@@ -34,6 +34,6 @@ exports.disconnect = () => {
         return;
     }
     Mongoose.disconnect();
-    if (Client_1.Client.Get().ConsoleLogging)
+    if (Server_1.Server.Get().ConsoleLogging)
         console.log("Closed database");
 };

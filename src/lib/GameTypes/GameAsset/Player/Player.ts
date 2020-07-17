@@ -2,8 +2,8 @@ import { IPlayerDocument, PlayerModel } from "../../../GameApi/Database/Player/P
 import { Ship } from "../Ship/Ship";
 import { InventoryBuilder, PlayerInventory, TRegistered } from "./PlayerInventory";
 import { Skin } from "./Skin";
-import { Client } from "../../../Client/Client";
-import { RegistryNames } from "../../../Client/Registry";
+import { Server } from "../../../Server/Server";
+import { RegistryNames } from "../../../Server/Registry";
 import { ShipWrapper } from "../Ship/ShipWrapper";
 import { Attachment, GameEvent } from "../Attachment/Attachment";
 import { SpacemapNode, SpacemapNodeBuilder } from "../../GameSpacemap/SpacemapNode";
@@ -24,7 +24,7 @@ export class Player {
 	public get Inventory(): PlayerInventory {
 		return this.inventory;
 	}
-	private location: SpacemapNode = Client.Reg.DefaultLocation;
+	private location: SpacemapNode = Server.Reg.DefaultLocation;
 
 	private blueprints: Set<string> = new Set();
 
@@ -47,7 +47,7 @@ export class Player {
 	public addExp(exp: number): void {
 		if (this.exp + exp >= this.ExpToNextLevel) {
 			//the player levelled up
-			Client.EventMan.emit("LevelUp", { uId: this.uId, level: this.Level });
+			Server.EventMan.emit("LevelUp", { uId: this.uId, level: this.Level });
 		}
 		this.exp += exp;
 		this.save();
@@ -377,7 +377,7 @@ export class Player {
 			await this.save();
 			return true;
 		} catch (e) {
-			if (Client.Get().ConsoleLogging) console.warn(e);
+			if (Server.Get().ConsoleLogging) console.warn(e);
 			return false;
 		}
 	}
@@ -407,7 +407,7 @@ export class Player {
 		name: string,
 		quantity: number
 	): Promise<{ success: boolean; amount?: number; code: 1 | 2 | 3 | 4; error?: string }> {
-		const Reg = Client.Get().Registry;
+		const Reg = Server.Get().Registry;
 
 		let result;
 		//loops through registries. If one is found, then call inventory functions on that type
@@ -431,7 +431,7 @@ export class Player {
 		const ValidTest = this.BatchSufficientToDecrease(pairs);
 		if (!ValidTest.success) return { success: false, code: ValidTest.code };
 
-		const Reg = Client.Get().Registry;
+		const Reg = Server.Get().Registry;
 
 		for (const pair of pairs) {
 			const name = pair.name;
@@ -467,7 +467,7 @@ export class Player {
 		pairs: { name: string; quantity: number }[],
 		ignoreInvalid: boolean = false
 	): { success: boolean; code: 1 | 2 | 3 } {
-		const Reg = Client.Get().Registry;
+		const Reg = Server.Get().Registry;
 		for (const pair of pairs) {
 			for (let i = 0; i < 4; i++) {
 				if (Reg[Player.RegistryTypes[i]].get(pair.name) != undefined) {
@@ -493,7 +493,7 @@ export class Player {
 	 * @return codes: 1-Success, 2-Item Not Found
 	 */
 	public AutoInventoryRetrieve(name: string): { success: boolean; amount?: number; code: 1 | 2; error?: string } {
-		const Reg = Client.Get().Registry;
+		const Reg = Server.Get().Registry;
 
 		for (let i = 0; i < 4; i++) {
 			if (Reg[Player.RegistryTypes[i]].get(name) != undefined) {
@@ -511,7 +511,7 @@ export class Player {
 	 * @return The array returned includes quantities in order they were provided. Items not found will be given quantity of 0.
 	 */
 	public BatchAutoInventoryRetrieve(names: string[]): number[] {
-		const Reg = Client.Get().Registry;
+		const Reg = Server.Get().Registry;
 		const quantity: number[] = new Array<number>();
 		for (const name of names) {
 			for (let i = 0; i < 4; i++) {
@@ -533,7 +533,7 @@ export class Player {
 
 	public async setShip(ship: Ship | string): Promise<void> {
 		if (typeof ship == "string") {
-			const candidate = Client.Reg.ResolveShipFromName(ship);
+			const candidate = Server.Reg.ResolveShipFromName(ship);
 			if (candidate == undefined) throw new TypeError(`Ship with name ${ship} does not exist in registry, despite trying to set it`);
 			ship = candidate;
 		}
@@ -616,7 +616,7 @@ export class Player {
 	}
 
 	public async travelTo(node: SpacemapNode | string): Promise<boolean> {
-		node = util.throwUndefined(Client.Reg.Spacemap.resolveNodeFromName(node));
+		node = util.throwUndefined(Server.Reg.Spacemap.resolveNodeFromName(node));
 		if (!this.adjacentLocations().includes(node)) return false;
 		if (this.getShipWrapper().pollWarp(node.RequiredWarp)) {
 			this.location = node;
@@ -628,7 +628,7 @@ export class Player {
 	}
 
 	public adjacentLocations(): SpacemapNode[] {
-		return Client.Reg.Spacemap.getConnectedNodes(this.location);
+		return Server.Reg.Spacemap.getConnectedNodes(this.location);
 	}
 
 	//#endregion - location
@@ -693,7 +693,7 @@ export class Player {
 			tokens: this.inventory.Tokens,
 			skills: this.skillPoints,
 			image: this.PlayerImage,
-			bestFaction: Client.Reg.ResolveFactionFromName(
+			bestFaction: Server.Reg.ResolveFactionFromName(
 				this.inventory.Reputation.keyArray().reduce((a, b) =>
 					this.inventory.Reputation.get(a)! > this.inventory.Reputation.get(b)! ? a : b
 				)
@@ -733,14 +733,14 @@ export class Player {
 	public constructor(data: IPlayerDocument) {
 		this.uId = data.uId; //ID
 
-		const Ship = Client.Reg.ResolveShipFromName(data.ship.name);
+		const Ship = Server.Reg.ResolveShipFromName(data.ship.name);
 		if (Ship == undefined)
 			throw new Error(`Mismatch between database and server. No item ${data.ship} exists in server, but does in db for ${this.uId}.`);
 
 		this.ship = new ShipWrapper(Ship, this);
 
 		this.location = util.throwUndefined(
-			Client.Reg.Spacemap.resolveNodeFromName(data.location),
+			Server.Reg.Spacemap.resolveNodeFromName(data.location),
 			`Mismatch between database and server for location ${data.location}`
 		);
 

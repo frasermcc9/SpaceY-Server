@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ShipWrapper = void 0;
-const Client_1 = require("../../../Client/Client");
+const Server_1 = require("../../../Server/Server");
 const Attachment_1 = require("../Attachment/Attachment");
 const Collections_1 = require("../../../Extensions/Collections");
 class ShipWrapper {
@@ -160,7 +160,7 @@ class ShipWrapper {
      */
     addAttachment(attachment) {
         if (typeof attachment == "string") {
-            const candidate = Client_1.Client.Reg.ResolveAttachmentFromName(attachment);
+            const candidate = Server_1.Server.Reg.ResolveAttachmentFromName(attachment);
             if (candidate == undefined)
                 return { code: 404 };
             attachment = candidate;

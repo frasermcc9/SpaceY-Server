@@ -1,4 +1,4 @@
-import { Client } from "../../Client/Client";
+import { Server } from "../../Server/Server";
 import { Faction } from "../GameAsset/Faction/Faction";
 import { GameCollectionBase, ICompatible } from "./GameCollectionBase";
 import { MapCollection } from "../../Extensions/Collections";
@@ -7,11 +7,11 @@ export class ReputationCollection extends GameCollectionBase {
 	public constructor(options?: IReputationCollectionOptions) {
 		super();
 		if (options?.data) {
-			Client.Reg.FactionRegistry.forEach((faction) => {
+			Server.Reg.FactionRegistry.forEach((faction) => {
 				this.set(faction.Name, options.data?.get(faction.Name) ?? 0);
 			});
 		} else {
-			Client.Reg.FactionRegistry.forEach((faction) => {
+			Server.Reg.FactionRegistry.forEach((faction) => {
 				this.set(faction.Name, 0);
 			});
 		}
@@ -19,7 +19,7 @@ export class ReputationCollection extends GameCollectionBase {
 
 	/** @override */
 	public GetCompatibleItems({ minTech, maxTech }: ICompatible): MapCollection<string, Faction> {
-		return Client.Reg.FactionRegistry.filter((val) => val.Cost != undefined && val.TechLevel <= maxTech && val.TechLevel >= minTech);
+		return Server.Reg.FactionRegistry.filter((val) => val.Cost != undefined && val.TechLevel <= maxTech && val.TechLevel >= minTech);
 	}
 
 	/** @override */

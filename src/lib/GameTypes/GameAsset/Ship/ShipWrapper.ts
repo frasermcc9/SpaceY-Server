@@ -1,4 +1,4 @@
-import { Client } from "../../../Client/Client";
+import { Server } from "../../../Server/Server";
 import { Asteroid } from "../../GameMechanics/Asteroid";
 import { Attachment, AttachmentReport, AttachmentType, GameEvent } from "../Attachment/Attachment";
 import { Player } from "../Player/Player";
@@ -164,7 +164,7 @@ export class ShipWrapper {
 	 */
 	public addAttachment(attachment: Attachment | string): { code: 200 | 403 | 404 } {
 		if (typeof attachment == "string") {
-			const candidate = Client.Reg.ResolveAttachmentFromName(attachment);
+			const candidate = Server.Reg.ResolveAttachmentFromName(attachment);
 			if (candidate == undefined) return { code: 404 };
 			attachment = candidate;
 		}

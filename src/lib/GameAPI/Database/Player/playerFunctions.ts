@@ -1,4 +1,4 @@
-import { Client } from "../../../Client/Client";
+import { Server } from "../../../Server/Server";
 import { InventoryBuilder, PlayerInventory } from "../../../GameTypes/GameAsset/Player/PlayerInventory";
 import { Skin } from "../../../GameTypes/GameAsset/Player/Skin";
 import { IPlayerDocument, IPlayerModel } from "./PlayerModel";
@@ -59,8 +59,8 @@ export async function findOneOrCreate(this: IPlayerModel, { uId }: { uId: string
 		const record = await this.create({
 			uId: uId,
 			inventory: new InventoryBuilder().GenericBuild(),
-			ship: { name: Client.Get().Registry.DefaultShip.Name, equipped: [] },
-			location: Client.Reg.DefaultLocation.Name,
+			ship: { name: Server.Get().Registry.DefaultShip.Name, equipped: [] },
+			location: Server.Reg.DefaultLocation.Name,
 			blueprints: new Array<string>(),
 			exp: 30,
 			skills: [0, 0, 0],

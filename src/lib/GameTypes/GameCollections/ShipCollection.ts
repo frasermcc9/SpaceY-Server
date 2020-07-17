@@ -1,4 +1,4 @@
-import { Client } from "../../Client/Client";
+import { Server } from "../../Server/Server";
 import { GameCollectionBase, ICompatible } from "./GameCollectionBase";
 import { MapCollection } from "../../Extensions/Collections";
 import { Ship } from "../GameAsset/Ship/Ship";
@@ -8,11 +8,11 @@ export class ShipCollection extends GameCollectionBase {
 		super();
 		//Create map with all empty attachment values, but set defined attachments to the given value.
 		if (options?.data) {
-			Client.Get().Registry.ShipRegistry.forEach((ship) => {
+			Server.Get().Registry.ShipRegistry.forEach((ship) => {
 				this.set(ship.Name, options.data?.get(ship.Name) || 0);
 			});
 		} else {
-			Client.Get().Registry.ShipRegistry.forEach((ship) => {
+			Server.Get().Registry.ShipRegistry.forEach((ship) => {
 				this.set(ship.Name, 0);
 			});
 		}
@@ -20,7 +20,7 @@ export class ShipCollection extends GameCollectionBase {
 
 	/** @override */
 	public GetCompatibleItems({ minTech, maxTech }: ICompatible): MapCollection<string, Ship> {
-		return Client.Reg.ShipRegistry.filter((val) => val.Cost != undefined && val.TechLevel <= maxTech && val.TechLevel >= minTech);
+		return Server.Reg.ShipRegistry.filter((val) => val.Cost != undefined && val.TechLevel <= maxTech && val.TechLevel >= minTech);
 	}
 
 	/** @override */

@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.MaterialCollection = void 0;
-const Client_1 = require("../../Client/Client");
+const Server_1 = require("../../Server/Server");
 const util_1 = require("../../Util/util");
 const GameCollectionBase_1 = require("./GameCollectionBase");
 const AssetDecorators_1 = require("../GameAsset/AssetDecorators");
@@ -10,19 +10,19 @@ class MaterialCollection extends GameCollectionBase_1.GameCollectionBase {
         super();
         //Create map with all empty material values, but set defined materials to the given value.
         if (options?.data) {
-            Client_1.Client.Get().Registry.MaterialRegistry.forEach((material) => {
+            Server_1.Server.Get().Registry.MaterialRegistry.forEach((material) => {
                 this.set(material.Name, options.data?.get(material.Name) || 0);
             });
         }
         else {
-            Client_1.Client.Get().Registry.MaterialRegistry.forEach((material) => {
+            Server_1.Server.Get().Registry.MaterialRegistry.forEach((material) => {
                 this.set(material.Name, 0);
             });
         }
     }
     /**@deprecated*/
     DataFromName(name) {
-        const material = Client_1.Client.Get().Registry.MaterialRegistry.get(name);
+        const material = Server_1.Server.Get().Registry.MaterialRegistry.get(name);
         if (material == undefined)
             return { success: false, name: name, quantity: -1, material: null, error: MAT_NOT_FOUND };
         const quantity = this.get(material.Name);
@@ -32,7 +32,7 @@ class MaterialCollection extends GameCollectionBase_1.GameCollectionBase {
     DataFromNames(names) {
         let data = new Array();
         names.forEach((name) => {
-            const material = Client_1.Client.Get().Registry.MaterialRegistry.get(name);
+            const material = Server_1.Server.Get().Registry.MaterialRegistry.get(name);
             if (material == undefined) {
                 data.push({ success: false, name: name, quantity: -1, material: null, error: MAT_NOT_FOUND });
             }
@@ -54,13 +54,13 @@ class MaterialCollection extends GameCollectionBase_1.GameCollectionBase {
     GetCollectionValue() {
         let total = 0;
         this.forEach((amount, name) => {
-            const Material = Client_1.Client.Get().Registry.MaterialRegistry.get(name);
+            const Material = Server_1.Server.Get().Registry.MaterialRegistry.get(name);
             total += (new AssetDecorators_1.SellableDecorator(Material).PriceData.cost || 0) * amount;
         });
         return total;
     }
     static GenerateMineableCollection(value) {
-        const Template = Array.from(Client_1.Client.Get().Registry.MineableMaterialRegistry.values());
+        const Template = Array.from(Server_1.Server.Get().Registry.MineableMaterialRegistry.values());
         if (Template.length == 0) {
             throw new Error("No Mineable Materials");
         }
@@ -77,7 +77,7 @@ class MaterialCollection extends GameCollectionBase_1.GameCollectionBase {
     }
     /** @override */
     GetCompatibleItems({ minRarity, maxRarity, minTech, maxTech }) {
-        return Client_1.Client.Reg.MaterialRegistry.filter((val) => val.Cost != undefined &&
+        return Server_1.Server.Reg.MaterialRegistry.filter((val) => val.Cost != undefined &&
             val.TechLevel <= maxTech &&
             val.TechLevel >= minTech &&
             val.GetMaterialRarity() <= maxRarity &&

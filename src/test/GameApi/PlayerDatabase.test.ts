@@ -1,6 +1,6 @@
 import { Client } from "../../lib/main";
-import { connect, disconnect } from "../../lib/GameApi/Database/Database";
-import { PlayerModel } from "../../lib/GameApi/Database/Player/PlayerModel";
+import { connect, disconnect } from "../../lib/Database/Database";
+import { PlayerModel } from "../../lib/Database/Models/Player/PlayerModel";
 import { GenerateClientSet } from "../TestUtil";
 import { throws } from "assert";
 import { default as must } from "must";

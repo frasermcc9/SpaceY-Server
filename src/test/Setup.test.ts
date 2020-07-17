@@ -10,7 +10,7 @@ import { BlueprintBuilder } from "../lib/GameTypes/GameAsset/Blueprint/Blueprint
 import { AttachmentBuilder, AttachmentType, AttachmentReport } from "../lib/GameTypes/GameAsset/Attachment/Attachment";
 import { ShipWrapper } from "../lib/GameTypes/GameAsset/Ship/ShipWrapper";
 import { Asteroid } from "../lib/GameTypes/GameMechanics/Asteroid";
-import { PlayerModel } from "../lib/GameApi/Database/Player/PlayerModel";
+import { PlayerModel } from "../lib/Database/Models/Player/PlayerModel";
 
 before(async () => {
 	Setup.begin()

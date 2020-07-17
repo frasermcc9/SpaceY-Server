@@ -1,6 +1,6 @@
 import { Client, connect, disconnect } from "../../../lib/main";
 import { GenerateClientSet } from "../../TestUtil";
-import { PlayerModel } from "../../../lib/GameApi/Database/Player/PlayerModel";
+import { PlayerModel } from "../../../lib/Database/Models/Player/PlayerModel";
 import { AsteroidBuilder } from "../../../lib/GameTypes/GameMechanics/Asteroid";
 import { default as must } from "must";
 require("must/register");

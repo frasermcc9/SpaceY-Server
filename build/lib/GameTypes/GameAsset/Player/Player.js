@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Player = void 0;
-const PlayerModel_1 = require("../../../GameApi/Database/Player/PlayerModel");
+const PlayerModel_1 = require("../../../Database/Models/Player/PlayerModel");
 const PlayerInventory_1 = require("./PlayerInventory");
 const Skin_1 = require("./Skin");
 const Server_1 = require("../../../Server/Server");

@@ -1,6 +1,6 @@
 import { Client, connect, disconnect } from "../../../lib/main";
 import { GenerateClientSet, GENERATED_SHIPS } from "../../TestUtil";
-import { PlayerModel } from "../../../lib/GameApi/Database/Player/PlayerModel";
+import { PlayerModel } from "../../../lib/Database/Models/Player/PlayerModel";
 import { AsteroidBuilder } from "../../../lib/GameTypes/GameMechanics/Asteroid";
 import { default as must } from "must";
 import { Ship } from "../../../lib/GameTypes/GameAsset/Ship/Ship";

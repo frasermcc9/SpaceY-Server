@@ -1,5 +1,5 @@
 import Mongoose = require("mongoose");
-import { Server } from "../../Server/Server";
+import { Server } from "../Server/Server";
 
 let database: Mongoose.Connection;
 

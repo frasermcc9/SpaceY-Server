@@ -1,4 +1,4 @@
-import { PlayerModel } from "../../../lib/GameApi/Database/Player/PlayerModel";
+import { PlayerModel } from "../../../lib/Database/Models/Player/PlayerModel";
 import { SellableDecorator } from "../../../lib/GameTypes/GameAsset/AssetDecorators";
 import { FactionBuilder } from "../../../lib/GameTypes/GameAsset/Faction/Faction";
 import { GameCollectionBase } from "../../../lib/GameTypes/GameCollections/GameCollectionBase";

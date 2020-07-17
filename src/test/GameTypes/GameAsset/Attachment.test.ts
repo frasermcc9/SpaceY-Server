@@ -1,4 +1,4 @@
-import { PlayerModel } from "../../../lib/GameApi/Database/Player/PlayerModel";
+import { PlayerModel } from "../../../lib/Database/Models/Player/PlayerModel";
 import { AttachmentBuilder, AttachmentReport, AttachmentType, GameEvent } from "../../../lib/GameTypes/GameAsset/Attachment/Attachment";
 import { Ship } from "../../../lib/GameTypes/GameAsset/Ship/Ship";
 import { ShipWrapper } from "../../../lib/GameTypes/GameAsset/Ship/ShipWrapper";

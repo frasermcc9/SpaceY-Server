@@ -4,7 +4,7 @@ exports.Setup = void 0;
 const Server_1 = require("./Server");
 const Spacemap_1 = require("../GameTypes/GameSpacemap/Spacemap");
 const util_1 = require("../Util/util");
-const Database_1 = require("../GameApi/Database/Database");
+const Database_1 = require("../Database/Database");
 class Setup {
     setupClient(settings) {
         Server_1.Server.Create(settings);

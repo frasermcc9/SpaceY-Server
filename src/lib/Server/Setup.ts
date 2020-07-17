@@ -6,7 +6,7 @@ import { Faction } from "../GameTypes/GameAsset/Faction/Faction";
 import { SpacemapNode } from "../GameTypes/GameSpacemap/SpacemapNode";
 import { Spacemap } from "../GameTypes/GameSpacemap/Spacemap";
 import { util } from "../Util/util";
-import { connect } from "../GameApi/Database/Database";
+import { connect } from "../Database/Database";
 
 export class Setup {
 	setupClient(settings: IClientSettings): MaterialsAdder {

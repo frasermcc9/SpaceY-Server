@@ -1,5 +1,5 @@
 import { Registry } from "./Registry";
-import { connect } from "../GameApi/Database/Database";
+import { connect } from "../Database/Database";
 import { EventManager } from "./EventManager";
 
 export class Server {

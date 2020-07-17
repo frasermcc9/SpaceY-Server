@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Server = void 0;
 const Registry_1 = require("./Registry");
-const Database_1 = require("../GameApi/Database/Database");
+const Database_1 = require("../Database/Database");
 const EventManager_1 = require("./EventManager");
 class Server {
     constructor(clientSettings) {

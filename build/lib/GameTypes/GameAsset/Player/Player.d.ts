@@ -1,4 +1,4 @@
-import { IPlayerDocument } from "../../../GameApi/Database/Player/PlayerModel";
+import { IPlayerDocument } from "../../../Database/Models/Player/PlayerModel";
 import { Ship } from "../Ship/Ship";
 import { PlayerInventory, TRegistered } from "./PlayerInventory";
 import { Skin } from "./Skin";

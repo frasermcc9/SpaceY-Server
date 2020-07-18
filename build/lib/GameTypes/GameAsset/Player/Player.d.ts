@@ -1,4 +1,4 @@
-import { IPlayerDocument } from "../../../Database/Models/Player/PlayerModel";
+import { IPlayer } from "../../../Database/Models/Player/PlayerModel";
 import { Ship } from "../Ship/Ship";
 import { PlayerInventory, TRegistered } from "./PlayerInventory";
 import { Skin } from "./Skin";
@@ -342,13 +342,18 @@ export declare class Player {
     discoverBlueprint(item: string | GameAsset): Promise<boolean>;
     get PlayerImage(): string;
     newSkin(name: string, uri: string): Promise<boolean>;
-    applySkin(name: string, uri: string): Promise<void>;
+    /**
+     * Applies the skin by its name. If the skin is not found, removes the skin.
+     * @param name the name of the skin
+     * @returns true if a new skin was applied, false if a skin was removed.
+     */
+    applySkin(name: string): Promise<boolean>;
     removeSkin(): Promise<void>;
     get availableSkins(): Skin[];
     profile(): {
         credits: number;
         tokens: number;
-        skills: number[];
+        skills: [number, number, number];
         image: string;
         bestFaction: import("../Faction/Faction").Faction | undefined;
         ship: ShipWrapper;
@@ -358,7 +363,11 @@ export declare class Player {
         expToNext: number;
     };
     save(): Promise<void>;
-    constructor(data: IPlayerDocument);
+    raw(): IPlayer;
+    /**
+     * @param data IPlayer interface or JSON string of IPlayer data.
+     */
+    constructor(data: IPlayer | string);
     private static readonly RegistryTypes;
     private static readonly InventoryTypes;
 }

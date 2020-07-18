@@ -8,12 +8,17 @@ const Server_1 = require("../../../Server/Server");
 const ShipWrapper_1 = require("../Ship/ShipWrapper");
 const util_1 = require("../../../Util/util");
 class Player {
+    /**
+     * @param data IPlayer interface or JSON string of IPlayer data.
+     */
     constructor(data) {
         this.allSkins = new Array();
         this.location = Server_1.Server.Reg.DefaultLocation;
         this.blueprints = new Set();
         this.exp = 100;
         this.skillPoints = [0, 0, 0];
+        if (typeof data == "string")
+            data = JSON.parse(data);
         this.uId = data.uId; //ID
         const Ship = Server_1.Server.Reg.ResolveShipFromName(data.ship.name);
         if (Ship == undefined)
@@ -605,10 +610,16 @@ class Player {
         }
         return false;
     }
-    async applySkin(name, uri) {
-        const skin = this.allSkins.find((skin) => skin.SkinName == name && skin.SkinUri == uri);
+    /**
+     * Applies the skin by its name. If the skin is not found, removes the skin.
+     * @param name the name of the skin
+     * @returns true if a new skin was applied, false if a skin was removed.
+     */
+    async applySkin(name) {
+        const skin = this.allSkins.find((skin) => skin.SkinName == name);
         this.skin = skin;
         await this.save();
+        return skin != undefined;
     }
     async removeSkin() {
         this.skin = undefined;
@@ -633,11 +644,14 @@ class Player {
     }
     //#endregion Character
     async save() {
+        await PlayerModel_1.PlayerModel.updateOne({ uId: this.uId }, this.raw());
+    }
+    raw() {
         const skinDb = [];
         this.allSkins.forEach((skin) => {
             skinDb.push({ skinName: skin.SkinName, skinUri: skin.SkinUri });
         });
-        await PlayerModel_1.PlayerModel.updateOne({ uId: this.uId }, {
+        return {
             uId: this.uId,
             inventory: this.inventory.GetGeneric(),
             ship: { name: this.ship.stringifyName(), equipped: this.ship.stringifyAttachments() },
@@ -647,7 +661,7 @@ class Player {
             blueprints: Array.from(this.blueprints),
             exp: this.exp,
             skills: this.skillPoints,
-        });
+        };
     }
 }
 exports.Player = Player;

@@ -1,4 +1,4 @@
-import { IPlayerDocument, PlayerModel } from "../../../Database/Models/Player/PlayerModel";
+import { IPlayerDocument, PlayerModel, IPlayer } from "../../../Database/Models/Player/PlayerModel";
 import { Ship } from "../Ship/Ship";
 import { InventoryBuilder, PlayerInventory, TRegistered } from "./PlayerInventory";
 import { Skin } from "./Skin";
@@ -29,7 +29,7 @@ export class Player {
 	private blueprints: Set<string> = new Set();
 
 	private exp: number = 100;
-	private skillPoints: number[] = [0, 0, 0];
+	private skillPoints: [number, number, number] = [0, 0, 0];
 
 	//#region - EXP and Skills
 
@@ -672,10 +672,16 @@ export class Player {
 		return false;
 	}
 
-	public async applySkin(name: string, uri: string): Promise<void> {
-		const skin = this.allSkins.find((skin) => skin.SkinName == name && skin.SkinUri == uri);
+	/**
+	 * Applies the skin by its name. If the skin is not found, removes the skin.
+	 * @param name the name of the skin
+	 * @returns true if a new skin was applied, false if a skin was removed.
+	 */
+	public async applySkin(name: string): Promise<boolean> {
+		const skin = this.allSkins.find((skin) => skin.SkinName == name);
 		this.skin = skin;
 		await this.save();
+		return skin != undefined;
 	}
 
 	public async removeSkin(): Promise<void> {
@@ -709,28 +715,33 @@ export class Player {
 	//#endregion Character
 
 	public async save(): Promise<void> {
+		await PlayerModel.updateOne({ uId: this.uId }, this.raw());
+	}
+
+	public raw(): IPlayer {
 		const skinDb: { skinName: string; skinUri: string }[] = [];
 		this.allSkins.forEach((skin) => {
 			skinDb.push({ skinName: skin.SkinName, skinUri: skin.SkinUri });
 		});
-
-		await PlayerModel.updateOne(
-			{ uId: this.uId },
-			{
-				uId: this.uId,
-				inventory: this.inventory.GetGeneric(),
-				ship: { name: this.ship.stringifyName(), equipped: this.ship.stringifyAttachments() },
-				skin: { skinName: this.skin?.SkinName ?? "", skinUri: this.skin?.SkinUri ?? "" },
-				skins: skinDb,
-				location: this.location.Name,
-				blueprints: Array.from(this.blueprints),
-				exp: this.exp,
-				skills: this.skillPoints,
-			}
-		);
+		return {
+			uId: this.uId,
+			inventory: this.inventory.GetGeneric(),
+			ship: { name: this.ship.stringifyName(), equipped: this.ship.stringifyAttachments() },
+			skin: { skinName: this.skin?.SkinName ?? "", skinUri: this.skin?.SkinUri ?? "" },
+			skins: skinDb,
+			location: this.location.Name,
+			blueprints: Array.from(this.blueprints),
+			exp: this.exp,
+			skills: this.skillPoints,
+		};
 	}
 
-	public constructor(data: IPlayerDocument) {
+	/**
+	 * @param data IPlayer interface or JSON string of IPlayer data.
+	 */
+	public constructor(data: IPlayer | string) {
+		if (typeof data == "string") data = JSON.parse(data) as IPlayer;
+
 		this.uId = data.uId; //ID
 
 		const Ship = Server.Reg.ResolveShipFromName(data.ship.name);

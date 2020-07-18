@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.findOneOrCreate = exports.getCredits = exports.decrementCredits = exports.incrementCredits = exports.setLastUpdated = void 0;
+exports.findOneOrCreateRaw = exports.findOneOrCreate = exports.getCredits = exports.decrementCredits = exports.incrementCredits = exports.setLastUpdated = void 0;
 const Server_1 = require("../../../Server/Server");
 const PlayerInventory_1 = require("../../../GameTypes/GameAsset/Player/PlayerInventory");
 const Player_1 = require("../../../GameTypes/GameAsset/Player/Player");
@@ -51,7 +51,7 @@ exports.getCredits = getCredits;
 //Section: Static Methods (for model)
 async function findOneOrCreate({ uId }) {
     const record = await this.findOne({ uId: uId });
-    if (record) {
+    if (record != null) {
         return new Player_1.Player(record);
     }
     else {
@@ -68,3 +68,19 @@ async function findOneOrCreate({ uId }) {
     }
 }
 exports.findOneOrCreate = findOneOrCreate;
+async function findOneOrCreateRaw({ uId }) {
+    let record = await this.findOne({ uId: uId });
+    if (!record) {
+        record = await this.create({
+            uId: uId,
+            inventory: new PlayerInventory_1.InventoryBuilder().GenericBuild(),
+            ship: { name: Server_1.Server.Get().Registry.DefaultShip.Name, equipped: [] },
+            location: Server_1.Server.Reg.DefaultLocation.Name,
+            blueprints: new Array(),
+            exp: 30,
+            skills: [0, 0, 0],
+        });
+    }
+    return record;
+}
+exports.findOneOrCreateRaw = findOneOrCreateRaw;

@@ -98,7 +98,7 @@ class Battle {
         this.inactiveShip.startTurn();
     }
     //#endregion listeners
-    victory(victor) { }
+    victory(victor) {}
     /**
      * Given the player, gives the opposing player
      * @param player

@@ -136,14 +136,14 @@ export declare enum GameEvent {
     UNEQUIP = 8,
     MINE = 9,
     WARP = 10,
-    WARP_POLL = 11
+    WARP_POLL = 11,
 }
 export declare enum AttachmentType {
     GENERAL = 0,
     PRIMARY = 1,
     HEAVY = 2,
     SHIELD = 3,
-    MINER = 4
+    MINER = 4,
 }
 export declare type BattleFunction = (battle: IBattleData) => AttachmentReport | undefined;
 export declare type DamageTakenFunction = (friendly: Battleship, opponent: Battleship, dmg: number) => AttachmentReport | undefined;

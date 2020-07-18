@@ -45,10 +45,7 @@ export declare class ShipBuilder {
     private readonly options;
     constructor(options: ShipOptions);
     EnableSell(price: number): ShipBuilder;
-    SetMisc({ uri, subclass }: {
-        uri?: string;
-        subclass?: string;
-    }): this;
+    SetMisc({ uri, subclass }: { uri?: string; subclass?: string }): this;
     EnableBuildable(blueprint: Blueprint): ShipBuilder;
     SetStats(stats: ShipStats): ShipBuilder;
     SetWeapons(weapons: WeaponOptions): ShipBuilder;

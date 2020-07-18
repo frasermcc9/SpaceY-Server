@@ -14,11 +14,7 @@ export declare abstract class BaseStore implements IStoreUpdatable {
     protected readonly initCredits: number;
     protected readonly marketForces: boolean;
     protected marketForceSettings: IMarketForces;
-    set MarketForceSettings(options: {
-        randEffect?: number;
-        loTechEffect?: number;
-        hiTechEffect?: number;
-    });
+    set MarketForceSettings(options: { randEffect?: number; loTechEffect?: number; hiTechEffect?: number });
     constructor(collection: GameCollectionBase, options: BaseStoreOptions);
     setFaction(faction: Faction): void;
     /**
@@ -123,6 +119,6 @@ export declare enum StoreType {
     BASE = 0,
     MATERIAL_STORE = 1,
     SHIP_STORE = 2,
-    ATTACHMENT_STORE = 3
+    ATTACHMENT_STORE = 3,
 }
 export {};

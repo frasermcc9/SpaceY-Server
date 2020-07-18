@@ -21,8 +21,7 @@ exports.connect = () => {
     });
     database = Mongoose.connection;
     database.once("open", async () => {
-        if (Server_1.Server.Get().ConsoleLogging)
-            console.log("Connected to database");
+        if (Server_1.Server.Get().ConsoleLogging) console.log("Connected to database");
     });
     database.on("error", () => {
         console.warn("Error connecting to database");
@@ -34,6 +33,5 @@ exports.disconnect = () => {
         return;
     }
     Mongoose.disconnect();
-    if (Server_1.Server.Get().ConsoleLogging)
-        console.log("Closed database");
+    if (Server_1.Server.Get().ConsoleLogging) console.log("Closed database");
 };

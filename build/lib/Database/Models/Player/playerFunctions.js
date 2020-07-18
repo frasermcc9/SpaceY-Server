@@ -37,8 +37,7 @@ async function decrementCredits({ amount }) {
         await this.save();
         await this.setLastUpdated();
         return true;
-    }
-    else {
+    } else {
         return false;
     }
 }
@@ -53,8 +52,7 @@ async function findOneOrCreate({ uId }) {
     const record = await this.findOne({ uId: uId });
     if (record != null) {
         return new Player_1.Player(record);
-    }
-    else {
+    } else {
         const record = await this.create({
             uId: uId,
             inventory: new PlayerInventory_1.InventoryBuilder().GenericBuild(),

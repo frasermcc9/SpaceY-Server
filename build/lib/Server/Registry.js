@@ -40,7 +40,10 @@ class Registry {
         this.maxTechLevel = v;
     }
     get Spacemap() {
-        return util_1.util.throwUndefined(this.spacemap, "The spacemap has not been registered. Register a spacemap with registerSpacemap.");
+        return util_1.util.throwUndefined(
+            this.spacemap,
+            "The spacemap has not been registered. Register a spacemap with registerSpacemap."
+        );
     }
     registerSpacemap(spacemap) {
         this.spacemap = spacemap;
@@ -50,7 +53,9 @@ class Registry {
     }
     set DefaultShip(value) {
         if (this.defaultShip != BlankShip)
-            throw new Error("Default ship has already been set. It can only be set once. If this was intentional, use the 'ForceChangeDefaultShip()' method.");
+            throw new Error(
+                "Default ship has already been set. It can only be set once. If this was intentional, use the 'ForceChangeDefaultShip()' method."
+            );
         this.defaultShip = value;
     }
     set ForceChangeDefaultShip(value) {
@@ -61,7 +66,9 @@ class Registry {
     }
     set DefaultCredits(value) {
         if (this.defaultCredits != 0)
-            throw new Error("Default credits has already been set. It can only be set once. If this was intentional, use the 'ForceChangeDefaultCredits()' method.");
+            throw new Error(
+                "Default credits has already been set. It can only be set once. If this was intentional, use the 'ForceChangeDefaultCredits()' method."
+            );
         this.defaultCredits = value;
     }
     set ForceChangeDefaultCredits(value) {
@@ -120,8 +127,7 @@ class Registry {
     RegisterMaterials(data) {
         data.materials.forEach((material) => {
             this.materialRegistry.set(material.Name, material); //add to complete registry
-            if (material.IsMineable())
-                this.mineableMaterialRegistry.set(material.Name, material); //if mineable, add to mineable registry too
+            if (material.IsMineable()) this.mineableMaterialRegistry.set(material.Name, material); //if mineable, add to mineable registry too
         });
         return this;
     }
@@ -129,8 +135,7 @@ class Registry {
     //#region - Resolution Methods
     ResolveShipFromName(name) {
         const result = this.NameResolver(name, this.ShipRegistry);
-        if (!result)
-            return undefined;
+        if (!result) return undefined;
         return result;
     }
     ResolveShipsFromName(...names) {
@@ -142,8 +147,7 @@ class Registry {
     }
     ResolveAttachmentFromName(name) {
         const result = this.NameResolver(name, this.AttachmentRegistry);
-        if (!result)
-            return undefined;
+        if (!result) return undefined;
         return result;
     }
     ResolveAttachmentsFromName(...names) {
@@ -155,14 +159,12 @@ class Registry {
     }
     ResolveMaterialFromName(name) {
         const result = this.NameResolver(name, this.MaterialRegistry);
-        if (!result)
-            return undefined;
+        if (!result) return undefined;
         return result;
     }
     ResolveFactionFromName(name) {
         const result = this.NameResolver(name, this.FactionRegistry);
-        if (!result)
-            return undefined;
+        if (!result) return undefined;
         return result;
     }
     /**
@@ -174,10 +176,12 @@ class Registry {
         return registry.get(name);
     }
     AnyResolve(name) {
-        return (this.materialRegistry.get(name) ??
+        return (
+            this.materialRegistry.get(name) ??
             this.attachmentRegistry.get(name) ??
             this.factionRegistry.get(name) ??
-            this.shipRegistry.get(name));
+            this.shipRegistry.get(name)
+        );
     }
 }
 exports.Registry = Registry;

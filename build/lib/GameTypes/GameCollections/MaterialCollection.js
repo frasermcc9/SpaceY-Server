@@ -11,15 +11,12 @@ class MaterialCollection extends GameCollectionBase_1.GameCollectionBase {
         //Create map with all empty material values, but set defined materials to the given value.
         if (options?.data) {
             let data;
-            if (options.data instanceof Map)
-                data = Object.fromEntries(options.data);
-            else
-                data = options.data;
+            if (options.data instanceof Map) data = Object.fromEntries(options.data);
+            else data = options.data;
             Server_1.Server.Get().Registry.MaterialRegistry.forEach((material) => {
                 this.set(material.Name, data[material.Name] ?? 0);
             });
-        }
-        else {
+        } else {
             Server_1.Server.Get().Registry.MaterialRegistry.forEach((material) => {
                 this.set(material.Name, 0);
             });
@@ -28,8 +25,7 @@ class MaterialCollection extends GameCollectionBase_1.GameCollectionBase {
     /**@deprecated*/
     DataFromName(name) {
         const material = Server_1.Server.Get().Registry.MaterialRegistry.get(name);
-        if (material == undefined)
-            return { success: false, name: name, quantity: -1, material: null, error: MAT_NOT_FOUND };
+        if (material == undefined) return { success: false, name: name, quantity: -1, material: null, error: MAT_NOT_FOUND };
         const quantity = this.get(material.Name);
         return { success: true, name: material.Name, quantity: quantity || 0, material: material };
     }
@@ -40,8 +36,7 @@ class MaterialCollection extends GameCollectionBase_1.GameCollectionBase {
             const material = Server_1.Server.Get().Registry.MaterialRegistry.get(name);
             if (material == undefined) {
                 data.push({ success: false, name: name, quantity: -1, material: null, error: MAT_NOT_FOUND });
-            }
-            else {
+            } else {
                 const quantity = this.get(material.Name);
                 data.push({ success: true, name: material.Name, quantity: quantity || 0, material: material });
             }
@@ -82,11 +77,14 @@ class MaterialCollection extends GameCollectionBase_1.GameCollectionBase {
     }
     /** @override */
     GetCompatibleItems({ minRarity, maxRarity, minTech, maxTech }) {
-        return Server_1.Server.Reg.MaterialRegistry.filter((val) => val.Cost != undefined &&
-            val.TechLevel <= maxTech &&
-            val.TechLevel >= minTech &&
-            val.GetMaterialRarity() <= maxRarity &&
-            val.GetMaterialRarity() >= minRarity);
+        return Server_1.Server.Reg.MaterialRegistry.filter(
+            (val) =>
+                val.Cost != undefined &&
+                val.TechLevel <= maxTech &&
+                val.TechLevel >= minTech &&
+                val.GetMaterialRarity() <= maxRarity &&
+                val.GetMaterialRarity() >= minRarity
+        );
     }
     /** @override */
     GenerateWeights(items, centralRarity, minRarity, maxRarity) {

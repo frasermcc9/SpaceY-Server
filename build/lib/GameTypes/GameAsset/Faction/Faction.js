@@ -34,8 +34,7 @@ class FactionBuilder {
     using the builder methods is suggested.*/
     constructor(options) {
         this.options = options;
-        if (options.cost != undefined || options.blueprint != undefined)
-            throw new TypeError("");
+        if (options.cost != undefined || options.blueprint != undefined) throw new TypeError("");
         this.options.soldShips = options.soldShips ?? [];
         this.options.usedShips = options.usedShips ?? [];
         this.options.soldAttachments = options.soldAttachments ?? [];
@@ -47,8 +46,7 @@ class FactionBuilder {
      * @param ship
      */
     addSoldShips(ship) {
-        if (!Array.isArray(ship))
-            ship = [ship];
+        if (!Array.isArray(ship)) ship = [ship];
         this.options.soldShips?.push(...ship);
         this.options.usedShips?.push(...ship);
         return this;
@@ -62,8 +60,7 @@ class FactionBuilder {
      * @param ship
      */
     addUsedShips(ship) {
-        if (!Array.isArray(ship))
-            ship = [ship];
+        if (!Array.isArray(ship)) ship = [ship];
         this.options.usedShips?.push(...ship);
         return this;
     }
@@ -74,8 +71,7 @@ class FactionBuilder {
      * @param attachment
      */
     addSoldAttachments(attachment) {
-        if (!Array.isArray(attachment))
-            attachment = [attachment];
+        if (!Array.isArray(attachment)) attachment = [attachment];
         this.options.soldAttachments?.push(...attachment);
         this.options.usedAttachments?.push(...attachment);
         return this;
@@ -89,8 +85,7 @@ class FactionBuilder {
      * @param attachment
      */
     addUsedAttachments(attachment) {
-        if (!Array.isArray(attachment))
-            attachment = [attachment];
+        if (!Array.isArray(attachment)) attachment = [attachment];
         this.options.usedAttachments?.push(...attachment);
         return this;
     }

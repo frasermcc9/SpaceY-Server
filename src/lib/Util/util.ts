@@ -1,63 +1,63 @@
 export class util {
-	public static hashCode(str: string): number {
-		var hash = 0,
-			i,
-			chr;
-		for (i = 0; i < str.length; i++) {
-			chr = str.charCodeAt(i);
-			hash = (hash << 5) - hash + chr;
-			hash |= 0; // Convert to 32bit integer
-		}
-		return hash;
-	}
+    public static hashCode(str: string): number {
+        var hash = 0,
+            i,
+            chr;
+        for (i = 0; i < str.length; i++) {
+            chr = str.charCodeAt(i);
+            hash = (hash << 5) - hash + chr;
+            hash |= 0; // Convert to 32bit integer
+        }
+        return hash;
+    }
 
-	public static seededRandom(min: number, max: number, seed: number) {
-		max = max || 1;
-		min = min || 0;
-		seed = (seed * 9301 + 49297) % 233280;
-		var rnd = seed / 233280;
-		return min + rnd * (max - min);
-	}
+    public static seededRandom(min: number, max: number, seed: number) {
+        max = max || 1;
+        min = min || 0;
+        seed = (seed * 9301 + 49297) % 233280;
+        var rnd = seed / 233280;
+        return min + rnd * (max - min);
+    }
 
-	private static currentSeed = 0;
-	public static *seededGenerator(seed?: number) {
-		for (;;) {
-			if (seed != undefined) util.currentSeed = seed;
-			util.currentSeed = (util.currentSeed * 9301 + 49297) % 233280;
-			yield util.currentSeed / 233280;
-		}
-	}
+    private static currentSeed = 0;
+    public static *seededGenerator(seed?: number) {
+        for (;;) {
+            if (seed != undefined) util.currentSeed = seed;
+            util.currentSeed = (util.currentSeed * 9301 + 49297) % 233280;
+            yield util.currentSeed / 233280;
+        }
+    }
 
-	/**
-	 * Generates a random number between min and max (inclusive)
-	 * @param min minimum number
-	 * @param max maximum number
-	 */
-	public static randBetween(min: number, max: number) {
-		return Math.floor(Math.random() * (max - min + 1) + min);
-	}
+    /**
+     * Generates a random number between min and max (inclusive)
+     * @param min minimum number
+     * @param max maximum number
+     */
+    public static randBetween(min: number, max: number) {
+        return Math.floor(Math.random() * (max - min + 1) + min);
+    }
 
-	public static chooseFrom<T>(arr: T[]): { item: T; index: number } {
-		let i = Math.floor(Math.random() * arr.length);
-		var a = {
-			item: arr[i],
-			index: i,
-		};
-		return a;
-	}
+    public static chooseFrom<T>(arr: T[]): { item: T; index: number } {
+        let i = Math.floor(Math.random() * arr.length);
+        var a = {
+            item: arr[i],
+            index: i,
+        };
+        return a;
+    }
 
-	public static chooseFromSeeded<T>(arr: T[], seed: number): { item: T; index: number } {
-		seed = Math.abs(seed);
-		let i = Math.round(this.seededRandom(0, arr.length - 1, seed));
-		var a = {
-			item: arr[i],
-			index: i,
-		};
-		return a;
-	}
+    public static chooseFromSeeded<T>(arr: T[], seed: number): { item: T; index: number } {
+        seed = Math.abs(seed);
+        let i = Math.round(this.seededRandom(0, arr.length - 1, seed));
+        var a = {
+            item: arr[i],
+            index: i,
+        };
+        return a;
+    }
 
-	public static throwUndefined<K>(variable: K | undefined, message?: string): K {
-		if (variable == undefined) throw new Error(message ?? `Variable ${variable} is undefined`);
-		return variable;
-	}
+    public static throwUndefined<K>(variable: K | undefined, message?: string): K {
+        if (variable == undefined) throw new Error(message ?? `Variable ${variable} is undefined`);
+        return variable;
+    }
 }

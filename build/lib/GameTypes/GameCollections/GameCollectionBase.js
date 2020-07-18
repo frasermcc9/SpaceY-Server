@@ -13,8 +13,7 @@ class GameCollectionBase extends Collections_1.MapCollection {
      * @returns codes: 1-Success, 2-Item Not Found, 3-Not Enough Resources
      */
     ReduceToNonNegative(itemName, quantity) {
-        if (quantity < 0)
-            throw new TypeError("A negative number has been passed when " + this.ReduceToNonNegative.name + " was called");
+        if (quantity < 0) throw new TypeError("A negative number has been passed when " + this.ReduceToNonNegative.name + " was called");
         const amountOwned = this.get(itemName);
         if (amountOwned == undefined) {
             return { success: false, code: 2, error: "The given item could not be found.", amount: 0 };
@@ -37,8 +36,7 @@ class GameCollectionBase extends Collections_1.MapCollection {
      * @returns codes: 1-Success, 2-Item Not Found
      */
     Increase(itemName, quantity) {
-        if (quantity < 0)
-            throw new TypeError("A negative number has been passed when " + this.Increase.name + " was called");
+        if (quantity < 0) throw new TypeError("A negative number has been passed when " + this.Increase.name + " was called");
         const amountOwned = this.get(itemName);
         if (amountOwned == undefined) {
             return { success: false, code: 2, error: "The given item could not be found.", amount: 0 };
@@ -52,11 +50,9 @@ class GameCollectionBase extends Collections_1.MapCollection {
      * @param quantity amount to see if reduction is possible. **MUST BE NEGATIVE FOR REDUCTION**
      */
     SufficientToDecrease(itemName, quantity) {
-        if (quantity > 0)
-            return true;
+        if (quantity > 0) return true;
         const amountOwned = this.get(itemName);
-        if (amountOwned != undefined && amountOwned >= Math.abs(quantity))
-            return true;
+        if (amountOwned != undefined && amountOwned >= Math.abs(quantity)) return true;
         return false;
     }
     StrictSumCollection(gameCollection) {
@@ -72,8 +68,7 @@ class GameCollectionBase extends Collections_1.MapCollection {
             return;
         }
         gameCollection.forEach((val, key) => {
-            if (val < 0)
-                throw new Error(`Negative number '${val}' used in SumCollection function.`);
+            if (val < 0) throw new Error(`Negative number '${val}' used in SumCollection function.`);
             if (this.get(key) == undefined)
                 throw new Error(`Item with name ${key} does not exist when used in StrictSumCollection function.`);
         });
@@ -91,10 +86,8 @@ class GameCollectionBase extends Collections_1.MapCollection {
             return;
         }
         gameCollection.forEach((val, key) => {
-            if (val < 0)
-                throw new Error(`Negative number '${val}' used in SumCollection function for ${key}.`);
-            if (this.get(key) == undefined)
-                this.set(key, 0);
+            if (val < 0) throw new Error(`Negative number '${val}' used in SumCollection function for ${key}.`);
+            if (this.get(key) == undefined) this.set(key, 0);
         });
         gameCollection.forEach((val, key) => {
             const StartValue = this.get(key);
@@ -108,15 +101,11 @@ class GameCollectionBase extends Collections_1.MapCollection {
     StrictSubtractCollection(gameCollection) {
         const Failed = new Array();
         gameCollection.forEach((val, key) => {
-            if (val < 0)
-                throw new Error(`Negative number '${val}' used in SubtractCollection function for ${key}.`);
-            if (this.get(key) == undefined)
-                throw new Error(`Item with name ${key} does not exist when used in SumCollection function.`);
-            if (this.get(key) < val)
-                Failed.push(key);
+            if (val < 0) throw new Error(`Negative number '${val}' used in SubtractCollection function for ${key}.`);
+            if (this.get(key) == undefined) throw new Error(`Item with name ${key} does not exist when used in SumCollection function.`);
+            if (this.get(key) < val) Failed.push(key);
         });
-        if (Failed.length > 0)
-            return { code: 403, failures: Failed };
+        if (Failed.length > 0) return { code: 403, failures: Failed };
         gameCollection.forEach((val, key) => {
             const InputValue = this.get(key);
             this.set(key, InputValue - val);
@@ -130,15 +119,11 @@ class GameCollectionBase extends Collections_1.MapCollection {
     SubtractCollection(gameCollection) {
         const Failed = new Array();
         gameCollection.forEach((val, key) => {
-            if (val < 0)
-                throw new Error(`Negative number '${val}' used in SubtractCollection function for ${key}.`);
-            if (this.get(key) == undefined)
-                this.set(key, 0);
-            if (this.get(key) < val)
-                Failed.push(key);
+            if (val < 0) throw new Error(`Negative number '${val}' used in SubtractCollection function for ${key}.`);
+            if (this.get(key) == undefined) this.set(key, 0);
+            if (this.get(key) < val) Failed.push(key);
         });
-        if (Failed.length > 0)
-            return { code: 403, failures: Failed };
+        if (Failed.length > 0) return { code: 403, failures: Failed };
         gameCollection.forEach((val, key) => {
             const InputValue = this.get(key);
             this.set(key, InputValue - val);
@@ -150,20 +135,15 @@ class GameCollectionBase extends Collections_1.MapCollection {
         let total = 0;
         this.forEach((amount, name) => {
             const Item = main_1.Client.Get().Registry.AnyResolve(name);
-            if (Item != undefined)
-                total += (new AssetDecorators_1.SellableDecorator(Item).PriceData.cost || 0) * amount;
+            if (Item != undefined) total += (new AssetDecorators_1.SellableDecorator(Item).PriceData.cost || 0) * amount;
         });
         return total;
     }
     DetailedGet(name) {
-        if (name instanceof GameAsset_1.GameAsset)
-            return this.DetailGetHelper([name.Name])[0];
-        else if (typeof name == "string")
-            return this.DetailGetHelper([name])[0];
-        else if (name.every((el) => typeof el == "string"))
-            return this.DetailGetHelper(name);
-        else
-            return this.DetailGetHelper(name.map((el) => el.Name));
+        if (name instanceof GameAsset_1.GameAsset) return this.DetailGetHelper([name.Name])[0];
+        else if (typeof name == "string") return this.DetailGetHelper([name])[0];
+        else if (name.every((el) => typeof el == "string")) return this.DetailGetHelper(name);
+        else return this.DetailGetHelper(name.map((el) => el.Name));
     }
     DetailGetHelper(names) {
         let data = new Array();
@@ -171,8 +151,7 @@ class GameCollectionBase extends Collections_1.MapCollection {
             const Item = main_1.Client.Reg.AnyResolve(name);
             if (Item == undefined) {
                 data.push({ success: false, code: 404 });
-            }
-            else {
+            } else {
                 const Quantity = this.get(Item.Name);
                 data.push({ success: true, quantity: Quantity ?? 0, item: Item, code: 200 });
             }
@@ -194,12 +173,8 @@ class GameCollectionBase extends Collections_1.MapCollection {
         const Weights = this.GenerateWeights(ItemNames, options.centralRarity, options.minRarity, options.maxRarity);
         let FlatArray = new Array();
         //Generates the flat array of probabilities. See benchmarks for why this method was used
-        if (options.rarity)
-            for (let i = 0; i < ItemNames.length; ++i)
-                for (let j = 0; j < Weights[i]; ++j)
-                    FlatArray.push(ItemNames[i]);
-        else
-            FlatArray = CompatibleItems.array();
+        if (options.rarity) for (let i = 0; i < ItemNames.length; ++i) for (let j = 0; j < Weights[i]; ++j) FlatArray.push(ItemNames[i]);
+        else FlatArray = CompatibleItems.array();
         //Generate the collection
         do {
             const Selected = FlatArray[~~(this.RandomNumber() * FlatArray.length)];

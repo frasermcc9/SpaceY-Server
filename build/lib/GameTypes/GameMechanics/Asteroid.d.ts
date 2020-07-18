@@ -33,7 +33,11 @@ export declare class Asteroid extends MaterialCollection {
      * 200 - success<br />  \
      * 403 - on cooldown
      */
-    mine(player: Player, percent?: number, cooldownOverride?: boolean): Promise<{
+    mine(
+        player: Player,
+        percent?: number,
+        cooldownOverride?: boolean
+    ): Promise<{
         code: 200 | 403;
         cooldown?: number;
     }>;
@@ -71,8 +75,6 @@ export declare class AsteroidBuilder {
     constructor(name: string);
     setCooldown(seconds: number): this;
     addTag(tag: string): this;
-    BuildRandom({ value }: {
-        value: number;
-    }): Asteroid;
+    BuildRandom({ value }: { value: number }): Asteroid;
     BuildCustom(materialCollection: IMaterialCollectionOptions): Asteroid;
 }

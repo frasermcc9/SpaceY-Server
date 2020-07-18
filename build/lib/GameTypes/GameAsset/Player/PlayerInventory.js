@@ -18,8 +18,7 @@ class PlayerInventory {
             this.reputation = options.reputationOptions;
             this.credits = options.credits ?? Server_1.Server.Reg.DefaultCredits;
             this.tokens = options.tokens ?? 0;
-        }
-        else {
+        } else {
             throw new Error("Invalid inventory creation.");
         }
     }
@@ -42,16 +41,13 @@ class PlayerInventory {
         return this.tokens;
     }
     removeTokens({ amount }) {
-        if (amount < 0)
-            throw new Error("Cannot remove negative tokens");
-        if (this.tokens < amount)
-            return false;
+        if (amount < 0) throw new Error("Cannot remove negative tokens");
+        if (this.tokens < amount) return false;
         this.tokens -= amount;
         return true;
     }
     addTokens({ amount }) {
-        if (amount < 0)
-            throw new Error("Cannot add negative tokens");
+        if (amount < 0) throw new Error("Cannot add negative tokens");
         this.tokens += amount;
         return true;
     }
@@ -61,8 +57,7 @@ class PlayerInventory {
         if (checkAmount >= 0) {
             this.credits = checkAmount;
             return true;
-        }
-        else {
+        } else {
             return false;
         }
     }
@@ -79,7 +74,7 @@ class PlayerInventory {
 }
 exports.PlayerInventory = PlayerInventory;
 class InventoryBuilder {
-    constructor() { }
+    constructor() {}
     SetMaterials(matOptions) {
         this.materials = matOptions;
         return this;

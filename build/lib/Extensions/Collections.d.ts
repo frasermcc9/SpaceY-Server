@@ -50,5 +50,4 @@ export declare class MapCollection<K, V> extends Map<K, V> {
     filter(fn: (value: V, key: K, collection: this) => boolean): this;
     filter<T>(fn: (this: T, value: V, key: K, collection: this) => boolean, thisArg: T): this;
 }
-export declare class UniqueCollection<K> extends Set<K> {
-}
+export declare class UniqueCollection<K> extends Set<K> {}

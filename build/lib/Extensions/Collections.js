@@ -15,28 +15,22 @@ class MapCollection extends Map {
     }
     random(amount) {
         let arr = this.array();
-        if (typeof amount === "undefined")
-            return arr[Math.floor(Math.random() * arr.length)];
-        if (arr.length === 0 || !amount)
-            return [];
+        if (typeof amount === "undefined") return arr[Math.floor(Math.random() * arr.length)];
+        if (arr.length === 0 || !amount) return [];
         arr = arr.slice();
         return Array.from({ length: amount }, () => arr.splice(Math.floor(Math.random() * arr.length), 1)[0]);
     }
     seededRandom(seed, amount) {
         let arr = this.array();
-        if (typeof amount === "undefined")
-            return util_1.util.chooseFromSeeded(arr, seed).item;
-        if (arr.length === 0 || !amount)
-            return [];
+        if (typeof amount === "undefined") return util_1.util.chooseFromSeeded(arr, seed).item;
+        if (arr.length === 0 || !amount) return [];
         arr = arr.slice();
         return Array.from({ length: amount }, () => arr.splice(Math.floor(util_1.util.seededRandom(0, 1, seed) * arr.length), 1)[0]);
     }
     randomKey(amount) {
         let arr = this.keyArray();
-        if (typeof amount === "undefined")
-            return arr[Math.floor(Math.random() * arr.length)];
-        if (arr.length === 0 || !amount)
-            return [];
+        if (typeof amount === "undefined") return arr[Math.floor(Math.random() * arr.length)];
+        if (arr.length === 0 || !amount) return [];
         arr = arr.slice();
         return Array.from({ length: amount }, () => arr.splice(Math.floor(Math.random() * arr.length), 1)[0]);
     }
@@ -48,8 +42,7 @@ class MapCollection extends Map {
      * @returns {Array}
      */
     array() {
-        if (!this._array || this._array.length !== this.size)
-            this._array = [...this.values()];
+        if (!this._array || this._array.length !== this.size) this._array = [...this.values()];
         return this._array;
     }
     /**
@@ -60,13 +53,11 @@ class MapCollection extends Map {
      * @returns {Array}
      */
     keyArray() {
-        if (!this._keyArray || this._keyArray.length !== this.size)
-            this._keyArray = [...this.keys()];
+        if (!this._keyArray || this._keyArray.length !== this.size) this._keyArray = [...this.keys()];
         return this._keyArray;
     }
     map(fn, thisArg) {
-        if (typeof thisArg !== "undefined")
-            fn = fn.bind(thisArg);
+        if (typeof thisArg !== "undefined") fn = fn.bind(thisArg);
         const iter = this.entries();
         return Array.from({ length: this.size }, () => {
             const [key, value] = iter.next().value;
@@ -74,17 +65,14 @@ class MapCollection extends Map {
         });
     }
     filter(fn, thisArg) {
-        if (typeof thisArg !== 'undefined')
-            fn = fn.bind(thisArg);
+        if (typeof thisArg !== "undefined") fn = fn.bind(thisArg);
         const results = new MapCollection();
         for (const [key, val] of this) {
-            if (fn(val, key, this))
-                results.set(key, val);
+            if (fn(val, key, this)) results.set(key, val);
         }
         return results;
     }
 }
 exports.MapCollection = MapCollection;
-class UniqueCollection extends Set {
-}
+class UniqueCollection extends Set {}
 exports.UniqueCollection = UniqueCollection;

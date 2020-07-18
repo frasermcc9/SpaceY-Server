@@ -31,8 +31,7 @@ class Server {
         return this.Server;
     }
     static Create(serverOptions) {
-        if (this.Server)
-            return; //throw new Error("A client has already been made. Please use Client.Get() to access it.");
+        if (this.Server) return; //throw new Error("A client has already been made. Please use Client.Get() to access it.");
         this.Server = new Server(serverOptions);
     }
     static Destroy() {

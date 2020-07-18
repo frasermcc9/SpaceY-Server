@@ -143,7 +143,8 @@ exports.MaterialGenerator = () => {
             .Build(),
         new Material_1.MaterialBuilder({
             name: "Titanium Ore",
-            description: "A valuable metal with very high strength and resistance to corrosion. Heavily used in the manufacturing of armoured plating.",
+            description:
+                "A valuable metal with very high strength and resistance to corrosion. Heavily used in the manufacturing of armoured plating.",
             techLevel: 2,
             rarity: 6,
             cost: 715,

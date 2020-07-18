@@ -6,15 +6,13 @@ const util_1 = require("../../../Util/util");
 class Blueprint extends MaterialCollection_1.MaterialCollection {
     constructor(materials, key) {
         super({ data: materials });
-        if (key)
-            this.seed = util_1.util.hashCode(key);
+        if (key) this.seed = util_1.util.hashCode(key);
     }
     RandomNumber() {
         return Math.abs(this.predictableRandom(0, 1));
     }
     predictableRandom(min, max) {
-        if (this.seed == undefined)
-            throw new TypeError("Undefined seed for building defined blueprint.");
+        if (this.seed == undefined) throw new TypeError("Undefined seed for building defined blueprint.");
         max = max ?? 1;
         min = min ?? 0;
         this.seed = (this.seed * 9301 + 49297) % 233280;

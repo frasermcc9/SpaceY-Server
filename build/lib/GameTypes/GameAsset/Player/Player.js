@@ -17,23 +17,29 @@ class Player {
         this.blueprints = new Set();
         this.exp = 100;
         this.skillPoints = [0, 0, 0];
-        if (typeof data == "string")
-            data = JSON.parse(data);
+        if (typeof data == "string") data = JSON.parse(data);
         this.uId = data.uId; //ID
         const Ship = Server_1.Server.Reg.ResolveShipFromName(data.ship.name);
         if (Ship == undefined)
             throw new Error(`Mismatch between database and server. No item ${data.ship} exists in server, but does in db for ${this.uId}.`);
         this.ship = new ShipWrapper_1.ShipWrapper(Ship, this);
-        this.location = util_1.util.throwUndefined(Server_1.Server.Reg.Spacemap.resolveNodeFromName(data.location), `Mismatch between database and server for location ${data.location}`);
+        this.location = util_1.util.throwUndefined(
+            Server_1.Server.Reg.Spacemap.resolveNodeFromName(data.location),
+            `Mismatch between database and server for location ${data.location}`
+        );
         this.blueprints = new Set(data.blueprints);
         this.exp = data.exp;
         this.skillPoints = data.skills;
         data.ship.equipped.forEach((attachmentName) => {
             const result = this.ship.addAttachment(attachmentName);
             if (result.code == 404)
-                throw new Error(`Mismatch between database and server. No such item ${attachmentName} exists despite existing in database for id ${this.uId}.`);
+                throw new Error(
+                    `Mismatch between database and server. No such item ${attachmentName} exists despite existing in database for id ${this.uId}.`
+                );
             if (result.code == 403)
-                throw new Error(`Mismatch between database and server. Player '${this.uId}' has more items equipped in database than possible on ship.`);
+                throw new Error(
+                    `Mismatch between database and server. Player '${this.uId}' has more items equipped in database than possible on ship.`
+                );
         });
         const skin = new Skin_1.Skin(data.skin?.skinName ?? "", data.skin?.skinUri ?? "");
         this.skin = skin.SkinName == "" ? undefined : skin;
@@ -89,7 +95,7 @@ class Player {
      * @returns the level that the player would be
      */
     static inverseExpFunction(x) {
-        for (let i = 0;; i++) {
+        for (let i = 0; ; i++) {
             if (this.expFunction(i) > x) {
                 return i - 1;
             }
@@ -121,8 +127,7 @@ class Player {
      * @returns true if point was allocated successfully
      */
     async addSkillPoint(type) {
-        if (this.unspentSkillPoints < 1)
-            return false;
+        if (this.unspentSkillPoints < 1) return false;
         switch (type) {
             case "Weapons":
                 this.skillPoints[0] += 1;
@@ -146,7 +151,9 @@ class Player {
     //#region - Credits
     async CreditsIncrement({ amount, implicitSave = true }) {
         if (amount < 0)
-            throw new Error("Only positive values can be passed to the incrementCredits method. Consider using decrement to remove credits.");
+            throw new Error(
+                "Only positive values can be passed to the incrementCredits method. Consider using decrement to remove credits."
+            );
         const success = this.inventory.AddCredits({ amount: amount });
         if (success && implicitSave) {
             await this.save();
@@ -199,10 +206,8 @@ class Player {
      */
     async MaterialEdit(name, quantity) {
         let result;
-        if (quantity >= 0)
-            result = this.MaterialIncrement(name, quantity);
-        else
-            result = this.MaterialDecrement(name, Math.abs(quantity));
+        if (quantity >= 0) result = this.MaterialIncrement(name, quantity);
+        else result = this.MaterialDecrement(name, Math.abs(quantity));
         return result;
     }
     //#endregion
@@ -233,10 +238,8 @@ class Player {
      */
     async ShipEdit(name, quantity) {
         let result;
-        if (quantity >= 0)
-            result = this.ShipDecrement(name, quantity);
-        else
-            result = this.ShipDecrement(name, Math.abs(quantity));
+        if (quantity >= 0) result = this.ShipDecrement(name, quantity);
+        else result = this.ShipDecrement(name, Math.abs(quantity));
         return result;
     }
     //#endregion - Ships
@@ -267,10 +270,8 @@ class Player {
      */
     async AttachmentEdit(name, quantity) {
         let result;
-        if (quantity >= 0)
-            result = this.AttachmentIncrement(name, quantity);
-        else
-            result = this.AttachmentDecrement(name, Math.abs(quantity));
+        if (quantity >= 0) result = this.AttachmentIncrement(name, quantity);
+        else result = this.AttachmentDecrement(name, Math.abs(quantity));
         return result;
     }
     //#endregion - Attachments
@@ -301,10 +302,8 @@ class Player {
      */
     async ReputationEdit(name, quantity) {
         let result;
-        if (quantity >= 0)
-            result = this.ReputationIncrement(name, quantity);
-        else
-            result = this.ReputationDecrement(name, Math.abs(quantity));
+        if (quantity >= 0) result = this.ReputationIncrement(name, quantity);
+        else result = this.ReputationDecrement(name, Math.abs(quantity));
         return result;
     }
     //#endregion - Reputation
@@ -318,8 +317,7 @@ class Player {
      */
     async InventoryIncrement(registryName, name, quantity) {
         const result = this.inventory[registryName].Increase(name, quantity);
-        if (result.success)
-            await this.save();
+        if (result.success) await this.save();
         return result;
     }
     /**
@@ -331,8 +329,7 @@ class Player {
      */
     async InventoryDecrement(registryName, name, quantity) {
         const result = this.inventory[registryName].ReduceToNonNegative(name, quantity);
-        if (result.success)
-            await this.save();
+        if (result.success) await this.save();
         return result;
     }
     async InventorySum(inventoryName, gameCollection) {
@@ -340,10 +337,8 @@ class Player {
             this.inventory[inventoryName].SumCollection(gameCollection);
             await this.save();
             return true;
-        }
-        catch (e) {
-            if (Server_1.Server.Get().ConsoleLogging)
-                console.warn(e);
+        } catch (e) {
+            if (Server_1.Server.Get().ConsoleLogging) console.warn(e);
             return false;
         }
     }
@@ -370,10 +365,8 @@ class Player {
         //loops through registries. If one is found, then call inventory functions on that type
         for (let i = 0; i < 4; i++)
             if (Reg[Player.RegistryTypes[i]].get(name) != undefined) {
-                if (quantity >= 0)
-                    result = this.InventoryIncrement(Player.InventoryTypes[i], name, quantity);
-                else
-                    result = this.InventoryDecrement(Player.InventoryTypes[i], name, Math.abs(quantity));
+                if (quantity >= 0) result = this.InventoryIncrement(Player.InventoryTypes[i], name, quantity);
+                else result = this.InventoryDecrement(Player.InventoryTypes[i], name, Math.abs(quantity));
                 return result;
             }
         return { success: false, amount: 0, code: 2, error: "Could not find this item in any registry" };
@@ -388,8 +381,7 @@ class Player {
      */
     async BatchAutoInventoryEdit(pairs) {
         const ValidTest = this.BatchSufficientToDecrease(pairs);
-        if (!ValidTest.success)
-            return { success: false, code: ValidTest.code };
+        if (!ValidTest.success) return { success: false, code: ValidTest.code };
         const Reg = Server_1.Server.Get().Registry;
         for (const pair of pairs) {
             const name = pair.name;
@@ -399,19 +391,16 @@ class Player {
                 if (Reg[Player.RegistryTypes[i]].get(name) != undefined) {
                     if (quantity >= 0) {
                         intermediateResult = this.inventory[Player.InventoryTypes[i]].Increase(name, quantity);
-                    }
-                    else {
+                    } else {
                         intermediateResult = this.inventory[Player.InventoryTypes[i]].ReduceToNonNegative(name, Math.abs(quantity));
                     }
                     if (intermediateResult.success == true) {
                         break;
-                    }
-                    else {
+                    } else {
                         return { success: false, code: intermediateResult.code };
                     }
                 }
-                if (i == 3)
-                    return { success: false, code: 2 };
+                if (i == 3) return { success: false, code: 2 };
             }
         }
         await this.save();
@@ -472,8 +461,7 @@ class Player {
                     quantity.push(this.inventory[Player.InventoryTypes[i]].get(name) || 0);
                     break;
                 }
-                if (i == 3)
-                    quantity.push(0);
+                if (i == 3) quantity.push(0);
             }
         }
         return quantity;
@@ -484,8 +472,7 @@ class Player {
     async setShip(ship) {
         if (typeof ship == "string") {
             const candidate = Server_1.Server.Reg.ResolveShipFromName(ship);
-            if (candidate == undefined)
-                throw new TypeError(`Ship with name ${ship} does not exist in registry, despite trying to set it`);
+            if (candidate == undefined) throw new TypeError(`Ship with name ${ship} does not exist in registry, despite trying to set it`);
             ship = candidate;
         }
         const oldItems = this.ship.changeShip(ship);
@@ -509,16 +496,14 @@ class Player {
     }
     async equipAttachment(attachment) {
         const inInventory = this.inventory.Attachments.get(attachment.toString());
-        if (inInventory == undefined || inInventory < 1)
-            return { code: 403 };
+        if (inInventory == undefined || inInventory < 1) return { code: 403 };
         const addResult = this.ship.addAttachment(attachment);
         if (addResult.code == 200) {
             if ((await this.AttachmentDecrement(attachment.toString(), 1)).code != 1)
                 throw new Error("Server error when decrementing player attachments");
             await this.save();
             return { code: 200 };
-        }
-        else {
+        } else {
             return addResult;
         }
     }
@@ -561,8 +546,7 @@ class Player {
     }
     async travelTo(node) {
         node = util_1.util.throwUndefined(Server_1.Server.Reg.Spacemap.resolveNodeFromName(node));
-        if (!this.adjacentLocations().includes(node))
-            return false;
+        if (!this.adjacentLocations().includes(node)) return false;
         if (this.getShipWrapper().pollWarp(node.RequiredWarp)) {
             this.location = node;
             this.getShipWrapper().warp(node.RequiredWarp);
@@ -585,8 +569,7 @@ class Player {
      * @param item
      */
     async discoverBlueprint(item) {
-        if (this.blueprints.has(item.toString()))
-            return false;
+        if (this.blueprints.has(item.toString())) return false;
         this.blueprints.add(item.toString());
         await this.save();
         return true;
@@ -596,8 +579,7 @@ class Player {
     get PlayerImage() {
         if (this.skin != undefined) {
             return this.skin.SkinUri;
-        }
-        else {
+        } else {
             return this.ship.Uri;
         }
     }
@@ -634,7 +616,11 @@ class Player {
             tokens: this.inventory.Tokens,
             skills: this.skillPoints,
             image: this.PlayerImage,
-            bestFaction: Server_1.Server.Reg.ResolveFactionFromName(this.inventory.Reputation.keyArray().reduce((a, b) => this.inventory.Reputation.get(a) > this.inventory.Reputation.get(b) ? a : b)),
+            bestFaction: Server_1.Server.Reg.ResolveFactionFromName(
+                this.inventory.Reputation.keyArray().reduce((a, b) =>
+                    this.inventory.Reputation.get(a) > this.inventory.Reputation.get(b) ? a : b
+                )
+            ),
             ship: this.ship,
             level: this.Level,
             location: this.location,

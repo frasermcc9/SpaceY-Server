@@ -10,16 +10,16 @@ import { Spacemap } from "../lib/GameTypes/GameSpacemap/Spacemap";
 require("must/register");
 
 xit("Should run the integration test", () => {
-	Client.Destroy();
-	Client.Create({
-		databaseName: "testSpaceY",
-		databaseUri: "mongodb://localhost:27017",
-		defaultCredits: DEFAULT_CREDITS,
-		consoleLogging: false,
-		maximumRarity: 10,
-		maximumTechLevel: 10,
-	});
-	generateIntegrationSet();
+    Client.Destroy();
+    Client.Create({
+        databaseName: "testSpaceY",
+        databaseUri: "mongodb://localhost:27017",
+        defaultCredits: DEFAULT_CREDITS,
+        consoleLogging: false,
+        maximumRarity: 10,
+        maximumTechLevel: 10,
+    });
+    generateIntegrationSet();
 
-	//Client.Reg.ShipRegistry.forEach((el) => console.log(el));
+    //Client.Reg.ShipRegistry.forEach((el) => console.log(el));
 });

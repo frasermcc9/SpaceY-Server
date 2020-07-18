@@ -76,9 +76,7 @@ export class SocketManager extends EventEmitter {
 
         //#region Buy
         //TODO implement store events
-        client.on("buy", async ([playerData]: [IPlayer]) => {
-            
-        });
+        client.on("buy", async ([playerData]: [IPlayer]) => {});
         //#endregion
     }
 

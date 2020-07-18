@@ -21,21 +21,23 @@ class Ship extends GameAsset_1.GameAsset {
             .set(Attachment_1.AttachmentType.SHIELD, options.shieldCap ?? 0);
         this.imageUri = options.imageUri ?? "";
         this.maxTech = [...this.AttachmentCaps.values()].reduce((acc, cur) => acc + cur, 0) * this.TechLevel + 3;
-        this.strength = Math.round((16000 * this.TechLevel +
-            575 * this.baseHp +
-            450 * this.baseShield +
-            1500 * this.baseEnergy[0] +
-            1500 * this.baseEnergy[1] +
-            1500 * this.baseEnergy[2] +
-            50 * this.baseCargo +
-            12000 * this.baseHandling +
-            25000 * (options.primaryCap ?? 0) +
-            20000 * (options.shieldCap ?? 0) +
-            15000 * (options.heavyCap ?? 0) +
-            7000 * (options.minerCap ?? 0) +
-            15000 * (options.generalCap ?? 0) +
-            1000 * ([...this.AttachmentCaps.values()].reduce((acc, cur) => acc + cur, 0) * this.TechLevel + 3)) /
-            1000);
+        this.strength = Math.round(
+            (16000 * this.TechLevel +
+                575 * this.baseHp +
+                450 * this.baseShield +
+                1500 * this.baseEnergy[0] +
+                1500 * this.baseEnergy[1] +
+                1500 * this.baseEnergy[2] +
+                50 * this.baseCargo +
+                12000 * this.baseHandling +
+                25000 * (options.primaryCap ?? 0) +
+                20000 * (options.shieldCap ?? 0) +
+                15000 * (options.heavyCap ?? 0) +
+                7000 * (options.minerCap ?? 0) +
+                15000 * (options.generalCap ?? 0) +
+                1000 * ([...this.AttachmentCaps.values()].reduce((acc, cur) => acc + cur, 0) * this.TechLevel + 3)) /
+                1000
+        );
     }
     stringify() {
         return JSON.stringify(this);

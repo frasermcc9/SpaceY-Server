@@ -24,7 +24,9 @@ export declare class BuildableDecorator extends GameAssetDecorator implements Bu
      * 405 - Item not buildable<br />  \
      * 500 - Internal Error
      */
-    Build(player: Player): Promise<{
+    Build(
+        player: Player
+    ): Promise<{
         code: number;
         failures: string[];
     }>;

@@ -32,19 +32,39 @@ export interface IPlayer {
 }
 export interface IPlayerDocument extends IPlayer, Document {
     setLastUpdated(this: IPlayerDocument): Promise<void>;
-    decrementCredits(this: IPlayerDocument, { amount }: {
-        amount: number;
-    }): Promise<boolean>;
-    incrementCredits(this: IPlayerDocument, { amount }: {
-        amount: number;
-    }): Promise<boolean>;
+    decrementCredits(
+        this: IPlayerDocument,
+        {
+            amount,
+        }: {
+            amount: number;
+        }
+    ): Promise<boolean>;
+    incrementCredits(
+        this: IPlayerDocument,
+        {
+            amount,
+        }: {
+            amount: number;
+        }
+    ): Promise<boolean>;
     getCredits(this: IPlayerDocument): Promise<number>;
 }
 export interface IPlayerModel extends Model<IPlayerDocument> {
-    findOneOrCreate(this: IPlayerModel, { uId }: {
-        uId: string;
-    }): Promise<Player>;
-    findOneOrCreateRaw(this: IPlayerModel, { uId }: {
-        uId: string;
-    }): Promise<IPlayer>;
+    findOneOrCreate(
+        this: IPlayerModel,
+        {
+            uId,
+        }: {
+            uId: string;
+        }
+    ): Promise<Player>;
+    findOneOrCreateRaw(
+        this: IPlayerModel,
+        {
+            uId,
+        }: {
+            uId: string;
+        }
+    ): Promise<IPlayer>;
 }

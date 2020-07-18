@@ -8,15 +8,12 @@ class ReputationCollection extends GameCollectionBase_1.GameCollectionBase {
         super();
         if (options?.data) {
             let data;
-            if (options.data instanceof Map)
-                data = Object.fromEntries(options.data);
-            else
-                data = options.data;
+            if (options.data instanceof Map) data = Object.fromEntries(options.data);
+            else data = options.data;
             Server_1.Server.Reg.FactionRegistry.forEach((faction) => {
                 this.set(faction.Name, data[faction.Name] || 0);
             });
-        }
-        else {
+        } else {
             Server_1.Server.Reg.FactionRegistry.forEach((faction) => {
                 this.set(faction.Name, 0);
             });
@@ -24,7 +21,9 @@ class ReputationCollection extends GameCollectionBase_1.GameCollectionBase {
     }
     /** @override */
     GetCompatibleItems({ minTech, maxTech }) {
-        return Server_1.Server.Reg.FactionRegistry.filter((val) => val.Cost != undefined && val.TechLevel <= maxTech && val.TechLevel >= minTech);
+        return Server_1.Server.Reg.FactionRegistry.filter(
+            (val) => val.Cost != undefined && val.TechLevel <= maxTech && val.TechLevel >= minTech
+        );
     }
     /** @override */
     GenerateWeights(items, centralRarity, minRarity, maxRarity) {

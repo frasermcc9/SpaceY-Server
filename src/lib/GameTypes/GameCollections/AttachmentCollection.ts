@@ -8,8 +8,11 @@ export class AttachmentCollection extends GameCollectionBase {
 		super();
 		//Create map with all empty attachment values, but set defined attachments to the given value.
 		if (options?.data) {
+			let data: any;
+			if (options.data instanceof Map) data = Object.fromEntries(options.data);
+			else data = options.data;
 			Server.Reg.AttachmentRegistry.forEach((attachment) => {
-				this.set(attachment.Name, options.data?.get(attachment.Name) ?? 0);
+				this.set(attachment.Name, data[attachment.Name] ?? 0);
 			});
 		} else {
 			Server.Reg.AttachmentRegistry.forEach((attachment) => {

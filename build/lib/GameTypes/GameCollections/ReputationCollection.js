@@ -7,8 +7,13 @@ class ReputationCollection extends GameCollectionBase_1.GameCollectionBase {
     constructor(options) {
         super();
         if (options?.data) {
+            let data;
+            if (options.data instanceof Map)
+                data = Object.fromEntries(options.data);
+            else
+                data = options.data;
             Server_1.Server.Reg.FactionRegistry.forEach((faction) => {
-                this.set(faction.Name, options.data?.get(faction.Name) ?? 0);
+                this.set(faction.Name, data[faction.Name] || 0);
             });
         }
         else {

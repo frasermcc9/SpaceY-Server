@@ -10,8 +10,13 @@ class MaterialCollection extends GameCollectionBase_1.GameCollectionBase {
         super();
         //Create map with all empty material values, but set defined materials to the given value.
         if (options?.data) {
+            let data;
+            if (options.data instanceof Map)
+                data = Object.fromEntries(options.data);
+            else
+                data = options.data;
             Server_1.Server.Get().Registry.MaterialRegistry.forEach((material) => {
-                this.set(material.Name, options.data?.get(material.Name) || 0);
+                this.set(material.Name, data[material.Name] ?? 0);
             });
         }
         else {

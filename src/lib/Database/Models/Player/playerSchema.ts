@@ -1,5 +1,5 @@
 import { Schema } from "mongoose";
-import { findOneOrCreate, setLastUpdated, incrementCredits, decrementCredits, getCredits } from "./playerFunctions";
+import { findOneOrCreate, setLastUpdated, incrementCredits, decrementCredits, getCredits, findOneOrCreateRaw } from "./playerFunctions";
 
 const PlayerSchema = new Schema({
 	uId: String,
@@ -40,6 +40,7 @@ const PlayerSchema = new Schema({
 });
 
 PlayerSchema.statics.findOneOrCreate = findOneOrCreate;
+PlayerSchema.statics.findOneOrCreateRaw = findOneOrCreateRaw;
 
 PlayerSchema.methods.setLastUpdated = setLastUpdated;
 PlayerSchema.methods.incrementCredits = incrementCredits;

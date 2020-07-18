@@ -26,7 +26,7 @@ export interface IPlayer {
     location: string;
     blueprints: string[];
     exp: number;
-    skills: number[];
+    skills: [number, number, number];
     dateOfEntry?: Date;
     lastUpdated?: Date;
 }
@@ -44,4 +44,7 @@ export interface IPlayerModel extends Model<IPlayerDocument> {
     findOneOrCreate(this: IPlayerModel, { uId }: {
         uId: string;
     }): Promise<Player>;
+    findOneOrCreateRaw(this: IPlayerModel, { uId }: {
+        uId: string;
+    }): Promise<IPlayer>;
 }

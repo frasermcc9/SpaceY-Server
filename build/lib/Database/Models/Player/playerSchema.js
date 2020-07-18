@@ -40,6 +40,7 @@ const PlayerSchema = new mongoose_1.Schema({
     },
 });
 PlayerSchema.statics.findOneOrCreate = playerFunctions_1.findOneOrCreate;
+PlayerSchema.statics.findOneOrCreateRaw = playerFunctions_1.findOneOrCreateRaw;
 PlayerSchema.methods.setLastUpdated = playerFunctions_1.setLastUpdated;
 PlayerSchema.methods.incrementCredits = playerFunctions_1.incrementCredits;
 PlayerSchema.methods.decrementCredits = playerFunctions_1.decrementCredits;

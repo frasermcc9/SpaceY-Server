@@ -1,11 +1,11 @@
-import { IClientSettings } from "./Server";
+import { IServerSettings } from "./Server";
 import { Material } from "../GameTypes/GameAsset/Material/Material";
 import { Ship } from "../GameTypes/GameAsset/Ship/Ship";
 import { Attachment } from "../GameTypes/GameAsset/Attachment/Attachment";
 import { Faction } from "../GameTypes/GameAsset/Faction/Faction";
 import { SpacemapNode } from "../GameTypes/GameSpacemap/SpacemapNode";
 export declare class Setup {
-    setupClient(settings: IClientSettings): MaterialsAdder;
+    setupClient(settings: IServerSettings): MaterialsAdder;
     static begin(): Setup;
 }
 declare class MaterialsAdder {

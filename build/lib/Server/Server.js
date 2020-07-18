@@ -4,8 +4,10 @@ exports.Server = void 0;
 const Registry_1 = require("./Registry");
 const Database_1 = require("../Database/Database");
 const EventManager_1 = require("./EventManager");
+const SocketManager_1 = require("../api/SocketManager");
+const RestManager_1 = require("../api/routes/RestManager");
 class Server {
-    constructor(clientSettings) {
+    constructor(serverOptions) {
         //#region Registry
         this.registry = new Registry_1.Registry();
         //#endregion registry
@@ -15,13 +17,12 @@ class Server {
         //#endregion Database
         //#region EventManager
         this.eventManager = new EventManager_1.EventManager();
-        this.uri = clientSettings.databaseUri;
-        this.dbName = clientSettings.databaseName;
-        this.ConsoleLogging = clientSettings.consoleLogging ?? false;
-        //this.registry.DefaultCredits = clientSettings.defaultCredits ?? 0;
-        //this.registry.MaxRarity = clientSettings.maximumRarity;
-        //this.registry.MaxTech = clientSettings.maximumTechLevel;
-        Server.TEST = clientSettings.testMode ?? false;
+        this.socketManager = new SocketManager_1.SocketManager();
+        this.restManager = new RestManager_1.RestManager();
+        this.uri = serverOptions.databaseUri;
+        this.dbName = serverOptions.databaseName;
+        this.ConsoleLogging = serverOptions.consoleLogging ?? false;
+        Server.TEST = serverOptions.testMode ?? false;
     }
     static Get() {
         if (this.Server == null) {
@@ -29,10 +30,10 @@ class Server {
         }
         return this.Server;
     }
-    static Create(ClientSettings) {
+    static Create(serverOptions) {
         if (this.Server)
             return; //throw new Error("A client has already been made. Please use Client.Get() to access it.");
-        this.Server = new Server(ClientSettings);
+        this.Server = new Server(serverOptions);
     }
     static Destroy() {
         delete this.Server;
@@ -54,6 +55,12 @@ class Server {
     }
     Connect() {
         Database_1.connect();
+    }
+    static get socket() {
+        return this.Get().socketManager;
+    }
+    static get rest() {
+        return this.Get().restManager;
     }
     static get EventMan() {
         return this.Get().eventManager;

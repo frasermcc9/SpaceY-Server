@@ -1,4 +1,4 @@
-import { Server, IClientSettings } from "./Server";
+import { Server, IServerSettings } from "./Server";
 import { Material } from "../GameTypes/GameAsset/Material/Material";
 import { Ship } from "../GameTypes/GameAsset/Ship/Ship";
 import { Attachment } from "../GameTypes/GameAsset/Attachment/Attachment";
@@ -9,7 +9,7 @@ import { util } from "../Util/util";
 import { connect } from "../Database/Database";
 
 export class Setup {
-	setupClient(settings: IClientSettings): MaterialsAdder {
+	setupClient(settings: IServerSettings): MaterialsAdder {
 		Server.Create(settings);
 
 		return new MaterialsAdder();

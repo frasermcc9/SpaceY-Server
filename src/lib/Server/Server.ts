@@ -1,6 +1,8 @@
 import { Registry } from "./Registry";
 import { connect } from "../Database/Database";
 import { EventManager } from "./EventManager";
+import { SocketManager } from "../api/SocketManager";
+import { RestManager } from "../api/routes/RestManager";
 
 export class Server {
 	public static TEST = false;
@@ -15,22 +17,19 @@ export class Server {
 		return this.Server;
 	}
 
-	public static Create(ClientSettings: IClientSettings) {
+	public static Create(serverOptions: IServerSettings) {
 		if (this.Server) return; //throw new Error("A client has already been made. Please use Client.Get() to access it.");
-		this.Server = new Server(ClientSettings);
+		this.Server = new Server(serverOptions);
 	}
 	public static Destroy() {
 		delete this.Server;
 	}
-	private constructor(clientSettings: IClientSettings) {
-		this.uri = clientSettings.databaseUri;
-		this.dbName = clientSettings.databaseName;
-		this.ConsoleLogging = clientSettings.consoleLogging ?? false;
-		//this.registry.DefaultCredits = clientSettings.defaultCredits ?? 0;
-		//this.registry.MaxRarity = clientSettings.maximumRarity;
-		//this.registry.MaxTech = clientSettings.maximumTechLevel;
+	private constructor(serverOptions: IServerSettings) {
+		this.uri = serverOptions.databaseUri;
+		this.dbName = serverOptions.databaseName;
+		this.ConsoleLogging = serverOptions.consoleLogging ?? false;
 
-		Server.TEST = clientSettings.testMode ?? false;
+		Server.TEST = serverOptions.testMode ?? false;
 	}
 
 	//#region Registry
@@ -64,6 +63,14 @@ export class Server {
 	//#region EventManager
 
 	private eventManager: EventManager = new EventManager();
+	private socketManager = new SocketManager();
+	private restManager = new RestManager();
+	public static get socket() {
+		return this.Get().socketManager;
+	}
+	public static get rest() {
+		return this.Get().restManager;
+	}
 	public static get EventMan(): EventManager {
 		return this.Get().eventManager;
 	}
@@ -73,11 +80,11 @@ export class Server {
 	//#endregion EventManager
 }
 
-export interface IClientSettings {
+export interface IServerSettings {
 	databaseName: string;
 	databaseUri: string;
 	consoleLogging?: boolean;
-/* 	defaultCredits?: number;
+	/* 	defaultCredits?: number;
 	maximumRarity: number;
 	maximumTechLevel: number; */
 	testMode?: boolean;

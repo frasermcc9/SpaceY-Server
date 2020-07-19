@@ -17,6 +17,7 @@ const KalenGen = () => {
             requiredWarp: WarpPower.NONE,
             faction: Client.Reg.ResolveFactionFromName("Kalen")!,
             img: "https://cdn.discordapp.com/attachments/732459193545523261/732462067436617778/unknown.png",
+            tech: 1,
         })
             .addAsteroid(new AsteroidBuilder("GEM01").BuildRandom({ value: 500 }))
             .addAsteroid(new AsteroidBuilder("GEM02").BuildRandom({ value: 500 }))
@@ -42,6 +43,7 @@ const KalenGen = () => {
             requiredWarp: WarpPower.NONE,
             faction: Client.Reg.ResolveFactionFromName("Kalen")!,
             img: "https://cdn.discordapp.com/attachments/732459193545523261/732462067436617778/unknown.png",
+            tech: 1,
         })
             .addAsteroid(new AsteroidBuilder("KAL01").BuildRandom({ value: 750 }))
             .addStore(
@@ -65,6 +67,7 @@ const KalenGen = () => {
             requiredWarp: WarpPower.NONE,
             faction: Client.Reg.ResolveFactionFromName("Kalen")!,
             img: "https://cdn.discordapp.com/attachments/732459193545523261/732462067436617778/unknown.png",
+            tech: 3,
         })
             .addStore(
                 new ShipStore({
@@ -82,6 +85,7 @@ const KalenGen = () => {
             requiredWarp: WarpPower.NONE,
             faction: Client.Reg.ResolveFactionFromName("Kalen")!,
             img: "https://cdn.discordapp.com/attachments/732459193545523261/732462067436617778/unknown.png",
+            tech: 1,
         })
             .addAsteroid(new AsteroidBuilder("ARI01").BuildRandom({ value: 450 }))
             .addAsteroid(new AsteroidBuilder("ARI02").setCooldown(60 * 30).BuildRandom({ value: 1250 }))
@@ -108,6 +112,7 @@ const KalenGen = () => {
             requiredWarp: WarpPower.NONE,
             faction: Client.Reg.ResolveFactionFromName("Kalen")!,
             img: "https://cdn.discordapp.com/attachments/732459193545523261/732462067436617778/unknown.png",
+            tech: 1,
         })
             .addAsteroid(new AsteroidBuilder("AGA01").BuildRandom({ value: 500 }))
             .addAsteroid(new AsteroidBuilder("AGA02").BuildRandom({ value: 500 }))
@@ -120,6 +125,7 @@ const KalenGen = () => {
             requiredWarp: WarpPower.NONE,
             faction: Client.Reg.ResolveFactionFromName("Kalen")!,
             img: "https://cdn.discordapp.com/attachments/732459193545523261/732462067436617778/unknown.png",
+            tech: 2,
         })
             .addStore(
                 new AttachmentStore({

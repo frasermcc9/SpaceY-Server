@@ -3,30 +3,37 @@ import { Ship } from "../Ship/Ship";
 import { Attachment } from "../Attachment/Attachment";
 
 export class Faction extends GameAsset {
-    public constructor(private readonly options: IFactionOptions) {
+    private soldShips: Ship[];
+    private usedShips: Ship[];
+    private soldAttachments: Attachment[];
+    private usedAttachments: Attachment[];
+
+    private imageUri: string;
+
+    public constructor(options: IFactionOptions) {
         super(options);
-        this.options.soldShips = options.soldShips ?? [];
-        this.options.usedShips = options.usedShips ?? [];
-        this.options.soldAttachments = options.soldAttachments ?? [];
-        this.options.usedAttachments = options.usedAttachments ?? [];
-        this.options.imageUri = options.imageUri ?? "";
+        this.soldShips = options.soldShips ?? [];
+        this.usedShips = options.usedShips ?? [];
+        this.soldAttachments = options.soldAttachments ?? [];
+        this.usedAttachments = options.usedAttachments ?? [];
+        this.imageUri = options.imageUri ?? "";
     }
 
     public get SellableShips(): Ship[] {
-        return this.options.soldShips.slice();
+        return this.soldShips.slice();
     }
     public get SellableAttachments(): Attachment[] {
-        return this.options.soldAttachments.slice();
+        return this.soldAttachments.slice();
     }
 
     public get UsableShips(): Ship[] {
-        return this.options.soldShips.slice();
+        return this.usedShips.slice();
     }
     public get UsableAttachments(): Attachment[] {
-        return this.options.soldAttachments.slice();
+        return this.usedAttachments.slice();
     }
     public get Uri(): string {
-        return this.options.imageUri;
+        return this.imageUri;
     }
 }
 

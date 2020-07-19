@@ -8,7 +8,8 @@ class Spacemap {
         this.graph = new Map();
     }
     resolveNodeFromName(name) {
-        if (typeof name == "string") return this.registry.get(name);
+        if (typeof name == "string")
+            return this.registry.get(name);
         return name;
     }
     addNode(node) {
@@ -32,7 +33,8 @@ class Spacemap {
     addLink(a, b) {
         const aNode = this.resolveNodeFromName(a);
         const bNode = this.resolveNodeFromName(b);
-        if (aNode == undefined || bNode == undefined) throw new TypeError(`Invalid spacenodes ${a} pr ${b} passed`);
+        if (aNode == undefined || bNode == undefined)
+            throw new TypeError(`Invalid spacenodes ${a} pr ${b} passed`);
         a = aNode;
         b = bNode;
         if (!(this.registry.has(a.Name) && this.registry.has(a.Name))) {
@@ -55,7 +57,8 @@ class Spacemap {
     }
     canTravel(node, warp) {
         const MapNode = this.resolveNodeFromName(node);
-        if (MapNode == undefined) throw new TypeError(`Cannot query node warp requirements when node "${node}" does not exist.`);
+        if (MapNode == undefined)
+            throw new TypeError(`Cannot query node warp requirements when node "${node}" does not exist.`);
         return warp >= MapNode.RequiredWarp;
     }
     updateMap() {
@@ -71,3 +74,4 @@ class Spacemap {
     }
 }
 exports.Spacemap = Spacemap;
+//# sourceMappingURL=Spacemap.js.map

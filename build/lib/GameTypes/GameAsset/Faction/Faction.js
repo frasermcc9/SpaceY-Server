@@ -5,27 +5,26 @@ const GameAsset_1 = require("../GameAsset");
 class Faction extends GameAsset_1.GameAsset {
     constructor(options) {
         super(options);
-        this.options = options;
-        this.options.soldShips = options.soldShips ?? [];
-        this.options.usedShips = options.usedShips ?? [];
-        this.options.soldAttachments = options.soldAttachments ?? [];
-        this.options.usedAttachments = options.usedAttachments ?? [];
-        this.options.imageUri = options.imageUri ?? "";
+        this.soldShips = options.soldShips ?? [];
+        this.usedShips = options.usedShips ?? [];
+        this.soldAttachments = options.soldAttachments ?? [];
+        this.usedAttachments = options.usedAttachments ?? [];
+        this.imageUri = options.imageUri ?? "";
     }
     get SellableShips() {
-        return this.options.soldShips.slice();
+        return this.soldShips.slice();
     }
     get SellableAttachments() {
-        return this.options.soldAttachments.slice();
+        return this.soldAttachments.slice();
     }
     get UsableShips() {
-        return this.options.soldShips.slice();
+        return this.usedShips.slice();
     }
     get UsableAttachments() {
-        return this.options.soldAttachments.slice();
+        return this.usedAttachments.slice();
     }
     get Uri() {
-        return this.options.imageUri;
+        return this.imageUri;
     }
 }
 exports.Faction = Faction;
@@ -34,7 +33,8 @@ class FactionBuilder {
     using the builder methods is suggested.*/
     constructor(options) {
         this.options = options;
-        if (options.cost != undefined || options.blueprint != undefined) throw new TypeError("");
+        if (options.cost != undefined || options.blueprint != undefined)
+            throw new TypeError("");
         this.options.soldShips = options.soldShips ?? [];
         this.options.usedShips = options.usedShips ?? [];
         this.options.soldAttachments = options.soldAttachments ?? [];
@@ -46,7 +46,8 @@ class FactionBuilder {
      * @param ship
      */
     addSoldShips(ship) {
-        if (!Array.isArray(ship)) ship = [ship];
+        if (!Array.isArray(ship))
+            ship = [ship];
         this.options.soldShips?.push(...ship);
         this.options.usedShips?.push(...ship);
         return this;
@@ -60,7 +61,8 @@ class FactionBuilder {
      * @param ship
      */
     addUsedShips(ship) {
-        if (!Array.isArray(ship)) ship = [ship];
+        if (!Array.isArray(ship))
+            ship = [ship];
         this.options.usedShips?.push(...ship);
         return this;
     }
@@ -71,7 +73,8 @@ class FactionBuilder {
      * @param attachment
      */
     addSoldAttachments(attachment) {
-        if (!Array.isArray(attachment)) attachment = [attachment];
+        if (!Array.isArray(attachment))
+            attachment = [attachment];
         this.options.soldAttachments?.push(...attachment);
         this.options.usedAttachments?.push(...attachment);
         return this;
@@ -85,7 +88,8 @@ class FactionBuilder {
      * @param attachment
      */
     addUsedAttachments(attachment) {
-        if (!Array.isArray(attachment)) attachment = [attachment];
+        if (!Array.isArray(attachment))
+            attachment = [attachment];
         this.options.usedAttachments?.push(...attachment);
         return this;
     }
@@ -107,3 +111,4 @@ class FactionBuilder {
     }
 }
 exports.FactionBuilder = FactionBuilder;
+//# sourceMappingURL=Faction.js.map

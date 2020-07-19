@@ -38,9 +38,7 @@ export declare abstract class GameCollectionBase extends MapCollection<string, n
      * @param gameCollection
      * @returns codes: 200-Success, 403-Insufficient resources
      */
-    StrictSubtractCollection(
-        gameCollection: Map<string, number>
-    ): {
+    StrictSubtractCollection(gameCollection: Map<string, number>): {
         code: number;
         failures: string[];
     };
@@ -48,9 +46,7 @@ export declare abstract class GameCollectionBase extends MapCollection<string, n
      * @param gameCollection
      * @returns codes: 200-Success, 403-Insufficient resources
      */
-    SubtractCollection(
-        gameCollection: Map<string, number>
-    ): {
+    SubtractCollection(gameCollection: Map<string, number>): {
         code: number;
         failures: string[];
     };

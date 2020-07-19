@@ -3,9 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.util = void 0;
 class util {
     static hashCode(str) {
-        var hash = 0,
-            i,
-            chr;
+        var hash = 0, i, chr;
         for (i = 0; i < str.length; i++) {
             chr = str.charCodeAt(i);
             hash = (hash << 5) - hash + chr;
@@ -22,7 +20,8 @@ class util {
     }
     static *seededGenerator(seed) {
         for (;;) {
-            if (seed != undefined) util.currentSeed = seed;
+            if (seed != undefined)
+                util.currentSeed = seed;
             util.currentSeed = (util.currentSeed * 9301 + 49297) % 233280;
             yield util.currentSeed / 233280;
         }
@@ -53,9 +52,11 @@ class util {
         return a;
     }
     static throwUndefined(variable, message) {
-        if (variable == undefined) throw new Error(message ?? `Variable ${variable} is undefined`);
+        if (variable == undefined)
+            throw new Error(message ?? `Variable ${variable} is undefined`);
         return variable;
     }
 }
 exports.util = util;
 util.currentSeed = 0;
+//# sourceMappingURL=util.js.map

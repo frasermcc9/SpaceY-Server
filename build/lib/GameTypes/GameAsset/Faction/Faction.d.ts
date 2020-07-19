@@ -2,7 +2,11 @@ import { GameAsset, IGameAssetOptions } from "../GameAsset";
 import { Ship } from "../Ship/Ship";
 import { Attachment } from "../Attachment/Attachment";
 export declare class Faction extends GameAsset {
-    private readonly options;
+    private soldShips;
+    private usedShips;
+    private soldAttachments;
+    private usedAttachments;
+    private imageUri;
     constructor(options: IFactionOptions);
     get SellableShips(): Ship[];
     get SellableAttachments(): Attachment[];

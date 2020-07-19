@@ -1,7 +1,7 @@
 import { Registry } from "./Registry";
 import { EventManager } from "./EventManager";
-import { SocketManager } from "../api/SocketManager";
-import { RestManager } from "../api/routes/RestManager";
+import { SocketManager } from "../api/sockets/SocketManager";
+import { RestManager } from "../api/routes/index";
 export declare class Server {
     static TEST: boolean;
     readonly ConsoleLogging: boolean;

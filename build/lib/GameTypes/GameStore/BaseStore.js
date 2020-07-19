@@ -47,22 +47,28 @@ class BaseStore {
      */
     async buyFromStore({ trader, item, quantity }) {
         //Check valid quantity
-        if (quantity < 0) return { code: 400 };
+        if (quantity < 0)
+            return { code: 400 };
         //Check if material exists in game
-        if (this.collection.has(item) == undefined) return { code: 404 };
+        if (this.collection.has(item) == undefined)
+            return { code: 404 };
         //Check if material is sellable, get cost per item
         const cpi = this.getCostPerItem(item);
-        if (cpi == undefined) return { code: 405 };
+        if (cpi == undefined)
+            return { code: 405 };
         //Check if this store has enough resources to sell
-        if (!this.collection.SufficientToDecrease(item, -quantity)) return { code: 403 };
+        if (!this.collection.SufficientToDecrease(item, -quantity))
+            return { code: 403 };
         //Check if the user has enough credits
-        if (trader.Credits < cpi * quantity) return { code: 403 };
+        if (trader.Credits < cpi * quantity)
+            return { code: 403 };
         const storeResult = this.collection.ReduceToNonNegative(item, quantity);
-        if (!storeResult.success) return { code: 500 };
+        if (!storeResult.success)
+            return { code: 500 };
         trader.CreditsDecrement({ amount: cpi * quantity });
         this.credits += cpi * quantity;
         const m = await trader.AutoInventoryEdit(item, quantity);
-        trader.save();
+        await trader.save();
         return { itemAmount: m.amount, playerCredits: trader.Credits, code: 200 };
     }
     /**
@@ -77,21 +83,28 @@ class BaseStore {
      * 500: Unknown server error
      */
     async sellToStore({ trader, item, quantity }) {
-        if (quantity < 0) return { code: 400 };
-        if (this.collection.has(item) == undefined) return { code: 404 };
+        if (quantity < 0)
+            return { code: 400 };
+        if (this.collection.has(item) == undefined)
+            return { code: 404 };
         const cpi = this.getCostPerItem(item);
-        if (cpi == undefined) return { code: 405 };
+        if (cpi == undefined)
+            return { code: 405 };
         //Check if the player and store can afford to sell
         const inPlayerInventory = trader.AutoInventoryRetrieve(item).amount;
-        if (inPlayerInventory == undefined) return { code: 500 };
-        if (inPlayerInventory < quantity) return { code: 403 };
-        if (this.credits < cpi * quantity) return { code: 403 };
+        if (inPlayerInventory == undefined)
+            return { code: 500 };
+        if (inPlayerInventory < quantity)
+            return { code: 403 };
+        if (this.credits < cpi * quantity)
+            return { code: 403 };
         this.credits -= cpi * quantity;
         this.collection.Increase(item, quantity);
         trader.CreditsIncrement({ amount: cpi * quantity });
         const playerNew = (await trader.AutoInventoryEdit(item, -quantity)).amount;
-        if (playerNew == undefined) return { code: 500 };
-        trader.save();
+        if (playerNew == undefined)
+            return { code: 500 };
+        await trader.save();
         return { itemAmount: playerNew, playerCredits: trader.Credits, code: 200 };
     }
     /**
@@ -108,22 +121,29 @@ class BaseStore {
      * 500: Unknown server error
      */
     async sellToStoreForce({ trader, item, quantity }) {
-        if (quantity < 0) return { code: 400 };
-        if (this.collection.has(item) == undefined) return { code: 404 };
+        if (quantity < 0)
+            return { code: 400 };
+        if (this.collection.has(item) == undefined)
+            return { code: 404 };
         const cpi = this.getCostPerItem(item);
-        if (cpi == undefined) return { code: 405 };
+        if (cpi == undefined)
+            return { code: 405 };
         //Check if the player and store can afford to sell
         const inPlayerInventory = trader.AutoInventoryRetrieve(item).amount;
-        if (inPlayerInventory == undefined) return { code: 500 };
-        if (inPlayerInventory < quantity) return { code: 403 };
+        if (inPlayerInventory == undefined)
+            return { code: 500 };
+        if (inPlayerInventory < quantity)
+            return { code: 403 };
         let storeCreditsToSpend = cpi * quantity;
-        if (this.credits < storeCreditsToSpend) storeCreditsToSpend = this.credits;
+        if (this.credits < storeCreditsToSpend)
+            storeCreditsToSpend = this.credits;
         this.credits -= storeCreditsToSpend;
         this.collection.Increase(item, quantity);
         trader.CreditsIncrement({ amount: storeCreditsToSpend });
         const playerNew = (await trader.AutoInventoryEdit(item, -quantity)).amount;
-        if (playerNew == undefined) return { code: 500 };
-        trader.save();
+        if (playerNew == undefined)
+            return { code: 500 };
+        await trader.save();
         return { itemAmount: playerNew, playerCredits: trader.Credits, code: 200 };
     }
     getCostPerItem(item) {
@@ -146,10 +166,12 @@ class BaseStore {
      */
     getStoreItems(includeEmpty = false) {
         const full = new Collections_1.MapCollection(this.collection);
-        if (includeEmpty) return full;
+        if (includeEmpty)
+            return full;
         const reduced = new Collections_1.MapCollection();
         full.forEach((q, n) => {
-            if (q != 0) reduced.set(n, q);
+            if (q != 0)
+                reduced.set(n, q);
         });
         return reduced;
     }
@@ -204,7 +226,8 @@ class BaseStore {
     }
     //#region TESTING METHODS
     INTERNAL_AlterItem(item, n) {
-        if (!Server_1.Server.TEST) throw new Error("Internal prefix functions can only be used in test mode.");
+        if (!Server_1.Server.TEST)
+            throw new Error("Internal prefix functions can only be used in test mode.");
         const currentAmount = this.collection.get(item);
         this.collection.set(item, (currentAmount ?? 0) + n);
     }
@@ -215,8 +238,9 @@ class BaseStore {
 exports.BaseStore = BaseStore;
 var StoreType;
 (function (StoreType) {
-    StoreType[(StoreType["BASE"] = 0)] = "BASE";
-    StoreType[(StoreType["MATERIAL_STORE"] = 1)] = "MATERIAL_STORE";
-    StoreType[(StoreType["SHIP_STORE"] = 2)] = "SHIP_STORE";
-    StoreType[(StoreType["ATTACHMENT_STORE"] = 3)] = "ATTACHMENT_STORE";
-})((StoreType = exports.StoreType || (exports.StoreType = {})));
+    StoreType[StoreType["BASE"] = 0] = "BASE";
+    StoreType[StoreType["MATERIAL_STORE"] = 1] = "MATERIAL_STORE";
+    StoreType[StoreType["SHIP_STORE"] = 2] = "SHIP_STORE";
+    StoreType[StoreType["ATTACHMENT_STORE"] = 3] = "ATTACHMENT_STORE";
+})(StoreType = exports.StoreType || (exports.StoreType = {}));
+//# sourceMappingURL=BaseStore.js.map

@@ -22,9 +22,7 @@ export interface IGameAsset {
 }
 export interface Buildable {
     Blueprint: IBlueprintInfo;
-    Build(
-        player: Player
-    ): Promise<{
+    Build(player: Player): Promise<{
         code: number;
         failures: string[];
     }>;

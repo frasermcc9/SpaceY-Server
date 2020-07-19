@@ -11,7 +11,8 @@ class AttachmentStore extends BaseStore_1.BaseStore {
     }
     populateInventory() {
         const candidates = this.faction.SellableAttachments;
-        if (candidates.length < 1) return;
+        if (candidates.length < 1)
+            return;
         while (this.collection.CollectionSize < this.maxToSell) {
             const selected = candidates[~~(Math.random() * candidates.length)];
             const current = this.collection.get(selected.Name);
@@ -20,3 +21,4 @@ class AttachmentStore extends BaseStore_1.BaseStore {
     }
 }
 exports.AttachmentStore = AttachmentStore;
+//# sourceMappingURL=AttachmentStore.js.map

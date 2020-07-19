@@ -1,0 +1,1 @@
+{"version":3,"file":"Skin.js","sourceRoot":"","sources":["../../../../../src/lib/GameTypes/GameAsset/Player/Skin.ts"],"names":[],"mappings":";;;AAAA,MAAa,IAAI;IACb,YAA6B,QAAgB,EAAmB,OAAe;QAAlD,aAAQ,GAAR,QAAQ,CAAQ;QAAmB,YAAO,GAAP,OAAO,CAAQ;IAAG,CAAC;IAEnF,IAAW,OAAO;QACd,OAAO,IAAI,CAAC,OAAO,CAAC;IACxB,CAAC;IAED,IAAW,QAAQ;QACf,OAAO,IAAI,CAAC,QAAQ,CAAC;IACzB,CAAC;CACJ;AAVD,oBAUC"}

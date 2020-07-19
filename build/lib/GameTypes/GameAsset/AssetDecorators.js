@@ -22,22 +22,24 @@ class SellableDecorator extends GameAssetDecorator {
             if (obj == undefined)
                 throw new TypeError(`Item named ${item} instantiated as SellableDecorator when item does not exist in registry.`);
             super(obj);
-        } else super(item);
+        }
+        else
+            super(item);
     }
     get PriceData() {
         return this.asset.Cost == undefined ? { success: false } : { success: true, cost: this.asset.Cost };
     }
     fluctuatingPriceData({ territory, randEffect, loTechEffect, hiTechEffect, seed }) {
         let baseCost = this.asset.Cost;
-        if (baseCost == undefined) return { success: false };
-        if (!territory && (loTechEffect || hiTechEffect)) return { success: false };
-        if (!seed) seed = new Date().getFullYear() + new Date().getDate() + new Date().getMonth() + 1;
+        if (baseCost == undefined)
+            return { success: false };
+        if (!territory && (loTechEffect || hiTechEffect))
+            return { success: false };
+        if (!seed)
+            seed = new Date().getFullYear() + new Date().getDate() + new Date().getMonth() + 1;
         //Apply random effects (randomEffect = 0 is same behaviour as undefined)
         if (randEffect) {
-            const deviation = (baseCost * randEffect) / 100,
-                min = baseCost - deviation,
-                max = baseCost + deviation,
-                rnd = util_1.util.seededGenerator(seed).next().value;
+            const deviation = (baseCost * randEffect) / 100, min = baseCost - deviation, max = baseCost + deviation, rnd = util_1.util.seededGenerator(seed).next().value;
             baseCost += rnd * (max - min) - (max - min) / 2;
         }
         if (loTechEffect || hiTechEffect) {
@@ -47,7 +49,8 @@ class SellableDecorator extends GameAssetDecorator {
             //Apply percent change if faction tech level is higher
             if (this.asset.TechLevel < territory.TechLevel) {
                 baseCost += percentOfDelta * (((loTechEffect ?? 0) / 100) * baseCost);
-            } else if (this.asset.TechLevel > territory.TechLevel) {
+            }
+            else if (this.asset.TechLevel > territory.TechLevel) {
                 baseCost += percentOfDelta * (((hiTechEffect ?? 0) / 100) * baseCost);
             }
         }
@@ -73,13 +76,19 @@ class BuildableDecorator extends GameAssetDecorator {
      */
     async Build(player) {
         const bp = this.Blueprint.blueprint;
-        if (bp == undefined) return { code: 405, failures: [] };
-        if (!player.hasBlueprintFor(this.Name)) return { code: 403.2, failures: [] };
+        if (bp == undefined)
+            return { code: 405, failures: [] };
+        if (!player.hasBlueprintFor(this.Name))
+            return { code: 403.2, failures: [] };
         const result = await player.InventorySubtract("materials", bp);
-        if (result.code != 200) return { code: 403.1, failures: result.failures };
+        if (result.code != 200)
+            return { code: 403.1, failures: result.failures };
         const editResult = await player.AutoInventoryEdit(this.asset.Name, 1);
-        if (editResult.success) return result;
-        else return { code: 500, failures: [] };
+        if (editResult.success)
+            return result;
+        else
+            return { code: 500, failures: [] };
     }
 }
 exports.BuildableDecorator = BuildableDecorator;
+//# sourceMappingURL=AssetDecorators.js.map

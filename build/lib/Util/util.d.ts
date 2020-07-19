@@ -9,16 +9,11 @@ export declare class util {
      * @param max maximum number
      */
     static randBetween(min: number, max: number): number;
-    static chooseFrom<T>(
-        arr: T[]
-    ): {
+    static chooseFrom<T>(arr: T[]): {
         item: T;
         index: number;
     };
-    static chooseFromSeeded<T>(
-        arr: T[],
-        seed: number
-    ): {
+    static chooseFromSeeded<T>(arr: T[], seed: number): {
         item: T;
         index: number;
     };

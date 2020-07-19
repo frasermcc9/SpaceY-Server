@@ -53,8 +53,14 @@ export declare class Player {
      */
     addSkillPoint(type: "Weapons" | "Engineering" | "Technology"): Promise<boolean>;
     pollSkillPoints(): number[];
-    CreditsIncrement({ amount, implicitSave }: { amount: number; implicitSave?: boolean }): Promise<boolean>;
-    CreditsDecrement({ amount, implicitSave }: { amount: number; implicitSave?: boolean }): Promise<boolean>;
+    CreditsIncrement({ amount, implicitSave }: {
+        amount: number;
+        implicitSave?: boolean;
+    }): Promise<boolean>;
+    CreditsDecrement({ amount, implicitSave }: {
+        amount: number;
+        implicitSave?: boolean;
+    }): Promise<boolean>;
     get Credits(): number;
     /**
      * Returns a formatted string of the users current cargo status
@@ -66,10 +72,7 @@ export declare class Player {
      * @param quantity
      * @returns codes: 1-Success, 2-Item Not Found, 4-Registry not found
      */
-    MaterialIncrement(
-        name: string,
-        quantity: number
-    ): Promise<{
+    MaterialIncrement(name: string, quantity: number): Promise<{
         success: boolean;
         amount: number;
         code: 1 | 2 | 3 | 4;
@@ -81,10 +84,7 @@ export declare class Player {
      * @param quantity
      * @returns codes: 1-Success, 2-Item Not Found, 3-Not Enough Resources, 4-Registry not found
      */
-    MaterialDecrement(
-        name: string,
-        quantity: number
-    ): Promise<{
+    MaterialDecrement(name: string, quantity: number): Promise<{
         success: boolean;
         amount: number;
         code: 1 | 2 | 3 | 4;
@@ -96,10 +96,7 @@ export declare class Player {
      * @param quantity
      * @returns codes: 1-Success, 2-Item Not Found, 3-Not Enough Resources, 4-Registry not found
      */
-    MaterialEdit(
-        name: string,
-        quantity: number
-    ): Promise<{
+    MaterialEdit(name: string, quantity: number): Promise<{
         success: boolean;
         amount: number;
         code: 1 | 2 | 3 | 4;
@@ -111,10 +108,7 @@ export declare class Player {
      * @param quantity
      * @returns codes: 1-Success, 2-Item Not Found, 4-Registry not found
      */
-    ShipIncrement(
-        name: string,
-        quantity: number
-    ): Promise<{
+    ShipIncrement(name: string, quantity: number): Promise<{
         success: boolean;
         amount: number;
         code: 1 | 2 | 3 | 4;
@@ -126,10 +120,7 @@ export declare class Player {
      * @param quantity
      * @returns codes: 1-Success, 2-Item Not Found, 3-Not Enough Resources, 4-Registry not found
      */
-    ShipDecrement(
-        name: string,
-        quantity: number
-    ): Promise<{
+    ShipDecrement(name: string, quantity: number): Promise<{
         success: boolean;
         amount: number;
         code: 1 | 2 | 3 | 4;
@@ -141,10 +132,7 @@ export declare class Player {
      * @param quantity
      * @returns codes: 1-Success, 2-Item Not Found, 3-Not Enough Resources, 4-Registry not found
      */
-    ShipEdit(
-        name: string,
-        quantity: number
-    ): Promise<{
+    ShipEdit(name: string, quantity: number): Promise<{
         success: boolean;
         amount: number;
         code: 1 | 2 | 3 | 4;
@@ -156,10 +144,7 @@ export declare class Player {
      * @param quantity
      * @returns codes: 1-Success, 2-Item Not Found, 4-Registry not found
      */
-    AttachmentIncrement(
-        name: string,
-        quantity: number
-    ): Promise<{
+    AttachmentIncrement(name: string, quantity: number): Promise<{
         success: boolean;
         amount: number;
         code: 1 | 2 | 3 | 4;
@@ -171,10 +156,7 @@ export declare class Player {
      * @param quantity
      * @returns codes: 1-Success, 2-Item Not Found, 3-Not Enough Resources, 4-Registry not found
      */
-    AttachmentDecrement(
-        name: string,
-        quantity: number
-    ): Promise<{
+    AttachmentDecrement(name: string, quantity: number): Promise<{
         success: boolean;
         amount: number;
         code: 1 | 2 | 3 | 4;
@@ -186,10 +168,7 @@ export declare class Player {
      * @param quantity
      * @returns codes: 1-Success, 2-Item Not Found, 3-Not Enough Resources, 4-Registry not found
      */
-    AttachmentEdit(
-        name: string,
-        quantity: number
-    ): Promise<{
+    AttachmentEdit(name: string, quantity: number): Promise<{
         success: boolean;
         amount: number;
         code: 1 | 2 | 3 | 4;
@@ -201,10 +180,7 @@ export declare class Player {
      * @param quantity
      * @returns codes: 1-Success, 2-Item Not Found, 4-Registry not found
      */
-    ReputationIncrement(
-        name: string,
-        quantity: number
-    ): Promise<{
+    ReputationIncrement(name: string, quantity: number): Promise<{
         success: boolean;
         amount: number;
         code: 1 | 2 | 3 | 4;
@@ -216,10 +192,7 @@ export declare class Player {
      * @param quantity
      * @returns codes: 1-Success, 2-Item Not Found, 3-Not Enough Resources, 4-Registry not found
      */
-    ReputationDecrement(
-        name: string,
-        quantity: number
-    ): Promise<{
+    ReputationDecrement(name: string, quantity: number): Promise<{
         success: boolean;
         amount: number;
         code: 1 | 2 | 3 | 4;
@@ -231,10 +204,7 @@ export declare class Player {
      * @param quantity
      * @returns codes: 1-Success, 2-Item Not Found, 3-Not Enough Resources, 4-Registry not found
      */
-    ReputationEdit(
-        name: string,
-        quantity: number
-    ): Promise<{
+    ReputationEdit(name: string, quantity: number): Promise<{
         success: boolean;
         amount: number;
         code: 1 | 2 | 3 | 4;
@@ -247,11 +217,7 @@ export declare class Player {
      * @param quantity
      * @returns codes: 1-Success, 2-Item Not Found, 4-RegistryNotFound
      */
-    InventoryIncrement(
-        registryName: TRegistered,
-        name: string,
-        quantity: number
-    ): Promise<{
+    InventoryIncrement(registryName: TRegistered, name: string, quantity: number): Promise<{
         success: boolean;
         amount: number;
         code: 1 | 2 | 4;
@@ -264,21 +230,14 @@ export declare class Player {
      * @param quantity
      * @returns codes: 1-Success, 2-Item Not Found, 3-Not enough items, 4-Registry Not Found
      */
-    InventoryDecrement(
-        registryName: TRegistered,
-        name: string,
-        quantity: number
-    ): Promise<{
+    InventoryDecrement(registryName: TRegistered, name: string, quantity: number): Promise<{
         success: boolean;
         amount: number;
         code: 1 | 2 | 3 | 4;
         error?: string;
     }>;
     InventorySum(inventoryName: TRegistered, gameCollection: Map<string, number>): Promise<boolean>;
-    InventorySubtract(
-        inventoryName: TRegistered,
-        gameCollection: Map<string, number>
-    ): Promise<{
+    InventorySubtract(inventoryName: TRegistered, gameCollection: Map<string, number>): Promise<{
         code: number;
         failures: string[];
     }>;
@@ -294,10 +253,7 @@ export declare class Player {
      * 3 - Not enough items <br />  \
      * 4 - Registry Not Found.
      */
-    AutoInventoryEdit(
-        name: string,
-        quantity: number
-    ): Promise<{
+    AutoInventoryEdit(name: string, quantity: number): Promise<{
         success: boolean;
         amount?: number;
         code: 1 | 2 | 3 | 4;
@@ -311,12 +267,10 @@ export declare class Player {
      * @param quantity the amount to change by (positive or negative)
      * @return codes: 1-Success, 2-Item Not Found, 3-Not enough items
      */
-    BatchAutoInventoryEdit(
-        pairs: {
-            name: string;
-            quantity: number;
-        }[]
-    ): Promise<{
+    BatchAutoInventoryEdit(pairs: {
+        name: string;
+        quantity: number;
+    }[]): Promise<{
         success: boolean;
         code: 1 | 2 | 3;
     }>;
@@ -334,9 +288,7 @@ export declare class Player {
      * @param name the name of the item
      * @return codes: 1-Success, 2-Item Not Found
      */
-    AutoInventoryRetrieve(
-        name: string
-    ): {
+    AutoInventoryRetrieve(name: string): {
         success: boolean;
         amount?: number;
         code: 1 | 2;
@@ -355,18 +307,11 @@ export declare class Player {
     getShipWrapper(): ShipWrapper;
     availableShips(): import("../../GameCollections/ShipCollection").ShipCollection;
     availableAttachments(): import("../../GameCollections/AttachmentCollection").AttachmentCollection;
-    availableAttachmentSlots(): import("../../../Extensions/Collections").MapCollection<
-        import("../Attachment/Attachment").AttachmentType,
-        number
-    >;
-    equipAttachment(
-        attachment: Attachment | string
-    ): Promise<{
+    availableAttachmentSlots(): import("../../../Extensions/Collections").MapCollection<import("../Attachment/Attachment").AttachmentType, number>;
+    equipAttachment(attachment: Attachment | string): Promise<{
         code: 200 | 403 | 404;
     }>;
-    unequipAttachment(
-        attachment: Attachment | string
-    ): Promise<{
+    unequipAttachment(attachment: Attachment | string): Promise<{
         code: 200 | 404;
     }>;
     /**
@@ -374,9 +319,7 @@ export declare class Player {
      * Does nothing else. For normal add from inventory, use equipAttachment()
      * @param attachment any attachment in client registry
      */
-    addAttachmentToShip(
-        attachment: Attachment | string
-    ): Promise<{
+    addAttachmentToShip(attachment: Attachment | string): Promise<{
         code: 200 | 403 | 404;
     }>;
     /**
@@ -384,9 +327,7 @@ export declare class Player {
      * from ship and add to inventory, use unequipAttachment().
      * @param attachment any attachment in client registry
      */
-    forceRemoveFromShip(
-        attachment: Attachment | string
-    ): Promise<{
+    forceRemoveFromShip(attachment: Attachment | string): Promise<{
         code: 200 | 403 | 404;
     }>;
     get Location(): SpacemapNode;

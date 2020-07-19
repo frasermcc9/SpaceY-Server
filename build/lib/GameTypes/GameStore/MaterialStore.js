@@ -17,7 +17,8 @@ class MaterialStore extends BaseStore_1.BaseStore {
         this.rarity = options.enableRarityEffects ?? true;
     }
     populateInventory() {
-        if (this.genValue == undefined) throw new Error("Cannot generate inventory of MaterialStore that had no value option passed.");
+        if (this.genValue == undefined)
+            throw new Error("Cannot generate inventory of MaterialStore that had no value option passed.");
         return this.collection.GenerateCollection({
             value: this.genValue,
             minTech: this.minTech,
@@ -37,3 +38,4 @@ class MaterialStore extends BaseStore_1.BaseStore {
     }
 }
 exports.MaterialStore = MaterialStore;
+//# sourceMappingURL=MaterialStore.js.map

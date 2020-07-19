@@ -4,8 +4,8 @@ exports.Server = void 0;
 const Registry_1 = require("./Registry");
 const Database_1 = require("../Database/Database");
 const EventManager_1 = require("./EventManager");
-const SocketManager_1 = require("../api/SocketManager");
-const RestManager_1 = require("../api/routes/RestManager");
+const SocketManager_1 = require("../api/sockets/SocketManager");
+const index_1 = require("../api/routes/index");
 class Server {
     constructor(serverOptions) {
         //#region Registry
@@ -18,7 +18,7 @@ class Server {
         //#region EventManager
         this.eventManager = new EventManager_1.EventManager();
         this.socketManager = new SocketManager_1.SocketManager();
-        this.restManager = new RestManager_1.RestManager();
+        this.restManager = new index_1.RestManager();
         this.uri = serverOptions.databaseUri;
         this.dbName = serverOptions.databaseName;
         this.ConsoleLogging = serverOptions.consoleLogging ?? false;
@@ -31,7 +31,8 @@ class Server {
         return this.Server;
     }
     static Create(serverOptions) {
-        if (this.Server) return; //throw new Error("A client has already been made. Please use Client.Get() to access it.");
+        if (this.Server)
+            return; //throw new Error("A client has already been made. Please use Client.Get() to access it.");
         this.Server = new Server(serverOptions);
     }
     static Destroy() {
@@ -70,3 +71,4 @@ class Server {
 }
 exports.Server = Server;
 Server.TEST = false;
+//# sourceMappingURL=Server.js.map

@@ -7,7 +7,8 @@ class PlayerMaterialCollection extends MaterialCollection_1.MaterialCollection {
         super(options);
     }
     maxCollectionSize() {
-        if (this.owner == undefined) return Infinity;
+        if (this.owner == undefined)
+            return Infinity;
         //console.log(this.owner.getShipWrapper());
         return this.owner.getShipWrapper().ShipStatistics.totalCargo;
     }
@@ -17,7 +18,8 @@ class PlayerMaterialCollection extends MaterialCollection_1.MaterialCollection {
         const diff = this.maxCollectionSize() - (this.CollectionSize - (current ?? 0) + value);
         if (diff >= 0) {
             return super.set(key, value);
-        } else {
+        }
+        else {
             return super.set(key, value + diff);
         }
     }
@@ -26,3 +28,4 @@ class PlayerMaterialCollection extends MaterialCollection_1.MaterialCollection {
     }
 }
 exports.PlayerMaterialCollection = PlayerMaterialCollection;
+//# sourceMappingURL=PlayerMaterialCollection.js.map

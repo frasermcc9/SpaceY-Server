@@ -46,3 +46,4 @@ PlayerSchema.methods.incrementCredits = playerFunctions_1.incrementCredits;
 PlayerSchema.methods.decrementCredits = playerFunctions_1.decrementCredits;
 PlayerSchema.methods.getCredits = playerFunctions_1.getCredits;
 exports.default = PlayerSchema;
+//# sourceMappingURL=playerSchema.js.map

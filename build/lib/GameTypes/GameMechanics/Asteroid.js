@@ -23,25 +23,28 @@ class Asteroid extends MaterialCollection_1.MaterialCollection {
      */
     cooldownManager(player, cooldown = this.cooldown) {
         this.timeoutMap.set(player.UId, Date.now());
-        this.timeoutIntervals.add(
-            setTimeout(() => {
-                this.timeoutMap.delete(player.UId);
-            }, 1000 * cooldown)
-        );
+        this.timeoutIntervals.add(setTimeout(() => {
+            this.timeoutMap.delete(player.UId);
+        }, 1000 * cooldown));
     }
     /**
      * Finds the time remaining for a given player's cooldown, in seconds. Will
      * return 0 if they are not in the timeout map/
-     * @param player the player to query.
+     * @param player the player to query (object or id).
      * @returns time in seconds (rounded to nearest second) remaining.
      */
     remainingCooldown(player) {
-        const now = Date.now(),
-            started = this.timeoutMap.get(player.UId) ?? now,
-            inMap = (started - now) / 1000;
-        if (started == now) return 0;
+        if (typeof player != "string")
+            player = player.UId;
+        const now = Date.now(), started = this.timeoutMap.get(player) ?? now, inMap = (started - now) / 1000;
+        if (started == now)
+            return 0;
         return Math.floor(this.cooldown + inMap);
     }
+    /**
+     * returns if the user doesnt have the asteroid on cooldown
+     * @param player either the player or the player id
+     */
     isAvailableForUser(player) {
         return this.remainingCooldown(player) == 0;
     }
@@ -55,12 +58,15 @@ class Asteroid extends MaterialCollection_1.MaterialCollection {
      * 403 - on cooldown
      */
     async mine(player, percent, cooldownOverride) {
-        if (this.autoCd) this.cooldown = Server_1.Server.Reg.DefaultAsteroidCooldown;
+        if (this.autoCd)
+            this.cooldown = Server_1.Server.Reg.DefaultAsteroidCooldown;
         //check cooldown
         const cd = this.remainingCooldown(player);
-        if (cd > 0 && !cooldownOverride) return { code: 403, cooldown: cd };
+        if (cd > 0 && !cooldownOverride)
+            return { code: 403, cooldown: cd };
         //apply probabilities
-        if (percent != undefined) this.applyDeviation(percent);
+        if (percent != undefined)
+            this.applyDeviation(percent);
         //apply mining laser
         player.getShipWrapper().mineEvent(this);
         //set cooldown
@@ -97,13 +103,11 @@ class Asteroid extends MaterialCollection_1.MaterialCollection {
      * @internal
      */
     applyDeviation(percent) {
-        let mean = ~~(this.CollectionSize / this.size),
-            deviation = Math.ceil(mean * (percent / 100)),
-            max = mean + deviation,
-            min = mean - deviation > 0 ? mean - deviation : 0;
+        let mean = ~~(this.CollectionSize / this.size), deviation = Math.ceil(mean * (percent / 100)), max = mean + deviation, min = mean - deviation > 0 ? mean - deviation : 0;
         this.forEach((el, key) => {
             const NewAmount = el + Math.ceil(Math.random() * (max - min) - (max - min) / 2);
-            if (el != 0) this.set(key, NewAmount);
+            if (el != 0)
+                this.set(key, NewAmount);
         });
     }
     get Name() {
@@ -132,7 +136,8 @@ class AsteroidBuilder {
         return this;
     }
     BuildRandom({ value }) {
-        if (value < 0 && Server_1.Server.Get().ConsoleLogging) console.warn("Negative asteroid value passed.");
+        if (value < 0 && Server_1.Server.Get().ConsoleLogging)
+            console.warn("Negative asteroid value passed.");
         const collection = MaterialCollection_1.MaterialCollection.GenerateMineableCollection(value);
         return new Asteroid({ data: collection }, this.cooldown, this.autoCooldown, this.name, this.tags);
     }
@@ -141,3 +146,4 @@ class AsteroidBuilder {
     }
 }
 exports.AsteroidBuilder = AsteroidBuilder;
+//# sourceMappingURL=Asteroid.js.map

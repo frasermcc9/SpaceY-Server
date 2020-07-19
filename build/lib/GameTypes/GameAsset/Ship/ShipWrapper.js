@@ -38,11 +38,35 @@ class ShipWrapper {
         this.attachments.forEach((attachment) => (strength += attachment.Strength));
         return strength;
     }
+    raw() {
+        return {
+            name: this.Name,
+            description: this.Description,
+            techLevel: this.MaxTech,
+            equipped: this.copyAttachments().map((a) => {
+                return {
+                    name: a.Name,
+                    description: a.Description,
+                    energyCost: a.EnergyCost,
+                    techLevel: a.TechLevel,
+                    type: a.Type,
+                    strength: a.Strength,
+                };
+            }),
+            baseStats: this.BaseStatistics,
+            playerStats: this.Statistics,
+            weaponCapacities: Object.fromEntries(this.WeaponCapacities),
+            equippedSlots: Object.fromEntries(this.availableSlots()),
+            maxTech: this.MaxTech,
+            strength: this.Strength,
+            baseShip: this.ship,
+        };
+    }
     /**
      * Gets weapon capacities (copy - does not mutate)
      */
     get WeaponCapacities() {
-        return this.ship.WeaponCapacities;
+        return new Map(this.ship.WeaponCapacities);
     }
     get Uri() {
         return this.ship.ImageUri;
@@ -109,18 +133,28 @@ class ShipWrapper {
         return this.ship.ShipStatistics;
     }
     incrementStatistics(stats) {
-        if (stats.hp) this.bonusHp += stats.hp ?? 0;
-        if (stats.shield) this.bonusShield += stats.shield ?? 0;
-        if (stats.energy) this.bonusEnergy = this.bonusEnergy.map((el, idx) => (el += stats.energy[idx] ?? 0));
-        if (stats.cargo) this.bonusCargo += stats.cargo ?? 0;
-        if (stats.handling) this.bonusHandling += stats.handling ?? 0;
+        if (stats.hp)
+            this.bonusHp += stats.hp ?? 0;
+        if (stats.shield)
+            this.bonusShield += stats.shield ?? 0;
+        if (stats.energy)
+            this.bonusEnergy = this.bonusEnergy.map((el, idx) => (el += stats.energy[idx] ?? 0));
+        if (stats.cargo)
+            this.bonusCargo += stats.cargo ?? 0;
+        if (stats.handling)
+            this.bonusHandling += stats.handling ?? 0;
     }
     decrementStatistics(stats) {
-        if (stats.hp) this.bonusHp -= stats.hp ?? 0;
-        if (stats.shield) this.bonusShield -= stats.shield ?? 0;
-        if (stats.energy) this.bonusEnergy = this.bonusEnergy.map((el, idx) => (el -= stats.energy[idx] ?? 0));
-        if (stats.cargo) this.bonusCargo -= stats.cargo ?? 0;
-        if (stats.handling) this.bonusHandling -= stats.handling ?? 0;
+        if (stats.hp)
+            this.bonusHp -= stats.hp ?? 0;
+        if (stats.shield)
+            this.bonusShield -= stats.shield ?? 0;
+        if (stats.energy)
+            this.bonusEnergy = this.bonusEnergy.map((el, idx) => (el -= stats.energy[idx] ?? 0));
+        if (stats.cargo)
+            this.bonusCargo -= stats.cargo ?? 0;
+        if (stats.handling)
+            this.bonusHandling -= stats.handling ?? 0;
     }
     /**
      * Changes the ship stored in this wrapper. Does not handle the addition of the old
@@ -151,18 +185,19 @@ class ShipWrapper {
     addAttachment(attachment) {
         if (typeof attachment == "string") {
             const candidate = Server_1.Server.Reg.ResolveAttachmentFromName(attachment);
-            if (candidate == undefined) return { code: 404 };
+            if (candidate == undefined)
+                return { code: 404 };
             attachment = candidate;
         }
         const Type = attachment.Type;
         const NumEquipped = this.Slots.get(Type);
         const MaxEquipped = this.ship.WeaponCapacities.get(Type);
         if (NumEquipped == undefined || MaxEquipped == undefined)
-            throw new TypeError(
-                `Unsupported attachment type ${Type}. It could not be found. NumEquipped:${NumEquipped}, MaxEquipped${MaxEquipped}`
-            );
-        if (NumEquipped >= MaxEquipped) return { code: 403 };
-        if (this.getTotalTech() + attachment.TechLevel > this.ship.MaxTech) return { code: 403 };
+            throw new TypeError(`Unsupported attachment type ${Type}. It could not be found. NumEquipped:${NumEquipped}, MaxEquipped${MaxEquipped}`);
+        if (NumEquipped >= MaxEquipped)
+            return { code: 403 };
+        if (this.getTotalTech() + attachment.TechLevel > this.ship.MaxTech)
+            return { code: 403 };
         this.Slots.set(Type, NumEquipped + 1);
         this.attachments.push(attachment);
         attachment.dispatch(Attachment_1.GameEvent.EQUIP, this);
@@ -177,32 +212,41 @@ class ShipWrapper {
      * @returns codes - 200: success, 404: Attachment not found on ship
      */
     removeAttachment(attachment) {
-        if (typeof attachment != "string") attachment = attachment.Name;
+        if (typeof attachment != "string")
+            attachment = attachment.Name;
         const idxAttachment = this.attachments.findIndex((val) => val.Name == attachment);
-        if (idxAttachment == undefined) return { code: 404 };
+        if (idxAttachment == undefined)
+            return { code: 404 };
         const Attachment = this.attachments.splice(idxAttachment, 1);
         Attachment[0].dispatch(Attachment_1.GameEvent.UNEQUIP, this);
         return { code: 200, removedAttachment: Attachment[0] };
     }
     pollWarp(warpRequired) {
-        if (warpRequired == 0) return true;
+        if (warpRequired == 0)
+            return true;
         const result = [];
         this.attachments.forEach((attachment) => {
             const data = attachment.dispatch(Attachment_1.GameEvent.WARP_POLL, this, warpRequired);
-            if (data != undefined) result.push(data);
+            if (data != undefined)
+                result.push(data);
         });
-        if (result == undefined) return false;
-        if (result.length > 1) return false;
+        if (result == undefined)
+            return false;
+        if (result.length > 1)
+            return false;
         return result[0]?.success;
     }
     warp(warpRequired) {
         const result = [];
         this.attachments.forEach((attachment) => {
             const data = attachment.dispatch(Attachment_1.GameEvent.WARP, this, warpRequired);
-            if (data != undefined) result.push(data);
+            if (data != undefined)
+                result.push(data);
         });
-        if (result == undefined) return false;
-        if (result.length > 1) return false;
+        if (result == undefined)
+            return false;
+        if (result.length > 1)
+            return false;
         return result[0]?.success;
     }
     mineEvent(asteroid) {
@@ -212,3 +256,4 @@ class ShipWrapper {
     }
 }
 exports.ShipWrapper = ShipWrapper;
+//# sourceMappingURL=ShipWrapper.js.map

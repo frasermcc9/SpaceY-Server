@@ -22,12 +22,15 @@ class GameAsset {
         return this.cost;
     }
     get Blueprint() {
-        if (this.blueprint == undefined) return { success: false };
+        if (this.blueprint == undefined)
+            return { success: false };
         return { success: true, blueprint: this.blueprint };
     }
     addBlueprint(blueprint) {
-        if (this.blueprint == undefined) this.blueprint == blueprint;
-        else throw new Error("Cannot replace a blueprint of an item that already has a blueprint.");
+        if (this.blueprint == undefined)
+            this.blueprint == blueprint;
+        else
+            throw new Error("Cannot replace a blueprint of an item that already has a blueprint.");
     }
     toString() {
         return this.name;
@@ -37,3 +40,4 @@ class GameAsset {
     }
 }
 exports.GameAsset = GameAsset;
+//# sourceMappingURL=GameAsset.js.map

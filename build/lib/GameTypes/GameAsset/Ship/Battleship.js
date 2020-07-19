@@ -43,84 +43,102 @@ class Battleship extends events_1.EventEmitter {
     //#endregion gets
     //#region - Stat Modifiers
     weaponIncrease(n, emit = true) {
-        if (n < 0) throw new Error("Negative value passed into weaponIncrease method");
+        if (n < 0)
+            throw new Error("Negative value passed into weaponIncrease method");
         if (this.currentStats.weapon + n > this.maxStats.weapon) {
             n = this.maxStats.weapon - this.currentStats.weapon;
         }
         this.currentStats.weapon += n;
-        if (emit) this.emit("weaponIncrease", this, n);
+        if (emit)
+            this.emit("weaponIncrease", this, n);
         return this;
     }
     weaponDecrease(n, emit = true) {
-        if (n < 0) throw new Error("Negative value passed into weaponDecrease method");
+        if (n < 0)
+            throw new Error("Negative value passed into weaponDecrease method");
         if (this.currentStats.weapon - n < 0) {
             n = this.currentStats.weapon;
         }
         this.currentStats.weapon -= n;
-        if (emit) this.emit("weaponDecrease", this, n);
+        if (emit)
+            this.emit("weaponDecrease", this, n);
         return this;
     }
     engineIncrease(n, emit = true) {
-        if (n < 0) throw new Error("Negative value passed into engineIncrease method");
+        if (n < 0)
+            throw new Error("Negative value passed into engineIncrease method");
         if (this.currentStats.engine + n > this.maxStats.engine) {
             n = this.maxStats.engine - this.currentStats.engine;
         }
         this.currentStats.engine += n;
-        if (emit) this.emit("engineIncrease", this, n);
+        if (emit)
+            this.emit("engineIncrease", this, n);
         return this;
     }
     engineDecrease(n, emit = true) {
-        if (n < 0) throw new Error("Negative value passed into engineDecrease method");
+        if (n < 0)
+            throw new Error("Negative value passed into engineDecrease method");
         if (this.currentStats.engine - n < 0) {
             n = this.currentStats.engine;
         }
-        if (emit) this.currentStats.engine -= n;
+        if (emit)
+            this.currentStats.engine -= n;
         this.emit("engineDecrease", this, n);
         return this;
     }
     cpuIncrease(n, emit = true) {
-        if (n < 0) throw new Error("Negative value passed into cpuIncrease method");
+        if (n < 0)
+            throw new Error("Negative value passed into cpuIncrease method");
         if (this.currentStats.cpu + n > this.maxStats.cpu) {
             n = this.maxStats.cpu - this.currentStats.cpu;
         }
         this.currentStats.cpu += n;
-        if (emit) this.emit("cpuIncrease", this, n);
+        if (emit)
+            this.emit("cpuIncrease", this, n);
         return this;
     }
     cpuDecrease(n, emit = true) {
-        if (n < 0) throw new Error("Negative value passed into cpuDecrease method");
+        if (n < 0)
+            throw new Error("Negative value passed into cpuDecrease method");
         if (this.currentStats.cpu - n < 0) {
             n = this.currentStats.cpu;
         }
         this.currentStats.cpu -= n;
-        if (emit) this.emit("cpuDecrease", this, n);
+        if (emit)
+            this.emit("cpuDecrease", this, n);
         return this;
     }
     shieldIncrease(n, emit = true) {
-        if (n < 0) throw new Error("Negative value passed into shieldIncrease method");
+        if (n < 0)
+            throw new Error("Negative value passed into shieldIncrease method");
         if (this.currentStats.shield + n > this.maxStats.shield) {
             n = this.maxStats.shield - this.currentStats.shield;
         }
         this.currentStats.shield += n;
-        if (emit) this.emit("shieldIncrease", this, n);
+        if (emit)
+            this.emit("shieldIncrease", this, n);
         return this;
     }
     shieldDecrease(n, emit = true) {
-        if (n < 0) throw new Error("Negative value passed into cpuDecrease method");
+        if (n < 0)
+            throw new Error("Negative value passed into cpuDecrease method");
         if (this.currentStats.shield - n < 0) {
             n = this.currentStats.shield;
         }
         this.currentStats.shield -= n;
-        if (emit) this.emit("shieldDecrease", this, n);
+        if (emit)
+            this.emit("shieldDecrease", this, n);
         return this;
     }
     hpIncrease(n, emit = true) {
-        if (n < 0) throw new Error("Negative value passed into hpIncrease method");
+        if (n < 0)
+            throw new Error("Negative value passed into hpIncrease method");
         if (this.currentStats.hp + n > this.maxStats.hp) {
             n = this.maxStats.hp - this.currentStats.hp;
         }
         this.currentStats.hp += n;
-        if (emit) this.emit("hpIncrease", this, n);
+        if (emit)
+            this.emit("hpIncrease", this, n);
         return this;
     }
     //#endregion stat modifiers
@@ -150,11 +168,13 @@ class Battleship extends events_1.EventEmitter {
     reduceCooldown(n = 1) {
         for (let i = 0; i < this.cooldownArray.length; i++) {
             this.cooldownArray[i] -= n;
-            if (this.cooldownArray[i] < 0) this.cooldownArray[i] = 0;
+            if (this.cooldownArray[i] < 0)
+                this.cooldownArray[i] = 0;
         }
     }
     standardDamage(n) {
-        if (n <= this.currentStats.shield) this.currentStats.shield -= n;
+        if (n <= this.currentStats.shield)
+            this.currentStats.shield -= n;
         else {
             n -= this.currentStats.shield;
             this.currentStats.shield = 0;
@@ -211,3 +231,4 @@ class Battleship extends events_1.EventEmitter {
     }
 }
 exports.Battleship = Battleship;
+//# sourceMappingURL=Battleship.js.map

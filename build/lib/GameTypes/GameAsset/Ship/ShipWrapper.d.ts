@@ -21,6 +21,36 @@ export declare class ShipWrapper {
     stringifyAttachments(): string[];
     get Owner(): Player;
     get Strength(): number;
+    raw(): {
+        name: string;
+        description: string;
+        techLevel: number;
+        equipped: {
+            name: string;
+            description: string;
+            energyCost: number[];
+            techLevel: number;
+            type: AttachmentType;
+            strength: number;
+        }[];
+        baseStats: {
+            baseHp: number;
+            baseShield: number;
+            baseEnergy: [number, number, number];
+            baseCargo: number;
+            baseHandling: number;
+        };
+        playerStats: IShipStats;
+        weaponCapacities: {
+            [k: string]: number;
+        };
+        equippedSlots: {
+            [k: string]: number;
+        };
+        maxTech: number;
+        strength: number;
+        baseShip: Ship;
+    };
     /**
      * Gets weapon capacities (copy - does not mutate)
      */
@@ -67,9 +97,7 @@ export declare class ShipWrapper {
      * @param newShip the ship to change this to
      * @returns array of attachments that were removed and the ship that was replaced
      */
-    changeShip(
-        newShip: Ship
-    ): {
+    changeShip(newShip: Ship): {
         attachments: Attachment[];
         oldShip: Ship;
     };
@@ -81,9 +109,7 @@ export declare class ShipWrapper {
      *  404: attachment not found in registry<br />  \
      *  403: not enough room to add item (space or tech)
      */
-    addAttachment(
-        attachment: Attachment | string
-    ): {
+    addAttachment(attachment: Attachment | string): {
         code: 200 | 403 | 404;
     };
     getTotalTech(): number;
@@ -92,9 +118,7 @@ export declare class ShipWrapper {
      * @param attachment
      * @returns codes - 200: success, 404: Attachment not found on ship
      */
-    removeAttachment(
-        attachment: Attachment | string
-    ): {
+    removeAttachment(attachment: Attachment | string): {
         code: number;
         removedAttachment?: Attachment;
     };

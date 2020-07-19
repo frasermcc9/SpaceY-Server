@@ -11,7 +11,8 @@ export declare class MaterialStore extends BaseStore {
     populateInventory(): import("../GameCollections/GameCollectionBase").GameCollectionBase;
     editGenSettings(options: IGenOptions): void;
 }
-interface IMaterialStoreOptions extends BaseStoreOptions, IGenOptions {}
+interface IMaterialStoreOptions extends BaseStoreOptions, IGenOptions {
+}
 interface IGenOptions {
     /**The minimum value of the collection*/
     generationValue?: number;

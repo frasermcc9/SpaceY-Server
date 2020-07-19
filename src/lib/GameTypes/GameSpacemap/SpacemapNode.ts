@@ -112,11 +112,24 @@ export class SpacemapNodeBuilder {
 
     private asteroids: Asteroid[] = [];
 
-    public constructor({ name, faction, requiredWarp, img }: { name: string; faction: Faction; requiredWarp: WarpPower; img?: string }) {
+    public constructor({
+        name,
+        faction,
+        requiredWarp,
+        img,
+        tech,
+    }: {
+        name: string;
+        faction: Faction;
+        requiredWarp: WarpPower;
+        img?: string;
+        tech?: number;
+    }) {
         this.name = name;
         this.faction = faction;
         this.requiredWarp = requiredWarp;
         this.imageUri = img;
+        this.techLevel = tech;
     }
 
     public setImage(uri: string): this {

@@ -46,11 +46,37 @@ export class ShipWrapper {
         return strength;
     }
 
+    public raw() {
+        return {
+            name: this.Name,
+            description: this.Description,
+            techLevel: this.MaxTech,
+            equipped: this.copyAttachments().map((a) => {
+                return {
+                    name: a.Name,
+                    description: a.Description,
+                    energyCost: a.EnergyCost,
+                    techLevel: a.TechLevel,
+                    type: a.Type,
+                    strength: a.Strength,
+                };
+            }),
+            baseStats: this.BaseStatistics,
+            playerStats: this.Statistics,
+            weaponCapacities: Object.fromEntries(this.WeaponCapacities),
+            equippedSlots: Object.fromEntries(this.availableSlots()),
+            maxTech: this.MaxTech,
+            strength: this.Strength,
+
+            baseShip: this.ship,
+        };
+    }
+
     /**
      * Gets weapon capacities (copy - does not mutate)
      */
     public get WeaponCapacities(): Map<AttachmentType, number> {
-        return this.ship.WeaponCapacities;
+        return new Map(this.ship.WeaponCapacities);
     }
 
     public get Uri() {

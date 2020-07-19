@@ -82,7 +82,7 @@ export abstract class BaseStore implements IStoreUpdatable {
         trader.CreditsDecrement({ amount: cpi * quantity });
         this.credits += cpi * quantity;
         const m = await trader.AutoInventoryEdit(item, quantity);
-        trader.save();
+        await trader.save();
         return { itemAmount: m.amount, playerCredits: trader.Credits, code: 200 };
     }
     /**
@@ -112,7 +112,7 @@ export abstract class BaseStore implements IStoreUpdatable {
         trader.CreditsIncrement({ amount: cpi * quantity });
         const playerNew = (await trader.AutoInventoryEdit(item, -quantity)).amount;
         if (playerNew == undefined) return { code: 500 };
-        trader.save();
+        await trader.save();
         return { itemAmount: playerNew, playerCredits: trader.Credits, code: 200 };
     }
 
@@ -148,7 +148,7 @@ export abstract class BaseStore implements IStoreUpdatable {
         trader.CreditsIncrement({ amount: storeCreditsToSpend });
         const playerNew = (await trader.AutoInventoryEdit(item, -quantity)).amount;
         if (playerNew == undefined) return { code: 500 };
-        trader.save();
+        await trader.save();
         return { itemAmount: playerNew, playerCredits: trader.Credits, code: 200 };
     }
 

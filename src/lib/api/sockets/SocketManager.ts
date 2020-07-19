@@ -3,8 +3,8 @@ import { EventEmitter } from "events";
 import * as io from "socket.io";
 import stringify from "json-stringify-safe";
 
-import { PlayerModel, IPlayer } from "../Database/Models/Player/PlayerModel";
-import { Player } from "../GameTypes/GameAsset/Player/Player";
+import { PlayerModel, IPlayer } from "../../Database/Models/Player/PlayerModel";
+import { Player } from "../../GameTypes/GameAsset/Player/Player";
 
 export class SocketManager extends EventEmitter {
     public static readonly PORT: number = 8000;
@@ -74,9 +74,43 @@ export class SocketManager extends EventEmitter {
         });
         //#endregion
 
-        //#region Buy
-        //TODO implement store events
-        client.on("buy", async ([playerData]: [IPlayer]) => {});
+        //#region Trading
+        client.on("buy", async ([playerData, storeName, item, quantity]: [IPlayer, string, string, number]) => {
+            const player = new Player(playerData);
+            const store = player.Location.nodeAllStores().find((s) => s.Name == storeName);
+            if (store == undefined) return this.emitResult(client, false, player.raw(), { failMsg: "Store not found." });
+            const result = (await store.buyFromStore({ trader: player, item: item, quantity: quantity })).code == 200;
+            return this.emitResult(client, result, player.raw(), { successMsg: `Item purchase successful.` });
+        });
+
+        client.on("sell", async ([playerData, storeName, item, quantity]: [IPlayer, string, string, number]) => {
+            const player = new Player(playerData);
+            const store = player.Location.nodeAllStores().find((s) => s.Name == storeName);
+            if (store == undefined) return this.emitResult(client, false, player.raw(), { failMsg: "Store not found." });
+            const result = (await store.sellToStore({ trader: player, item: item, quantity: quantity })).code == 200;
+            return this.emitResult(client, result, player.raw(), { successMsg: `Item sold successfully.` });
+        });
+
+        client.on("forceSell", async ([playerData, storeName, item, quantity]: [IPlayer, string, string, number]) => {
+            const player = new Player(playerData);
+            const store = player.Location.nodeAllStores().find((s) => s.Name == storeName);
+            if (store == undefined) return this.emitResult(client, false, player.raw(), { failMsg: "Store not found." });
+            const result = (await store.sellToStoreForce({ trader: player, item: item, quantity: quantity })).code == 200;
+            return this.emitResult(client, result, player.raw(), { successMsg: `Item sold successfully.` });
+        });
+        //#endregion
+
+        //#region Attachments
+
+        client.on("equip", async ([playerData, attachment]: [IPlayer, string]) => {
+            const player = new Player(playerData);
+            const result = (await player.equipAttachment(attachment)).code == 200;
+            return this.emitResult(client, result, player.raw(), {
+                successMsg: `Successfully equipped ${attachment}.`,
+                failMsg: `Failed to equip the attachment.`,
+            });
+        });
+
         //#endregion
     }
 

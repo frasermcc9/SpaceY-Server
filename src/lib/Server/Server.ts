@@ -1,8 +1,8 @@
 import { Registry } from "./Registry";
 import { connect } from "../Database/Database";
 import { EventManager } from "./EventManager";
-import { SocketManager } from "../api/SocketManager";
-import { RestManager } from "../api/routes/RestManager";
+import { SocketManager } from "../api/sockets/SocketManager";
+import { RestManager } from "../api/routes/index";
 
 export class Server {
     public static TEST = false;

@@ -2,6 +2,7 @@ import { Material } from "../GameAsset/Material/Material";
 import { GameCollectionBase, ICompatible } from "./GameCollectionBase";
 import { MapCollection } from "../../Extensions/Collections";
 export declare class MaterialCollection extends GameCollectionBase {
+    static WEIGHTS?: number[];
     constructor(options?: IMaterialCollectionOptions);
     /**@deprecated*/
     DataFromName(name: string): IMaterialQuantity;
@@ -10,7 +11,9 @@ export declare class MaterialCollection extends GameCollectionBase {
     /**@deprecated*/
     DataFromMaterial(material: Material): IMaterialQuantity;
     GetCollectionValue(): number;
-    static GenerateMineableCollection(value: number): MaterialCollection;
+    static GenerateMineableCollection(value: number, central?: number): MaterialCollection;
+    private static GenerateMiningWeights;
+    static RefreshMiningWeightCache(): void;
     /** @override */
     GetCompatibleItems({ minRarity, maxRarity, minTech, maxTech }: ICompatible): MapCollection<string, Material>;
     /** @override */

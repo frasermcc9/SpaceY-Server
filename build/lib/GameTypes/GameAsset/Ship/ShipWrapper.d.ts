@@ -32,10 +32,11 @@ export declare class ShipWrapper {
             techLevel: number;
             type: AttachmentType;
             strength: number;
+            cost: number | undefined;
         }[];
         baseStats: {
             baseHp: number;
-            baseShield: number;
+            baseShield: number; /**value: capacity, key: type */
             baseEnergy: [number, number, number];
             baseCargo: number;
             baseHandling: number;
@@ -84,7 +85,7 @@ export declare class ShipWrapper {
      */
     get BaseStatistics(): {
         baseHp: number;
-        baseShield: number;
+        baseShield: number; /**value: capacity, key: type */
         baseEnergy: [number, number, number];
         baseCargo: number;
         baseHandling: number;

@@ -64,11 +64,16 @@ class MaterialCollection extends GameCollectionBase_1.GameCollectionBase {
         });
         return total;
     }
-    static GenerateMineableCollection(value) {
+    static GenerateMineableCollection(value, central = 0) {
         const Template = Array.from(Server_1.Server.Get().Registry.MineableMaterialRegistry.values());
         if (Template.length == 0) {
             throw new Error("No Mineable Materials");
         }
+        const weights = this.GenerateMiningWeights(Template, central);
+        const flatArray = [];
+        for (let i = 0; i < Template.length; ++i)
+            for (let j = 0; j < weights[i]; ++j)
+                flatArray.push(Template[i]);
         const MineableCollection = new MaterialCollection();
         let currentPrice = 0;
         do {
@@ -79,6 +84,17 @@ class MaterialCollection extends GameCollectionBase_1.GameCollectionBase {
             currentPrice += Material.PriceData.cost ?? 0;
         } while (currentPrice < value);
         return MineableCollection;
+    }
+    static GenerateMiningWeights(items, centralRarity) {
+        if (this.WEIGHTS?.length == items.length) {
+            return this.WEIGHTS;
+        }
+        const weights = items.map((i) => 10 ** 1.9 - Math.abs(centralRarity - i.GetMaterialRarity() ** 1.8));
+        this.WEIGHTS = weights;
+        return this.WEIGHTS;
+    }
+    static RefreshMiningWeightCache() {
+        this.WEIGHTS = [];
     }
     /** @override */
     GetCompatibleItems({ minRarity, maxRarity, minTech, maxTech }) {
@@ -94,5 +110,6 @@ class MaterialCollection extends GameCollectionBase_1.GameCollectionBase {
     }
 }
 exports.MaterialCollection = MaterialCollection;
+MaterialCollection.WEIGHTS = [];
 const MAT_NOT_FOUND = "This material does not exist in the client collection.";
 //# sourceMappingURL=MaterialCollection.js.map

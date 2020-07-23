@@ -19,6 +19,9 @@ class AttachmentStore extends BaseStore_1.BaseStore {
             this.collection.set(selected.Name, (current ?? 0) + 1);
         }
     }
+    identity() {
+        return `${this.Name}: Weapons Store`;
+    }
 }
 exports.AttachmentStore = AttachmentStore;
 //# sourceMappingURL=AttachmentStore.js.map

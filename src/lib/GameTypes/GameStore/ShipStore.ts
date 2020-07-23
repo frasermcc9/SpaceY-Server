@@ -21,6 +21,10 @@ export class ShipStore extends BaseStore {
             this.collection.set(selected.Name, (current ?? 0) + 1);
         }
     }
+
+    public identity():string{
+        return `${this.Name}: Shipyard`
+    }
 }
 
 interface IShipStoreOptions extends BaseStoreOptions {

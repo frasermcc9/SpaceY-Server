@@ -47,6 +47,10 @@ export class MaterialStore extends BaseStore {
         this.genCentralRarity = options.centralRarity ?? this.genCentralRarity;
         this.rarity = options.enableRarityEffects ?? this.rarity;
     }
+
+    public identity():string{
+        return `${this.Name}: Resource Store`
+    }
 }
 
 interface IMaterialStoreOptions extends BaseStoreOptions, IGenOptions {}

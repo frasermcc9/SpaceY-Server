@@ -10,21 +10,27 @@ import { IPlayer } from "../../../Database/Models/Player/PlayerModel";
 export const user_get = async (req: Request, res: Response) => {
     const param = req.params.id;
     const player = await PlayerModel.findOneOrCreateRaw({ uId: param });
-    const ship = new Player(player).getShipWrapper().raw();
 
-    const returnPlayer = {
-        uId: player.uId,
+    const jsonPlayer = {
         blueprints: player.blueprints,
         exp: player.exp,
-        inventory: player.inventory,
         location: player.location,
-        ship: ship,
+        inventory: {
+            attachments: Object.fromEntries(player.inventory.attachments),
+            materials: Object.fromEntries(player.inventory.attachments),
+            ships: Object.fromEntries(player.inventory.attachments),
+            reputation: Object.fromEntries(player.inventory.attachments),
+            credits: player.inventory.credits,
+            tokens: player.inventory.credits,
+        },
+        ship: new Player(player).getShipWrapper().raw(),
         skills: player.skills,
+        uId: player.uId,
         skin: player.skin,
         skins: player.skins,
     };
 
-    return res.send(returnPlayer);
+    return res.send(jsonPlayer);
 };
 
 export const user_adjacent_get = async (req: Request, res: Response) => {

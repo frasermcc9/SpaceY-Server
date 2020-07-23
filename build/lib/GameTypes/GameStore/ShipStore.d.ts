@@ -5,6 +5,7 @@ export declare class ShipStore extends BaseStore {
     private maxToSell;
     constructor(options: IShipStoreOptions);
     populateInventory(): void;
+    identity(): string;
 }
 interface IShipStoreOptions extends BaseStoreOptions {
     storeFaction: Faction;

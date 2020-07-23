@@ -19,6 +19,9 @@ class ShipStore extends BaseStore_1.BaseStore {
             this.collection.set(selected.Name, (current ?? 0) + 1);
         }
     }
+    identity() {
+        return `${this.Name}: Shipyard`;
+    }
 }
 exports.ShipStore = ShipStore;
 //# sourceMappingURL=ShipStore.js.map

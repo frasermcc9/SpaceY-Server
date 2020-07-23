@@ -1,5 +1,8 @@
 import { Request, Response } from "express";
 import { Client } from "../../../main";
+import { Faction } from "../../../GameTypes/GameAsset/Faction/Faction";
+import { WarpPower, SpacemapNode } from "../../../GameTypes/GameSpacemap/SpacemapNode";
+import stringify from "json-stringify-safe";
 
 /**
  * GET if asteroid is available for user. <br />  \
@@ -17,16 +20,37 @@ export const location_get = (req: Request, res: Response) => {
 
     if (result == undefined) return res.send({ status: "404" });
 
-    const response = {
+    const nodeAdjacent = Client.Reg.Spacemap.getConnectedNodes(result);
+    const nodeStores = result.nodeAllStores().map((s) => s.identity());
+    const nodeAsteroids = result.Asteroids.map((a) => ({ name: a.Name, value: a.GetCollectionValue() }));
+
+    const response: ILocationResponse = {
         status: "200",
         location: {
-            faction: result?.Faction,
+            faction: result.Faction,
             imageUri: result.ImageUri,
             name: result.Name,
             requiredWarp: result.RequiredWarp,
             techLevel: result.TechLevel,
+            adjacent: nodeAdjacent,
+            stores: nodeStores,
+            asteroids: nodeAsteroids,
         },
     };
 
     res.send(response);
 };
+
+interface ILocationResponse {
+    status: string;
+    location: {
+        faction: Faction;
+        imageUri?: string;
+        name: string;
+        requiredWarp: WarpPower;
+        techLevel: number;
+        adjacent: SpacemapNode[];
+        stores: string[];
+        asteroids: { name: string; value: number }[];
+    };
+}

@@ -27,7 +27,6 @@ const events_1 = require("events");
 const io = __importStar(require("socket.io"));
 const json_stringify_safe_1 = __importDefault(require("json-stringify-safe"));
 const PlayerModel_1 = require("../../Database/Models/Player/PlayerModel");
-const Player_1 = require("../../GameTypes/GameAsset/Player/Player");
 class SocketManager extends events_1.EventEmitter {
     constructor() {
         super();
@@ -43,76 +42,79 @@ class SocketManager extends events_1.EventEmitter {
      * @param client the client to add the listeners to
      */
     listen(client) {
-        client.on("warp", async ([playerData, location]) => {
-            const player = new Player_1.Player(playerData);
-            const result = await player.travelTo(location);
+        client.on("warp", async ({ id, locationName }) => {
+            const player = await PlayerModel_1.PlayerModel.findOneOrCreate({ uId: id });
+            const result = await player.travelTo(locationName);
             this.emitResult(client, result, player.raw(), {
-                successMsg: `Successfully traveled to ${location}.`,
+                successMsg: `Successfully traveled to ${locationName}.`,
                 failMsg: "Cannot travel to this location.",
             });
         });
         //#region Skin Events
-        client.on("createSkin", async ([playerData, name, uri]) => {
-            const player = new Player_1.Player(playerData);
-            const result = await player.newSkin(name, uri);
+        client.on("createSkin", async ({ id, skinName, uri }) => {
+            const player = await PlayerModel_1.PlayerModel.findOneOrCreate({ uId: id });
+            const result = await player.newSkin(skinName, uri);
             this.emitResult(client, result, player.raw(), {
-                successMsg: `Skin '${name}' created.`,
+                successMsg: `Skin '${skinName}' created.`,
                 failMsg: `Cannot create skin. You need a token to create a skin.`,
             });
         });
-        client.on("equipSkin", async ([playerData, skinName]) => {
-            const player = new Player_1.Player(playerData);
+        client.on("equipSkin", async ({ id, skinName }) => {
+            const player = await PlayerModel_1.PlayerModel.findOneOrCreate({ uId: id });
             const result = await player.applySkin(skinName);
-            this.emitResult(client, result, player.raw(), { successMsg: `Skin ${skinName} applied!`, failMsg: `Skin removed.` });
+            this.emitResult(client, result, player.raw(), {
+                successMsg: `Skin ${skinName} applied!`,
+                failMsg: `Skin removed.`,
+            });
         });
-        client.on("removeSkin", async ([playerData]) => {
-            const player = new Player_1.Player(playerData);
+        client.on("removeSkin", async ({ id }) => {
+            const player = await PlayerModel_1.PlayerModel.findOneOrCreate({ uId: id });
             await player.removeSkin();
             this.emitResult(client, true, player.raw(), { successMsg: "Skin removed." });
         });
         //#endregion
         //#region Mine
-        client.on("mine", async ([playerData, asteroidName]) => {
-            const player = new Player_1.Player(playerData);
+        client.on("mine", async ({ id, asteroidName }) => {
+            const player = await PlayerModel_1.PlayerModel.findOneOrCreate({ uId: id });
             const asteroid = player.Location.Asteroids.find((a) => a.Name == asteroidName);
             if (!asteroid)
                 return this.emitResult(client, false, player.raw(), { failMsg: "This asteroid doesn't exist here." });
             const result = (await asteroid.mine(player)).code == 200;
             this.emitResult(client, result, player.raw(), {
-                successMsg: "Asteroid Successfully Mined",
+                successMsg: `Asteroid successfully mined! New cargo: ${player.cargoString()}.`,
                 failMsg: `Asteroid cannot be mined. On cooldown for ${asteroid.remainingCooldown(player)} more seconds.`,
             });
         });
         //#endregion
         //#region Trading
-        client.on("buy", async ([playerData, storeName, item, quantity]) => {
-            const player = new Player_1.Player(playerData);
+        client.on("buy", async ({ id, itemName, quantity, storeName }) => {
+            const player = await PlayerModel_1.PlayerModel.findOneOrCreate({ uId: id });
             const store = player.Location.nodeAllStores().find((s) => s.Name == storeName);
             if (store == undefined)
                 return this.emitResult(client, false, player.raw(), { failMsg: "Store not found." });
-            const result = (await store.buyFromStore({ trader: player, item: item, quantity: quantity })).code == 200;
+            const result = (await store.buyFromStore({ trader: player, item: itemName, quantity: quantity })).code == 200;
             return this.emitResult(client, result, player.raw(), { successMsg: `Item purchase successful.` });
         });
-        client.on("sell", async ([playerData, storeName, item, quantity]) => {
-            const player = new Player_1.Player(playerData);
+        client.on("sell", async ({ id, itemName, quantity, storeName }) => {
+            const player = await PlayerModel_1.PlayerModel.findOneOrCreate({ uId: id });
             const store = player.Location.nodeAllStores().find((s) => s.Name == storeName);
             if (store == undefined)
                 return this.emitResult(client, false, player.raw(), { failMsg: "Store not found." });
-            const result = (await store.sellToStore({ trader: player, item: item, quantity: quantity })).code == 200;
+            const result = (await store.sellToStore({ trader: player, item: itemName, quantity: quantity })).code == 200;
             return this.emitResult(client, result, player.raw(), { successMsg: `Item sold successfully.` });
         });
-        client.on("forceSell", async ([playerData, storeName, item, quantity]) => {
-            const player = new Player_1.Player(playerData);
+        client.on("forceSell", async ({ id, itemName, quantity, storeName }) => {
+            const player = await PlayerModel_1.PlayerModel.findOneOrCreate({ uId: id });
             const store = player.Location.nodeAllStores().find((s) => s.Name == storeName);
             if (store == undefined)
                 return this.emitResult(client, false, player.raw(), { failMsg: "Store not found." });
-            const result = (await store.sellToStoreForce({ trader: player, item: item, quantity: quantity })).code == 200;
+            const result = (await store.sellToStoreForce({ trader: player, item: itemName, quantity: quantity })).code == 200;
             return this.emitResult(client, result, player.raw(), { successMsg: `Item sold successfully.` });
         });
         //#endregion
         //#region Attachments
-        client.on("equip", async ([playerData, attachment]) => {
-            const player = new Player_1.Player(playerData);
+        client.on("equip", async ({ id, attachment }) => {
+            const player = await PlayerModel_1.PlayerModel.findOneOrCreate({ uId: id });
             const result = (await player.equipAttachment(attachment)).code == 200;
             return this.emitResult(client, result, player.raw(), {
                 successMsg: `Successfully equipped ${attachment}.`,
@@ -125,7 +127,8 @@ class SocketManager extends events_1.EventEmitter {
         successMsg = successMsg ?? "Success";
         failMsg = failMsg ?? "Internal Server Error";
         const msg = result ? successMsg : failMsg;
-        client.emit("res", result, msg, json_stringify_safe_1.default(player));
+        const emitObj = { success: result, playerStringified: json_stringify_safe_1.default(player), msg: msg };
+        client.emit("res", emitObj);
     }
     async getPlayer(id) {
         return PlayerModel_1.PlayerModel.findOneOrCreate({ uId: id });

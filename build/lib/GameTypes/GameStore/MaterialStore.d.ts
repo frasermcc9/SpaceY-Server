@@ -10,6 +10,7 @@ export declare class MaterialStore extends BaseStore {
     constructor(options: IMaterialStoreOptions);
     populateInventory(): import("../GameCollections/GameCollectionBase").GameCollectionBase;
     editGenSettings(options: IGenOptions): void;
+    identity(): string;
 }
 interface IMaterialStoreOptions extends BaseStoreOptions, IGenOptions {
 }

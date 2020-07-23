@@ -36,6 +36,9 @@ class MaterialStore extends BaseStore_1.BaseStore {
         this.genCentralRarity = options.centralRarity ?? this.genCentralRarity;
         this.rarity = options.enableRarityEffects ?? this.rarity;
     }
+    identity() {
+        return `${this.Name}: Resource Store`;
+    }
 }
 exports.MaterialStore = MaterialStore;
 //# sourceMappingURL=MaterialStore.js.map

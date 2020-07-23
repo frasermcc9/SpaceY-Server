@@ -5,6 +5,7 @@ export declare class AttachmentStore extends BaseStore {
     private maxToSell;
     constructor(options: IAttachmentStoreOptions);
     populateInventory(): void;
+    identity(): string;
 }
 interface IAttachmentStoreOptions extends BaseStoreOptions {
     storeFaction: Faction;

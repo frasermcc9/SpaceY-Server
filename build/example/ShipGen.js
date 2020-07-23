@@ -288,3 +288,4 @@ exports.ShipGenerator = () => {
             .Build(),
     ];
 };
+//# sourceMappingURL=ShipGen.js.map

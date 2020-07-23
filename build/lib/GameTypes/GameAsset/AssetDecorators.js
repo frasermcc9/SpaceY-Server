@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.BuildableDecorator = exports.SellableDecorator = exports.GameAssetDecorator = void 0;
-const Client_1 = require("../../Client/Client");
+const Server_1 = require("../../Server/Server");
 const util_1 = require("../../Util/util");
 class GameAssetDecorator {
     constructor(asset) {
@@ -18,7 +18,7 @@ exports.GameAssetDecorator = GameAssetDecorator;
 class SellableDecorator extends GameAssetDecorator {
     constructor(item) {
         if (typeof item == "string") {
-            const obj = Client_1.Client.Reg.AnyResolve(item);
+            const obj = Server_1.Server.Reg.AnyResolve(item);
             if (obj == undefined)
                 throw new TypeError(`Item named ${item} instantiated as SellableDecorator when item does not exist in registry.`);
             super(obj);
@@ -43,7 +43,7 @@ class SellableDecorator extends GameAssetDecorator {
             baseCost += rnd * (max - min) - (max - min) / 2;
         }
         if (loTechEffect || hiTechEffect) {
-            const maxTechDelta = Client_1.Client.Reg.MaxTech;
+            const maxTechDelta = Server_1.Server.Reg.MaxTech;
             const delta = Math.abs(territory.TechLevel - this.asset.TechLevel);
             const percentOfDelta = delta / maxTechDelta;
             //Apply percent change if faction tech level is higher
@@ -91,3 +91,4 @@ class BuildableDecorator extends GameAssetDecorator {
     }
 }
 exports.BuildableDecorator = BuildableDecorator;
+//# sourceMappingURL=AssetDecorators.js.map

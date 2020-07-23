@@ -5,27 +5,26 @@ const GameAsset_1 = require("../GameAsset");
 class Faction extends GameAsset_1.GameAsset {
     constructor(options) {
         super(options);
-        this.options = options;
-        this.options.soldShips = options.soldShips ?? [];
-        this.options.usedShips = options.usedShips ?? [];
-        this.options.soldAttachments = options.soldAttachments ?? [];
-        this.options.usedAttachments = options.usedAttachments ?? [];
-        this.options.imageUri = options.imageUri ?? "";
+        this.soldShips = options.soldShips ?? [];
+        this.usedShips = options.usedShips ?? [];
+        this.soldAttachments = options.soldAttachments ?? [];
+        this.usedAttachments = options.usedAttachments ?? [];
+        this.imageUri = options.imageUri ?? "";
     }
     get SellableShips() {
-        return this.options.soldShips.slice();
+        return this.soldShips.slice();
     }
     get SellableAttachments() {
-        return this.options.soldAttachments.slice();
+        return this.soldAttachments.slice();
     }
     get UsableShips() {
-        return this.options.soldShips.slice();
+        return this.usedShips.slice();
     }
     get UsableAttachments() {
-        return this.options.soldAttachments.slice();
+        return this.usedAttachments.slice();
     }
     get Uri() {
-        return this.options.imageUri;
+        return this.imageUri;
     }
 }
 exports.Faction = Faction;
@@ -112,3 +111,4 @@ class FactionBuilder {
     }
 }
 exports.FactionBuilder = FactionBuilder;
+//# sourceMappingURL=Faction.js.map

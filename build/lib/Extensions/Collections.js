@@ -74,7 +74,7 @@ class MapCollection extends Map {
         });
     }
     filter(fn, thisArg) {
-        if (typeof thisArg !== 'undefined')
+        if (typeof thisArg !== "undefined")
             fn = fn.bind(thisArg);
         const results = new MapCollection();
         for (const [key, val] of this) {
@@ -88,3 +88,4 @@ exports.MapCollection = MapCollection;
 class UniqueCollection extends Set {
 }
 exports.UniqueCollection = UniqueCollection;
+//# sourceMappingURL=Collections.js.map

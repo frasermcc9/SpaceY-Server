@@ -38,3 +38,4 @@ class MaterialStore extends BaseStore_1.BaseStore {
     }
 }
 exports.MaterialStore = MaterialStore;
+//# sourceMappingURL=MaterialStore.js.map

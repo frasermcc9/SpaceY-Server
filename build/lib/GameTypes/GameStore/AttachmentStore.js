@@ -21,3 +21,4 @@ class AttachmentStore extends BaseStore_1.BaseStore {
     }
 }
 exports.AttachmentStore = AttachmentStore;
+//# sourceMappingURL=AttachmentStore.js.map

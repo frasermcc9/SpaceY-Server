@@ -21,3 +21,4 @@ class ShipStore extends BaseStore_1.BaseStore {
     }
 }
 exports.ShipStore = ShipStore;
+//# sourceMappingURL=ShipStore.js.map

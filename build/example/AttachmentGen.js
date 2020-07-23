@@ -987,3 +987,4 @@ const ShieldGenerator = () => {
 function rb(lo, hi) {
     return ~~(Math.random() * (lo - hi + 1) + lo);
 }
+//# sourceMappingURL=AttachmentGen.js.map

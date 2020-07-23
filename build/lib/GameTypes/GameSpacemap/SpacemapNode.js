@@ -78,13 +78,14 @@ class SpacemapNode {
 }
 exports.SpacemapNode = SpacemapNode;
 class SpacemapNodeBuilder {
-    constructor({ name, faction, requiredWarp, img }) {
+    constructor({ name, faction, requiredWarp, img, tech, }) {
         this.stores = [];
         this.asteroids = [];
         this.name = name;
         this.faction = faction;
         this.requiredWarp = requiredWarp;
         this.imageUri = img;
+        this.techLevel = tech;
     }
     setImage(uri) {
         this.imageUri = uri;
@@ -119,3 +120,4 @@ var WarpPower;
     WarpPower[WarpPower["MODERATE"] = 2] = "MODERATE";
     WarpPower[WarpPower["HIGH"] = 3] = "HIGH";
 })(WarpPower = exports.WarpPower || (exports.WarpPower = {}));
+//# sourceMappingURL=SpacemapNode.js.map

@@ -89,3 +89,4 @@ exports.FactionGenerator = () => {
             .Build(),
     ];
 };
+//# sourceMappingURL=FactionGen.js.map

@@ -40,3 +40,4 @@ class GameAsset {
     }
 }
 exports.GameAsset = GameAsset;
+//# sourceMappingURL=GameAsset.js.map

@@ -14,3 +14,4 @@ class Skin {
     }
 }
 exports.Skin = Skin;
+//# sourceMappingURL=Skin.js.map

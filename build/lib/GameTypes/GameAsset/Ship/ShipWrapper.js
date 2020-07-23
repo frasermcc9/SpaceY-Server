@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ShipWrapper = void 0;
-const Client_1 = require("../../../Client/Client");
+const Server_1 = require("../../../Server/Server");
 const Attachment_1 = require("../Attachment/Attachment");
 const Collections_1 = require("../../../Extensions/Collections");
 class ShipWrapper {
@@ -38,11 +38,35 @@ class ShipWrapper {
         this.attachments.forEach((attachment) => (strength += attachment.Strength));
         return strength;
     }
+    raw() {
+        return {
+            name: this.Name,
+            description: this.Description,
+            techLevel: this.MaxTech,
+            equipped: this.copyAttachments().map((a) => {
+                return {
+                    name: a.Name,
+                    description: a.Description,
+                    energyCost: a.EnergyCost,
+                    techLevel: a.TechLevel,
+                    type: a.Type,
+                    strength: a.Strength,
+                };
+            }),
+            baseStats: this.BaseStatistics,
+            playerStats: this.Statistics,
+            weaponCapacities: Object.fromEntries(this.WeaponCapacities),
+            equippedSlots: Object.fromEntries(this.availableSlots()),
+            maxTech: this.MaxTech,
+            strength: this.Strength,
+            baseShip: this.ship,
+        };
+    }
     /**
      * Gets weapon capacities (copy - does not mutate)
      */
     get WeaponCapacities() {
-        return this.ship.WeaponCapacities;
+        return new Map(this.ship.WeaponCapacities);
     }
     get Uri() {
         return this.ship.ImageUri;
@@ -160,7 +184,7 @@ class ShipWrapper {
      */
     addAttachment(attachment) {
         if (typeof attachment == "string") {
-            const candidate = Client_1.Client.Reg.ResolveAttachmentFromName(attachment);
+            const candidate = Server_1.Server.Reg.ResolveAttachmentFromName(attachment);
             if (candidate == undefined)
                 return { code: 404 };
             attachment = candidate;
@@ -232,3 +256,4 @@ class ShipWrapper {
     }
 }
 exports.ShipWrapper = ShipWrapper;
+//# sourceMappingURL=ShipWrapper.js.map

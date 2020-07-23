@@ -21,6 +21,36 @@ export declare class ShipWrapper {
     stringifyAttachments(): string[];
     get Owner(): Player;
     get Strength(): number;
+    raw(): {
+        name: string;
+        description: string;
+        techLevel: number;
+        equipped: {
+            name: string;
+            description: string;
+            energyCost: number[];
+            techLevel: number;
+            type: AttachmentType;
+            strength: number;
+        }[];
+        baseStats: {
+            baseHp: number;
+            baseShield: number;
+            baseEnergy: [number, number, number];
+            baseCargo: number;
+            baseHandling: number;
+        };
+        playerStats: IShipStats;
+        weaponCapacities: {
+            [k: string]: number;
+        };
+        equippedSlots: {
+            [k: string]: number;
+        };
+        maxTech: number;
+        strength: number;
+        baseShip: Ship;
+    };
     /**
      * Gets weapon capacities (copy - does not mutate)
      */

@@ -18,6 +18,7 @@ const KalenGen = () => {
             requiredWarp: SpacemapNode_1.WarpPower.NONE,
             faction: main_1.Client.Reg.ResolveFactionFromName("Kalen"),
             img: "https://cdn.discordapp.com/attachments/732459193545523261/732462067436617778/unknown.png",
+            tech: 1,
         })
             .addAsteroid(new Asteroid_1.AsteroidBuilder("GEM01").BuildRandom({ value: 500 }))
             .addAsteroid(new Asteroid_1.AsteroidBuilder("GEM02").BuildRandom({ value: 500 }))
@@ -41,6 +42,7 @@ const KalenGen = () => {
             requiredWarp: SpacemapNode_1.WarpPower.NONE,
             faction: main_1.Client.Reg.ResolveFactionFromName("Kalen"),
             img: "https://cdn.discordapp.com/attachments/732459193545523261/732462067436617778/unknown.png",
+            tech: 1,
         })
             .addAsteroid(new Asteroid_1.AsteroidBuilder("KAL01").BuildRandom({ value: 750 }))
             .addStore(new MaterialStore_1.MaterialStore({
@@ -62,6 +64,7 @@ const KalenGen = () => {
             requiredWarp: SpacemapNode_1.WarpPower.NONE,
             faction: main_1.Client.Reg.ResolveFactionFromName("Kalen"),
             img: "https://cdn.discordapp.com/attachments/732459193545523261/732462067436617778/unknown.png",
+            tech: 3,
         })
             .addStore(new ShipStore_1.ShipStore({
             initialCredits: 25000,
@@ -77,6 +80,7 @@ const KalenGen = () => {
             requiredWarp: SpacemapNode_1.WarpPower.NONE,
             faction: main_1.Client.Reg.ResolveFactionFromName("Kalen"),
             img: "https://cdn.discordapp.com/attachments/732459193545523261/732462067436617778/unknown.png",
+            tech: 1,
         })
             .addAsteroid(new Asteroid_1.AsteroidBuilder("ARI01").BuildRandom({ value: 450 }))
             .addAsteroid(new Asteroid_1.AsteroidBuilder("ARI02").setCooldown(60 * 30).BuildRandom({ value: 1250 }))
@@ -99,6 +103,7 @@ const KalenGen = () => {
             requiredWarp: SpacemapNode_1.WarpPower.NONE,
             faction: main_1.Client.Reg.ResolveFactionFromName("Kalen"),
             img: "https://cdn.discordapp.com/attachments/732459193545523261/732462067436617778/unknown.png",
+            tech: 1,
         })
             .addAsteroid(new Asteroid_1.AsteroidBuilder("AGA01").BuildRandom({ value: 500 }))
             .addAsteroid(new Asteroid_1.AsteroidBuilder("AGA02").BuildRandom({ value: 500 }))
@@ -110,6 +115,7 @@ const KalenGen = () => {
             requiredWarp: SpacemapNode_1.WarpPower.NONE,
             faction: main_1.Client.Reg.ResolveFactionFromName("Kalen"),
             img: "https://cdn.discordapp.com/attachments/732459193545523261/732462067436617778/unknown.png",
+            tech: 2,
         })
             .addStore(new AttachmentStore_1.AttachmentStore({
             initialCredits: 2650,
@@ -122,3 +128,4 @@ const KalenGen = () => {
             .build(),
     ];
 };
+//# sourceMappingURL=NodeGen.js.map

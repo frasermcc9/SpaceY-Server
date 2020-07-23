@@ -244,3 +244,4 @@ var AttachmentType;
     AttachmentType[AttachmentType["SHIELD"] = 3] = "SHIELD";
     AttachmentType[AttachmentType["MINER"] = 4] = "MINER";
 })(AttachmentType = exports.AttachmentType || (exports.AttachmentType = {}));
+//# sourceMappingURL=Attachment.js.map

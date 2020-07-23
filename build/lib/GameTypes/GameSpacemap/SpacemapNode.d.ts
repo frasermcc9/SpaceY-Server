@@ -41,11 +41,12 @@ export declare class SpacemapNodeBuilder {
     private techLevel?;
     private imageUri?;
     private asteroids;
-    constructor({ name, faction, requiredWarp, img }: {
+    constructor({ name, faction, requiredWarp, img, tech, }: {
         name: string;
         faction: Faction;
         requiredWarp: WarpPower;
         img?: string;
+        tech?: number;
     });
     setImage(uri: string): this;
     addStore(store: BaseStore): this;

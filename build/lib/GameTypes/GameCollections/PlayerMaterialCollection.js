@@ -28,3 +28,4 @@ class PlayerMaterialCollection extends MaterialCollection_1.MaterialCollection {
     }
 }
 exports.PlayerMaterialCollection = PlayerMaterialCollection;
+//# sourceMappingURL=PlayerMaterialCollection.js.map

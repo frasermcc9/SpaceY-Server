@@ -30,4 +30,5 @@ export class StorePublisher extends EventEmitter {
         return this.TerminateLoop(Store);
     }
 }
- */ 
+ */
+//# sourceMappingURL=StorePublisher.js.map

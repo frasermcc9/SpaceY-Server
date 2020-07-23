@@ -1,26 +1,31 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ShipCollection = void 0;
-const Client_1 = require("../../Client/Client");
+const Server_1 = require("../../Server/Server");
 const GameCollectionBase_1 = require("./GameCollectionBase");
 class ShipCollection extends GameCollectionBase_1.GameCollectionBase {
     constructor(options) {
         super();
         //Create map with all empty attachment values, but set defined attachments to the given value.
         if (options?.data) {
-            Client_1.Client.Get().Registry.ShipRegistry.forEach((ship) => {
-                this.set(ship.Name, options.data?.get(ship.Name) || 0);
+            let data;
+            if (options.data instanceof Map)
+                data = Object.fromEntries(options.data);
+            else
+                data = options.data;
+            Server_1.Server.Get().Registry.ShipRegistry.forEach((ship) => {
+                this.set(ship.Name, data[ship.Name] || 0);
             });
         }
         else {
-            Client_1.Client.Get().Registry.ShipRegistry.forEach((ship) => {
+            Server_1.Server.Get().Registry.ShipRegistry.forEach((ship) => {
                 this.set(ship.Name, 0);
             });
         }
     }
     /** @override */
     GetCompatibleItems({ minTech, maxTech }) {
-        return Client_1.Client.Reg.ShipRegistry.filter((val) => val.Cost != undefined && val.TechLevel <= maxTech && val.TechLevel >= minTech);
+        return Server_1.Server.Reg.ShipRegistry.filter((val) => val.Cost != undefined && val.TechLevel <= maxTech && val.TechLevel >= minTech);
     }
     /** @override */
     GenerateWeights(items, centralRarity, minRarity, maxRarity) {
@@ -28,3 +33,4 @@ class ShipCollection extends GameCollectionBase_1.GameCollectionBase {
     }
 }
 exports.ShipCollection = ShipCollection;
+//# sourceMappingURL=ShipCollection.js.map

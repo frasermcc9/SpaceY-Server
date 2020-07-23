@@ -5,3 +5,4 @@ const Attachment_1 = require("./Attachment");
 class NonCombatAttachment extends Attachment_1.Attachment {
 }
 exports.NonCombatAttachment = NonCombatAttachment;
+//# sourceMappingURL=NonCombatAttachment.js.map

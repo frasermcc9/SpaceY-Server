@@ -1,25 +1,30 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ReputationCollection = void 0;
-const Client_1 = require("../../Client/Client");
+const Server_1 = require("../../Server/Server");
 const GameCollectionBase_1 = require("./GameCollectionBase");
 class ReputationCollection extends GameCollectionBase_1.GameCollectionBase {
     constructor(options) {
         super();
         if (options?.data) {
-            Client_1.Client.Reg.FactionRegistry.forEach((faction) => {
-                this.set(faction.Name, options.data?.get(faction.Name) ?? 0);
+            let data;
+            if (options.data instanceof Map)
+                data = Object.fromEntries(options.data);
+            else
+                data = options.data;
+            Server_1.Server.Reg.FactionRegistry.forEach((faction) => {
+                this.set(faction.Name, data[faction.Name] || 0);
             });
         }
         else {
-            Client_1.Client.Reg.FactionRegistry.forEach((faction) => {
+            Server_1.Server.Reg.FactionRegistry.forEach((faction) => {
                 this.set(faction.Name, 0);
             });
         }
     }
     /** @override */
     GetCompatibleItems({ minTech, maxTech }) {
-        return Client_1.Client.Reg.FactionRegistry.filter((val) => val.Cost != undefined && val.TechLevel <= maxTech && val.TechLevel >= minTech);
+        return Server_1.Server.Reg.FactionRegistry.filter((val) => val.Cost != undefined && val.TechLevel <= maxTech && val.TechLevel >= minTech);
     }
     /** @override */
     GenerateWeights(items, centralRarity, minRarity, maxRarity) {
@@ -27,3 +32,4 @@ class ReputationCollection extends GameCollectionBase_1.GameCollectionBase {
     }
 }
 exports.ReputationCollection = ReputationCollection;
+//# sourceMappingURL=ReputationCollection.js.map

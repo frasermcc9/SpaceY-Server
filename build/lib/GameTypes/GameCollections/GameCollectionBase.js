@@ -224,3 +224,4 @@ class GameCollectionBase extends Collections_1.MapCollection {
     }
 }
 exports.GameCollectionBase = GameCollectionBase;
+//# sourceMappingURL=GameCollectionBase.js.map

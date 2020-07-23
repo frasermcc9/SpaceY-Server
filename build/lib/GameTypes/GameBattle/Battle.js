@@ -114,3 +114,4 @@ class Battle {
     }
 }
 exports.Battle = Battle;
+//# sourceMappingURL=Battle.js.map

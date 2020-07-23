@@ -1,29 +1,29 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.generateIntegrationSet = exports.GENERATED_ATTACHMENTS = exports.GENERATED_FACTIONS = exports.GENERATED_SHIPS = exports.GENERATED_MATERIALS = exports.GenerateClientSet = exports.GenerateAttachmentsForActiveClient = exports.GenerateFactionsForActiveClient = exports.GenerateShipsForActiveClient = exports.GenerateMaterialsForActiveClient = void 0;
-const Client_1 = require("../lib/Client/Client");
+const Server_1 = require("../lib/Server/Server");
 const Material_1 = require("../lib/GameTypes/GameAsset/Material/Material");
 const Blueprint_1 = require("../lib/GameTypes/GameAsset/Blueprint/Blueprint");
 const Ship_1 = require("../lib/GameTypes/GameAsset/Ship/Ship");
 const Faction_1 = require("../lib/GameTypes/GameAsset/Faction/Faction");
 const Attachment_1 = require("../lib/GameTypes/GameAsset/Attachment/Attachment");
 function GenerateMaterialsForActiveClient() {
-    const client = Client_1.Client.Get();
+    const client = Server_1.Server.Get();
     client.Registry.RegisterMaterials({ materials: GENERATED_MATERIALS() });
 }
 exports.GenerateMaterialsForActiveClient = GenerateMaterialsForActiveClient;
 function GenerateShipsForActiveClient() {
-    const client = Client_1.Client.Get();
+    const client = Server_1.Server.Get();
     client.Registry.RegisterShips({ ships: GENERATED_SHIPS() });
 }
 exports.GenerateShipsForActiveClient = GenerateShipsForActiveClient;
 function GenerateFactionsForActiveClient() {
-    const client = Client_1.Client.Get();
+    const client = Server_1.Server.Get();
     client.Registry.RegisterFactions({ factions: GENERATED_FACTIONS() });
 }
 exports.GenerateFactionsForActiveClient = GenerateFactionsForActiveClient;
 function GenerateAttachmentsForActiveClient() {
-    const client = Client_1.Client.Get();
+    const client = Server_1.Server.Get();
     client.Registry.RegisterAttachments({ attachments: GENERATED_ATTACHMENTS() });
 }
 exports.GenerateAttachmentsForActiveClient = GenerateAttachmentsForActiveClient;
@@ -225,7 +225,7 @@ function generateIntegrationSet() {
         rarity: 8,
         cost: 1850,
     }).Build();
-    Client_1.Client.Reg.RegisterMaterials({ materials: [M1, M2, M3, M4, M5, M6, M7, M8] });
+    Server_1.Server.Reg.RegisterMaterials({ materials: [M1, M2, M3, M4, M5, M6, M7, M8] });
     //#endregion Materials
     //#region Ships
     /* 	const S1 = new ShipBuilder({
@@ -306,7 +306,7 @@ function generateIntegrationSet() {
         .EnableBuildable(new Blueprint_1.BlueprintBuilder().DefinedBuild(Blueprint_1.BlueprintBuilder.ADVANCED_BUILD(9000000), "The Celestial Destroyer"))
         .SetMisc({ uri: "", subclass: "CAPITAL" })
         .Build();
-    Client_1.Client.Reg.RegisterShips({ ships: [S1, S2, S3, S4, S5, S6] });
+    Server_1.Server.Reg.RegisterShips({ ships: [S1, S2, S3, S4, S5, S6] });
     //#endregion Ships
     //#region Attachments
     //#endregion Attachments
@@ -314,3 +314,4 @@ function generateIntegrationSet() {
     //#endregion Factions
 }
 exports.generateIntegrationSet = generateIntegrationSet;
+//# sourceMappingURL=TestUtil.js.map

@@ -4,7 +4,7 @@ exports.StoreType = exports.BaseStore = void 0;
 const Collections_1 = require("../../Extensions/Collections");
 const AssetDecorators_1 = require("../GameAsset/AssetDecorators");
 const util_1 = require("../../Util/util");
-const Client_1 = require("../../Client/Client");
+const Server_1 = require("../../Server/Server");
 class BaseStore {
     constructor(collection, options) {
         this.manualEnabled = false;
@@ -68,7 +68,7 @@ class BaseStore {
         trader.CreditsDecrement({ amount: cpi * quantity });
         this.credits += cpi * quantity;
         const m = await trader.AutoInventoryEdit(item, quantity);
-        trader.save();
+        await trader.save();
         return { itemAmount: m.amount, playerCredits: trader.Credits, code: 200 };
     }
     /**
@@ -104,7 +104,7 @@ class BaseStore {
         const playerNew = (await trader.AutoInventoryEdit(item, -quantity)).amount;
         if (playerNew == undefined)
             return { code: 500 };
-        trader.save();
+        await trader.save();
         return { itemAmount: playerNew, playerCredits: trader.Credits, code: 200 };
     }
     /**
@@ -143,7 +143,7 @@ class BaseStore {
         const playerNew = (await trader.AutoInventoryEdit(item, -quantity)).amount;
         if (playerNew == undefined)
             return { code: 500 };
-        trader.save();
+        await trader.save();
         return { itemAmount: playerNew, playerCredits: trader.Credits, code: 200 };
     }
     getCostPerItem(item) {
@@ -226,7 +226,7 @@ class BaseStore {
     }
     //#region TESTING METHODS
     INTERNAL_AlterItem(item, n) {
-        if (!Client_1.Client.TEST)
+        if (!Server_1.Server.TEST)
             throw new Error("Internal prefix functions can only be used in test mode.");
         const currentAmount = this.collection.get(item);
         this.collection.set(item, (currentAmount ?? 0) + n);
@@ -243,3 +243,4 @@ var StoreType;
     StoreType[StoreType["SHIP_STORE"] = 2] = "SHIP_STORE";
     StoreType[StoreType["ATTACHMENT_STORE"] = 3] = "ATTACHMENT_STORE";
 })(StoreType = exports.StoreType || (exports.StoreType = {}));
+//# sourceMappingURL=BaseStore.js.map

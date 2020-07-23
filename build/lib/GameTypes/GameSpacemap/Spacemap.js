@@ -74,3 +74,4 @@ class Spacemap {
     }
 }
 exports.Spacemap = Spacemap;
+//# sourceMappingURL=Spacemap.js.map

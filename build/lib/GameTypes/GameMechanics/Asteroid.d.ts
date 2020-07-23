@@ -19,11 +19,15 @@ export declare class Asteroid extends MaterialCollection {
     /**
      * Finds the time remaining for a given player's cooldown, in seconds. Will
      * return 0 if they are not in the timeout map/
-     * @param player the player to query.
+     * @param player the player to query (object or id).
      * @returns time in seconds (rounded to nearest second) remaining.
      */
-    remainingCooldown(player: Player): number;
-    isAvailableForUser(player: Player): boolean;
+    remainingCooldown(player: Player | string): number;
+    /**
+     * returns if the user doesnt have the asteroid on cooldown
+     * @param player either the player or the player id
+     */
+    isAvailableForUser(player: Player | string): boolean;
     /**
      *
      * @param player

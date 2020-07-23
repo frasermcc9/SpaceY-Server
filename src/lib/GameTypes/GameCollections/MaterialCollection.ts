@@ -6,6 +6,8 @@ import { SellableDecorator } from "../GameAsset/AssetDecorators";
 import { MapCollection } from "../../Extensions/Collections";
 
 export class MaterialCollection extends GameCollectionBase {
+    public static WEIGHTS?: number[] = [];
+
     public constructor(options?: IMaterialCollectionOptions) {
         super();
         //Create map with all empty material values, but set defined materials to the given value.
@@ -63,14 +65,17 @@ export class MaterialCollection extends GameCollectionBase {
         return total;
     }
 
-    public static GenerateMineableCollection(value: number): MaterialCollection {
+    public static GenerateMineableCollection(value: number, central = 0): MaterialCollection {
         const Template = Array.from(Server.Get().Registry.MineableMaterialRegistry.values());
         if (Template.length == 0) {
             throw new Error("No Mineable Materials");
         }
+        const weights = this.GenerateMiningWeights(Template, central);
+        const flatArray: Material[] = [];
+        for (let i = 0; i < Template.length; ++i) for (let j = 0; j < weights[i]; ++j) flatArray.push(Template[i]);
+
         const MineableCollection = new MaterialCollection();
         let currentPrice = 0;
-
         do {
             const Selected = util.chooseFrom<Material>(Template);
             const Material = new SellableDecorator(Selected.item);
@@ -79,6 +84,19 @@ export class MaterialCollection extends GameCollectionBase {
             currentPrice += Material.PriceData.cost ?? 0;
         } while (currentPrice < value);
         return MineableCollection;
+    }
+
+    private static GenerateMiningWeights(items: Material[], centralRarity: number): number[] {
+        if (this.WEIGHTS?.length == items.length) {
+            return this.WEIGHTS;
+        }
+        const weights = items.map((i) => 10 ** 1.9 - Math.abs(centralRarity - i.GetMaterialRarity() ** 1.8));
+        this.WEIGHTS = weights;
+        return this.WEIGHTS;
+    }
+
+    public static RefreshMiningWeightCache() {
+        this.WEIGHTS = [];
     }
 
     /** @override */

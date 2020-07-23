@@ -59,6 +59,7 @@ export class ShipWrapper {
                     techLevel: a.TechLevel,
                     type: a.Type,
                     strength: a.Strength,
+                    cost: a.Cost,
                 };
             }),
             baseStats: this.BaseStatistics,

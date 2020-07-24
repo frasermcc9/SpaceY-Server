@@ -165,15 +165,9 @@ class BaseStore {
      * @returns Map<item name, amount available>
      */
     getStoreItems(includeEmpty = false) {
-        const full = new Collections_1.MapCollection(this.collection);
         if (includeEmpty)
-            return full;
-        const reduced = new Collections_1.MapCollection();
-        full.forEach((q, n) => {
-            if (q != 0)
-                reduced.set(n, q);
-        });
-        return reduced;
+            return new Collections_1.MapCollection(this.collection);
+        return this.collection.filter((v) => v != 0);
     }
     /**
      * Gets costs of items in the store

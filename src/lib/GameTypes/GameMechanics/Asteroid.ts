@@ -1,7 +1,6 @@
 import { MaterialCollection, IMaterialCollectionOptions } from "../GameCollections/MaterialCollection";
 import { Player } from "../GameAsset/Player/Player";
 import { Server } from "../../Server/Server";
-import { GameEvent } from "../GameAsset/Attachment/Attachment";
 
 export class Asteroid extends MaterialCollection {
     private cooldown: number;

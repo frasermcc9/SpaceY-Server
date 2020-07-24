@@ -57,8 +57,14 @@ const MATERIALS = () => {
             .EnableMine()
             .SetRarity(10)
             .Build(),
-        new MaterialBuilder({ name: "Food", description: "Food for one person.", techLevel: 1 }).EnableSell(5).SetRarity(1).Build(),
-        new MaterialBuilder({ name: "Tech", description: "Pile of tech pieces.", techLevel: 7 }).EnableSell(50).SetRarity(6).Build(),
+        new MaterialBuilder({ name: "Food", description: "Food for one person.", techLevel: 1 })
+            .EnableSell(5)
+            .SetRarity(1)
+            .Build(),
+        new MaterialBuilder({ name: "Tech", description: "Pile of tech pieces.", techLevel: 7 })
+            .EnableSell(50)
+            .SetRarity(6)
+            .Build(),
     ];
 };
 const SHIPS = () => {
@@ -112,15 +118,15 @@ const SHIPS = () => {
             .Build(),
     ];
 };
-const PlatingEquip: (friendly: ShipWrapper) => AttachmentReport = (friendly) => {
+const PlatingEquip: ({ friendly }: { friendly: ShipWrapper }) => AttachmentReport = ({ friendly }) => {
     friendly.incrementStatistics({ hp: 20 });
     return { message: `New Health: ${friendly.ShipStatistics.totalHp}`, success: true };
 };
-const PlatingUnequip: (friendly: ShipWrapper) => AttachmentReport = (friendly) => {
+const PlatingUnequip: ({ friendly }: { friendly: ShipWrapper }) => AttachmentReport = ({ friendly }) => {
     friendly.decrementStatistics({ hp: 20 });
     return { message: `New Health: ${friendly.ShipStatistics.totalHp}`, success: true };
 };
-const LaserMine: (inputCollection: Asteroid) => AttachmentReport = (asteroid) => {
+const LaserMine: ({ asteroid }: { asteroid: Asteroid }) => AttachmentReport = ({ asteroid }) => {
     asteroid.forEach((val: number, key: any) => {
         asteroid.set(key, val * 2);
     });

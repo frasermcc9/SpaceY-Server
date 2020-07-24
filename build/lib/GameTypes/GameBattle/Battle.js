@@ -1,7 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Battle = void 0;
-const Attachment_1 = require("../GameAsset/Attachment/Attachment");
 class Battle {
     //#endregion IBattleData
     constructor(player) {
@@ -38,9 +37,7 @@ class Battle {
             if (player.Hp <= 0) {
                 this.victory(enemy);
             }
-            player.Ship.copyAttachments().forEach((attachment) => {
-                attachment.dispatch(Attachment_1.GameEvent.BATTLE_DAMAGE_TAKEN, player, this.getEnemy(player), damage);
-            });
+            player.Ship.emit("onDamageTaken", { friendly: player, enemy: this.getEnemy(player), dmg: damage });
         };
         /**
          * Fires all damage taken events on the attachments of the players ship.
@@ -48,9 +45,9 @@ class Battle {
          * @param damage - the amount of damage that was taken
          * @param player - the player that received the damage
          */
-        this.handleCriticalDamageTaken = (player, _damage) => {
+        this.handleCriticalDamageTaken = (player, damage) => {
             player.Ship.copyAttachments().forEach((attachment) => {
-                attachment.dispatch(Attachment_1.GameEvent.BATTLE_CRITICAL_DAMAGE_TAKEN, player, this.getEnemy(player));
+                player.Ship.emit("onCriticalDamageTaken", { friendly: player, enemy: this.getEnemy(player), dmg: damage });
             });
         };
         /**
@@ -61,9 +58,7 @@ class Battle {
         this.handleTurnStart = (player) => {
             this.inactiveShip = this.activeShip;
             this.activeShip = player;
-            player.Ship.copyAttachments().forEach((attachment) => {
-                attachment.dispatch(Attachment_1.GameEvent.BATTLE_PRE_TURN, this);
-            });
+            player.Ship.emit("onBattlePreTurn", { battle: this });
         };
         this.playerShip = player;
         this.aiShip = this.generateOpponentShip();

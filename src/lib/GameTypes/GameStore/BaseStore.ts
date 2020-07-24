@@ -174,13 +174,8 @@ export abstract class BaseStore implements IStoreUpdatable {
      * @returns Map<item name, amount available>
      */
     public getStoreItems(includeEmpty: boolean = false): MapCollection<string, number> {
-        const full = new MapCollection(this.collection);
-        if (includeEmpty) return full;
-        const reduced = new MapCollection<string, number>();
-        full.forEach((q, n) => {
-            if (q != 0) reduced.set(n, q);
-        });
-        return reduced;
+        if (includeEmpty) return new MapCollection(this.collection);
+        return this.collection.filter((v) => v != 0);
     }
     /**
      * Gets costs of items in the store

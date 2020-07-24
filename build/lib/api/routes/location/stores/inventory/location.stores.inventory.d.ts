@@ -11,10 +11,4 @@ import { Request, Response } from "express";
  */
 export declare const location_stores_inventory_get: (req: Request, res: Response) => {
     status: string;
-    inventory?: undefined;
-    costs?: undefined;
-} | {
-    status: string;
-    inventory: string;
-    costs: string;
-};
+} | undefined;

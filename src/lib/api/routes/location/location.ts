@@ -21,12 +21,12 @@ export const location_get = (req: Request, res: Response) => {
     if (result == undefined) return res.send({ status: "404" });
 
     const nodeAdjacent = Client.Reg.Spacemap.getConnectedNodes(result);
-    const nodeStores = result.nodeAllStores().map((s) => s.identity());
+    const nodeStores = result.nodeAllStores().map((s) => s.Name);
     const nodeAsteroids = result.Asteroids.map((a) => ({ name: a.Name, value: a.GetCollectionValue() }));
 
     const response: ILocationResponse = {
         status: "200",
-        location: {
+        data: {
             faction: result.Faction,
             imageUri: result.ImageUri,
             name: result.Name,
@@ -43,7 +43,7 @@ export const location_get = (req: Request, res: Response) => {
 
 interface ILocationResponse {
     status: string;
-    location: {
+    data: {
         faction: Faction;
         imageUri?: string;
         name: string;

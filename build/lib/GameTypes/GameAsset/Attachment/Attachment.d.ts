@@ -15,23 +15,14 @@ export declare class Attachment extends GameAsset implements IAttachment, Streng
     get Strength(): number;
     get EnergyCost(): number[];
     isInvocable(): boolean;
-    Triggers(): GameEvent[];
-    dispatch(event: GameEvent.BATTLE_END, battle: IBattleData): AttachmentReport | undefined;
-    dispatch(event: GameEvent.BATTLE_INVOKED, battle: IBattleData): AttachmentReport | undefined;
-    dispatch(event: GameEvent.BATTLE_POST_TURN, battle: IBattleData): AttachmentReport | undefined;
-    dispatch(event: GameEvent.BATTLE_PRE_TURN, battle: IBattleData): AttachmentReport | undefined;
-    dispatch(event: GameEvent.BATTLE_START, battle: IBattleData): AttachmentReport | undefined;
-    dispatch(event: GameEvent.BATTLE_CRITICAL_DAMAGE_TAKEN, friend: Battleship, enemy: Battleship): AttachmentReport | undefined;
-    dispatch(event: GameEvent.BATTLE_DAMAGE_TAKEN, friend: Battleship, enemy: Battleship, dmg: number): AttachmentReport | undefined;
-    dispatch(event: GameEvent.EQUIP, friend: ShipWrapper): AttachmentReport | undefined;
-    dispatch(event: GameEvent.MINE, asteroid: Asteroid): AttachmentReport | undefined;
-    dispatch(event: GameEvent.UNEQUIP, friend: ShipWrapper): AttachmentReport | undefined;
-    dispatch(event: GameEvent.WARP, friend: ShipWrapper, ws: number): AttachmentReport | undefined;
-    dispatch(event: GameEvent.WARP_POLL, friend: ShipWrapper, ws: number): AttachmentReport | undefined;
+    emit<K extends keyof EventArgs>(event: K, args: EventArgs[K]): AttachmentReport | undefined;
 }
 export interface IAttachment {
     Type: AttachmentType;
-    Triggers(): GameEvent[];
+    emit<K extends keyof EventArgs>(event: K, args: EventArgs[K]): AttachmentReport | undefined;
+    isInvocable(): boolean;
+    EnergyCost: number[];
+    Strength: number;
 }
 export declare class AttachmentBuilder {
     private readonly options;
@@ -39,6 +30,12 @@ export declare class AttachmentBuilder {
     constructor(options: AttachmentOptions, functions?: AttachmentFunctions);
     EnableSellable(price: number): AttachmentBuilder;
     EnableBuildable(blueprint: Blueprint): AttachmentBuilder;
+    /**
+     * preferred method to add functions to the attachment
+     * @param e
+     * @param func
+     */
+    addFunction<K extends keyof AttachmentFunctions>(e: K, func: AttachmentFunctions[K]): this;
     /**
      * Fires to all attachments when a battle starts.
      * @param fn
@@ -105,6 +102,26 @@ interface AttachmentOptions extends IGameAssetOptions, IStrengthOptions {
     type: AttachmentType;
     energyCost?: number[];
 }
+interface FunctionArgs {
+    BattleFunction: {
+        battle: IBattleData;
+    };
+    DamageTakenFunction: {
+        friendly: Battleship;
+        enemy: Battleship;
+        dmg: number;
+    };
+    ShipFunction: {
+        friendly: ShipWrapper;
+    };
+    MineFunction: {
+        asteroid: Asteroid;
+    };
+    WarpFunction: {
+        friendly: ShipWrapper;
+        warp: number;
+    };
+}
 export interface AttachmentFunctions {
     onBattleStart?: BattleFunction;
     onBattlePreTurn?: BattleFunction;
@@ -119,25 +136,25 @@ export interface AttachmentFunctions {
     onWarp?: WarpFunction;
     onWarpPoll?: WarpFunction;
 }
+export interface EventArgs {
+    onBattleStart: FunctionArgs["BattleFunction"];
+    onBattlePreTurn: FunctionArgs["BattleFunction"];
+    onBattlePostTurn: FunctionArgs["BattleFunction"];
+    onBattleInvoked: FunctionArgs["BattleFunction"];
+    onBattleEnd: FunctionArgs["BattleFunction"];
+    onCriticalDamageTaken: FunctionArgs["DamageTakenFunction"];
+    onDamageTaken: FunctionArgs["DamageTakenFunction"];
+    onEquip: FunctionArgs["ShipFunction"];
+    onUnequip: FunctionArgs["ShipFunction"];
+    onMine: FunctionArgs["MineFunction"];
+    onWarp: FunctionArgs["WarpFunction"];
+    onWarpPoll: FunctionArgs["WarpFunction"];
+}
 export declare type AttachmentReport = {
     message: string;
     success: boolean;
     damage?: number;
 };
-export declare enum GameEvent {
-    BATTLE_START = 0,
-    BATTLE_END = 1,
-    BATTLE_INVOKED = 2,
-    BATTLE_PRE_TURN = 3,
-    BATTLE_POST_TURN = 4,
-    BATTLE_CRITICAL_DAMAGE_TAKEN = 5,
-    BATTLE_DAMAGE_TAKEN = 6,
-    EQUIP = 7,
-    UNEQUIP = 8,
-    MINE = 9,
-    WARP = 10,
-    WARP_POLL = 11
-}
 export declare enum AttachmentType {
     GENERAL = 0,
     PRIMARY = 1,
@@ -145,9 +162,9 @@ export declare enum AttachmentType {
     SHIELD = 3,
     MINER = 4
 }
-export declare type BattleFunction = (battle: IBattleData) => AttachmentReport | undefined;
-export declare type DamageTakenFunction = (friendly: Battleship, opponent: Battleship, dmg: number) => AttachmentReport | undefined;
-export declare type ShipFunction = (friendly: ShipWrapper) => AttachmentReport | undefined;
-export declare type MineFunction = (inputCollection: Asteroid) => AttachmentReport | undefined;
-export declare type WarpFunction = (friendly: ShipWrapper, warp: number) => AttachmentReport | undefined;
+export declare type BattleFunction = ({ battle }: FunctionArgs["BattleFunction"]) => AttachmentReport | undefined;
+export declare type DamageTakenFunction = ({ friendly, enemy, dmg, }: FunctionArgs["DamageTakenFunction"]) => AttachmentReport | undefined;
+export declare type ShipFunction = ({ friendly }: FunctionArgs["ShipFunction"]) => AttachmentReport | undefined;
+export declare type MineFunction = ({ asteroid }: FunctionArgs["MineFunction"]) => AttachmentReport | undefined;
+export declare type WarpFunction = ({ friendly, warp }: FunctionArgs["WarpFunction"]) => AttachmentReport | undefined;
 export {};

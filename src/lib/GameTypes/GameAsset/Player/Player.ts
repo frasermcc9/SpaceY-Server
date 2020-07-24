@@ -5,7 +5,7 @@ import { Skin } from "./Skin";
 import { Server } from "../../../Server/Server";
 import { RegistryNames } from "../../../Server/Registry";
 import { ShipWrapper } from "../Ship/ShipWrapper";
-import { Attachment, GameEvent } from "../Attachment/Attachment";
+import { Attachment } from "../Attachment/Attachment";
 import { SpacemapNode, SpacemapNodeBuilder } from "../../GameSpacemap/SpacemapNode";
 import { util } from "../../../Util/util";
 import { GameAsset } from "../GameAsset";

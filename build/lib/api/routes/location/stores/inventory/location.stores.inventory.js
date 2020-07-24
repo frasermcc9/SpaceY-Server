@@ -20,12 +20,17 @@ exports.location_stores_inventory_get = (req, res) => {
         .find((s) => s.Name == store);
     if (storeObj == undefined)
         return { status: "404" };
-    const storeItems = storeObj.getStoreItems();
-    const storeCosts = storeObj.StoreItemCosts;
-    return {
+    const storeItems = Object.fromEntries(storeObj.getStoreItems(true));
+    const storeCosts = Object.fromEntries(storeObj.StoreItemCosts);
+    const returnValue = {
         status: "200",
-        inventory: JSON.stringify(Object.fromEntries(storeItems)),
-        costs: JSON.stringify(Object.fromEntries(storeCosts)),
+        data: {
+            identity: storeObj.identity(),
+            credits: storeObj.Credits,
+            inventory: storeItems,
+            costs: storeCosts,
+        },
     };
+    res.send(returnValue);
 };
 //# sourceMappingURL=location.stores.inventory.js.map

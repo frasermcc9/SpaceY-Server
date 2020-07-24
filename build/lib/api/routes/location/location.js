@@ -17,11 +17,11 @@ exports.location_get = (req, res) => {
     if (result == undefined)
         return res.send({ status: "404" });
     const nodeAdjacent = main_1.Client.Reg.Spacemap.getConnectedNodes(result);
-    const nodeStores = result.nodeAllStores().map((s) => s.identity());
+    const nodeStores = result.nodeAllStores().map((s) => s.Name);
     const nodeAsteroids = result.Asteroids.map((a) => ({ name: a.Name, value: a.GetCollectionValue() }));
     const response = {
         status: "200",
-        location: {
+        data: {
             faction: result.Faction,
             imageUri: result.ImageUri,
             name: result.Name,

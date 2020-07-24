@@ -1,6 +1,6 @@
 import { Server } from "../../../Server/Server";
 import { Asteroid } from "../../GameMechanics/Asteroid";
-import { Attachment, AttachmentReport, AttachmentType, GameEvent } from "../Attachment/Attachment";
+import { Attachment, AttachmentReport, AttachmentType, EventArgs } from "../Attachment/Attachment";
 import { Player } from "../Player/Player";
 import { Ship } from "./Ship";
 import { MapCollection } from "../../../Extensions/Collections";
@@ -65,7 +65,7 @@ export class ShipWrapper {
             baseStats: this.BaseStatistics,
             playerStats: this.Statistics,
             weaponCapacities: Object.fromEntries(this.WeaponCapacities),
-            equippedSlots: Object.fromEntries(this.availableSlots()),
+            availableSlots: Object.fromEntries(this.availableSlots()),
             maxTech: this.MaxTech,
             strength: this.Strength,
 
@@ -115,7 +115,11 @@ export class ShipWrapper {
             shield: base.totalShield,
             handling: base.totalHandling,
             cargo: base.totalCargo,
-            energy: [e[0] + this.lvlIncrease(levels[0]), e[1] + this.lvlIncrease(levels[1]), e[2] + this.lvlIncrease(levels[2])],
+            energy: [
+                e[0] + this.lvlIncrease(levels[0]),
+                e[1] + this.lvlIncrease(levels[1]),
+                e[2] + this.lvlIncrease(levels[2]),
+            ],
         };
     }
     /**
@@ -206,8 +210,17 @@ export class ShipWrapper {
         if (this.getTotalTech() + attachment.TechLevel > this.ship.MaxTech) return { code: 403 };
         this.Slots.set(Type, NumEquipped + 1);
         this.attachments.push(attachment);
-        attachment.dispatch(GameEvent.EQUIP, this);
+        attachment.emit("onEquip", { friendly: this });
         return { code: 200 };
+    }
+
+    public emit<K extends keyof EventArgs>(event: K, args: EventArgs[K]): AttachmentReport[] {
+        const reports = new Array<AttachmentReport>();
+        this.attachments.forEach((a) => {
+            const report = a.emit(event, args);
+            if (report != undefined) reports.push(report);
+        });
+        return reports;
     }
 
     public getTotalTech(): number {
@@ -224,7 +237,7 @@ export class ShipWrapper {
         const idxAttachment = this.attachments.findIndex((val) => val.Name == attachment);
         if (idxAttachment == undefined) return { code: 404 };
         const Attachment = this.attachments.splice(idxAttachment, 1);
-        Attachment[0].dispatch(GameEvent.UNEQUIP, this);
+        Attachment[0].emit("onUnequip", { friendly: this });
         return { code: 200, removedAttachment: Attachment[0] };
     }
 
@@ -232,7 +245,7 @@ export class ShipWrapper {
         if (warpRequired == 0) return true;
         const result: AttachmentReport[] = [];
         this.attachments.forEach((attachment) => {
-            const data = attachment.dispatch(GameEvent.WARP_POLL, this, warpRequired);
+            const data = attachment.emit("onWarpPoll", { friendly: this, warp: warpRequired });
             if (data != undefined) result.push(data);
         });
 
@@ -240,10 +253,11 @@ export class ShipWrapper {
         if (result.length > 1) return false;
         return result[0]?.success;
     }
+
     public warp(warpRequired: number): boolean {
         const result: AttachmentReport[] = [];
         this.attachments.forEach((attachment) => {
-            const data = attachment.dispatch(GameEvent.WARP, this, warpRequired);
+            const data = attachment.emit("onWarp", { friendly: this, warp: warpRequired });
             if (data != undefined) result.push(data);
         });
 
@@ -253,7 +267,7 @@ export class ShipWrapper {
     }
     public mineEvent(asteroid: Asteroid): void {
         this.attachments.forEach((attachment) => {
-            attachment.dispatch(GameEvent.MINE, asteroid);
+            attachment.emit("onMine", { asteroid: asteroid });
         });
     }
 }

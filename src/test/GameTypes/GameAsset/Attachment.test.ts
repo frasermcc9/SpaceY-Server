@@ -1,11 +1,20 @@
 import { PlayerModel } from "../../../lib/Database/Models/Player/PlayerModel";
-import { AttachmentBuilder, AttachmentReport, AttachmentType, GameEvent } from "../../../lib/GameTypes/GameAsset/Attachment/Attachment";
-import { Ship } from "../../../lib/GameTypes/GameAsset/Ship/Ship";
+import {
+    AttachmentBuilder,
+    AttachmentReport,
+    AttachmentType,
+} from "../../../lib/GameTypes/GameAsset/Attachment/Attachment";
+import { Ship, ShipBuilder } from "../../../lib/GameTypes/GameAsset/Ship/Ship";
 import { ShipWrapper } from "../../../lib/GameTypes/GameAsset/Ship/ShipWrapper";
 import { default as must } from "must";
-import { Client } from "../../../lib/main";
+import { Client, Setup } from "../../../lib/main";
 import { Battle, IBattleData } from "../../../lib/GameTypes/GameBattle/Battle";
 import { Battleship } from "../../../lib/GameTypes/GameAsset/Ship/Battleship";
+import { MaterialBuilder } from "../../../lib/GameTypes/GameAsset/Material/Material";
+import { BlueprintBuilder } from "../../../lib/GameTypes/GameAsset/Blueprint/Blueprint";
+import { Asteroid } from "../../../lib/GameTypes/GameMechanics/Asteroid";
+import { FactionBuilder } from "../../../lib/GameTypes/GameAsset/Faction/Faction";
+import { SpacemapNodeBuilder, WarpPower } from "../../../lib/GameTypes/GameSpacemap/SpacemapNode";
 require("must/register");
 
 describe("Attachment Tests", async () => {
@@ -16,9 +25,6 @@ describe("Attachment Tests", async () => {
             await P1.setShip("Shuttle");
             await P2.setShip("Warship");
 
-            const fn: (battle: IBattleData) => AttachmentReport = (battle) => {
-                return { message: battle.Friendly.Hp + battle.Enemy.Ship.ShipStatistics.totalShield + "", success: true };
-            };
             const attachment = new AttachmentBuilder({
                 name: "Blaster",
                 description: "A really cool blaster",
@@ -26,15 +32,22 @@ describe("Attachment Tests", async () => {
                 type: AttachmentType.PRIMARY,
                 strength: 2,
             })
-                .BattleStartFn(fn)
+                .addFunction("onBattleStart", ({ battle }) => {
+                    return {
+                        message: battle.Friendly.Hp + battle.Enemy.Ship.ShipStatistics.totalShield + "",
+                        success: true,
+                    };
+                })
                 .Build()
-                .dispatch(GameEvent.BATTLE_START, {
-                    TurnNumber: 0,
-                    Friendly: new Battleship(P1.getShipWrapper()),
-                    Enemy: new Battleship(P2.getShipWrapper()),
+                .emit("onBattleStart", {
+                    battle: {
+                        TurnNumber: 0,
+                        Friendly: new Battleship(P1.getShipWrapper()),
+                        Enemy: new Battleship(P2.getShipWrapper()),
+                    },
                 })
                 .message.must.eql("190");
-        });
+        }).timeout(100000);
 
         it("Changing one players ship doesn't result in changes for another player with the same ship", async () => {
             const S1 = new Ship({ description: "A small but agile ship", name: "Shuttle", techLevel: 5 });
@@ -51,7 +64,12 @@ describe("Attachment Tests", async () => {
         });
 
         it("Database correctly saves attachments that are equipped to a user", async () => {
-            const S1 = new Ship({ description: "A small but agile ship", name: "Shuttle", primaryCap: 1, techLevel: 4 });
+            const S1 = new Ship({
+                description: "A small but agile ship",
+                name: "Shuttle",
+                primaryCap: 1,
+                techLevel: 4,
+            });
             const preSaveP1 = await PlayerModel.findOneOrCreate({ uId: "22" });
             await preSaveP1.setShip(S1);
             preSaveP1.addAttachmentToShip("Blaster");

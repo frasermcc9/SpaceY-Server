@@ -49,8 +49,14 @@ function GENERATED_MATERIALS() {
             .EnableMine()
             .SetRarity(10)
             .Build(),
-        new Material_1.MaterialBuilder({ name: "Food", description: "Food for one person.", techLevel: 1 }).EnableSell(5).SetRarity(1).Build(),
-        new Material_1.MaterialBuilder({ name: "Tech", description: "Pile of tech pieces.", techLevel: 7 }).EnableSell(50).SetRarity(6).Build(),
+        new Material_1.MaterialBuilder({ name: "Food", description: "Food for one person.", techLevel: 1 })
+            .EnableSell(5)
+            .SetRarity(1)
+            .Build(),
+        new Material_1.MaterialBuilder({ name: "Tech", description: "Pile of tech pieces.", techLevel: 7 })
+            .EnableSell(50)
+            .SetRarity(6)
+            .Build(),
     ];
 }
 exports.GENERATED_MATERIALS = GENERATED_MATERIALS;
@@ -109,15 +115,15 @@ function GENERATED_FACTIONS() {
 }
 exports.GENERATED_FACTIONS = GENERATED_FACTIONS;
 function GENERATED_ATTACHMENTS() {
-    const PlatingEquip = (friendly) => {
+    const PlatingEquip = ({ friendly }) => {
         friendly.incrementStatistics({ hp: 20 });
         return { message: `New Health: ${friendly.ShipStatistics.totalHp}`, success: true };
     };
-    const PlatingUnequip = (friendly) => {
+    const PlatingUnequip = ({ friendly }) => {
         friendly.decrementStatistics({ hp: 20 });
         return { message: `New Health: ${friendly.ShipStatistics.totalHp}`, success: true };
     };
-    const LaserMine = (asteroid) => {
+    const LaserMine = ({ asteroid }) => {
         asteroid.forEach((val, key) => {
             asteroid.set(key, val * 2);
         });

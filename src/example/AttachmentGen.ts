@@ -12,8 +12,10 @@ export const AttachmentGenerator = (): Attachment[] => {
             type: AttachmentType.PRIMARY,
         })
             .EnableSellable(32000)
-            .EnableBuildable(new BlueprintBuilder().DefinedBuild(BlueprintBuilder.SIMPLE_BUILD(14000), "Standard Blaster"))
-            .BattlePreTurnFn((battle) => {
+            .EnableBuildable(
+                new BlueprintBuilder().DefinedBuild(BlueprintBuilder.SIMPLE_BUILD(14000), "Standard Blaster")
+            )
+            .BattlePreTurnFn(({ battle }) => {
                 const rnd = rb(4, 12);
                 battle.Enemy.standardDamage(rnd);
                 return { success: true, message: `Standard Blaster: ${rnd} damage.` };
@@ -22,14 +24,17 @@ export const AttachmentGenerator = (): Attachment[] => {
 
         new AttachmentBuilder({
             name: "Hardened Blaster",
-            description: "A common modification done to the Standard Blaster to slightly increase its reliability. Damage: 8-12.",
+            description:
+                "A common modification done to the Standard Blaster to slightly increase its reliability. Damage: 8-12.",
             strength: 18,
             techLevel: 3,
             type: AttachmentType.PRIMARY,
         })
             .EnableSellable(65000)
-            .EnableBuildable(new BlueprintBuilder().DefinedBuild(BlueprintBuilder.SIMPLE_BUILD(42000), "Hardened Blaster"))
-            .BattlePreTurnFn((battle) => {
+            .EnableBuildable(
+                new BlueprintBuilder().DefinedBuild(BlueprintBuilder.SIMPLE_BUILD(42000), "Hardened Blaster")
+            )
+            .BattlePreTurnFn(({ battle }) => {
                 const rnd = rb(8, 12);
                 battle.Enemy.standardDamage(rnd);
                 return { success: true, message: `Hardened Blaster: ${rnd} damage.` };
@@ -44,8 +49,10 @@ export const AttachmentGenerator = (): Attachment[] => {
             type: AttachmentType.PRIMARY,
         })
             .EnableSellable(195000)
-            .EnableBuildable(new BlueprintBuilder().DefinedBuild(BlueprintBuilder.SIMPLE_BUILD(145000), "Rapidfire Blaster"))
-            .BattlePreTurnFn((battle) => {
+            .EnableBuildable(
+                new BlueprintBuilder().DefinedBuild(BlueprintBuilder.SIMPLE_BUILD(145000), "Rapidfire Blaster")
+            )
+            .BattlePreTurnFn(({ battle }) => {
                 const rnd = rb(8, 18);
                 battle.Enemy.standardDamage(rnd);
                 return { success: true, message: `Hardened Blaster: ${rnd} damage.` };
@@ -61,8 +68,10 @@ export const AttachmentGenerator = (): Attachment[] => {
             type: AttachmentType.PRIMARY,
         })
             .EnableSellable(385000)
-            .EnableBuildable(new BlueprintBuilder().DefinedBuild(BlueprintBuilder.SIMPLE_BUILD(295000), "Mini Scattergun"))
-            .BattlePreTurnFn((battle) => {
+            .EnableBuildable(
+                new BlueprintBuilder().DefinedBuild(BlueprintBuilder.SIMPLE_BUILD(295000), "Mini Scattergun")
+            )
+            .BattlePreTurnFn(({ battle }) => {
                 const base = 10;
                 const bonus = ~~(battle.Enemy.Hp / 100);
                 const effective = Math.max(base + bonus - battle.Enemy.Shield, (base + bonus) / 2); //damage cant be less than half the base + bonus
@@ -80,8 +89,10 @@ export const AttachmentGenerator = (): Attachment[] => {
             type: AttachmentType.PRIMARY,
         })
             .EnableSellable(360000)
-            .EnableBuildable(new BlueprintBuilder().DefinedBuild(BlueprintBuilder.SIMPLE_BUILD(275000), "Thermic Focuser"))
-            .BattlePreTurnFn((battle) => {
+            .EnableBuildable(
+                new BlueprintBuilder().DefinedBuild(BlueprintBuilder.SIMPLE_BUILD(275000), "Thermic Focuser")
+            )
+            .BattlePreTurnFn(({ battle }) => {
                 const base = 4;
                 const bonus = battle.TurnNumber * 1;
                 const effective = base + bonus; //damage cant be less than half the base + bonus
@@ -98,8 +109,10 @@ export const AttachmentGenerator = (): Attachment[] => {
             type: AttachmentType.PRIMARY,
         })
             .EnableSellable(275000)
-            .EnableBuildable(new BlueprintBuilder().DefinedBuild(BlueprintBuilder.SIMPLE_BUILD(200000), "Precision Railgun"))
-            .BattlePreTurnFn((battle) => {
+            .EnableBuildable(
+                new BlueprintBuilder().DefinedBuild(BlueprintBuilder.SIMPLE_BUILD(200000), "Precision Railgun")
+            )
+            .BattlePreTurnFn(({ battle }) => {
                 const base = rb(8, 12);
                 battle.Enemy.standardDamage(base);
                 return { success: true, message: `Precision Railgun: ${base} hull damage.` };
@@ -114,8 +127,10 @@ export const AttachmentGenerator = (): Attachment[] => {
             type: AttachmentType.PRIMARY,
         })
             .EnableSellable(674000)
-            .EnableBuildable(new BlueprintBuilder().DefinedBuild(BlueprintBuilder.MODERATE_BUILD(520000), "Plasma Cannon"))
-            .BattlePreTurnFn((battle) => {
+            .EnableBuildable(
+                new BlueprintBuilder().DefinedBuild(BlueprintBuilder.MODERATE_BUILD(520000), "Plasma Cannon")
+            )
+            .BattlePreTurnFn(({ battle }) => {
                 const base = rb(15, 25);
                 battle.Enemy.standardDamage(base);
                 return { success: true, message: `Plasma Cannon: ${base} damage.` };
@@ -124,14 +139,17 @@ export const AttachmentGenerator = (): Attachment[] => {
 
         new AttachmentBuilder({
             name: "Flak Cannon",
-            description: "A direct improvement of the Mini Scattergun. Damage: 10 per 50 opponent hp. Halved vs shield.",
+            description:
+                "A direct improvement of the Mini Scattergun. Damage: 10 per 50 opponent hp. Halved vs shield.",
             strength: 21,
             techLevel: 5,
             type: AttachmentType.PRIMARY,
         })
             .EnableSellable(385000)
-            .EnableBuildable(new BlueprintBuilder().DefinedBuild(BlueprintBuilder.MODERATE_BUILD(295000), "Flak Cannon"))
-            .BattlePreTurnFn((battle) => {
+            .EnableBuildable(
+                new BlueprintBuilder().DefinedBuild(BlueprintBuilder.MODERATE_BUILD(295000), "Flak Cannon")
+            )
+            .BattlePreTurnFn(({ battle }) => {
                 const base = 0;
                 const bonus = ~~(battle.Enemy.Hp / 50);
                 const effective = Math.max(base + bonus - battle.Enemy.Shield, (base + bonus) / 2); //damage cant be less than half the base + bonus
@@ -142,14 +160,15 @@ export const AttachmentGenerator = (): Attachment[] => {
 
         new AttachmentBuilder({
             name: "Sunfire Beam",
-            description: "A beam that starts off very weak, but ramps up after continuous fire. Damage: 2 + 2 per turn.",
+            description:
+                "A beam that starts off very weak, but ramps up after continuous fire. Damage: 2 + 2 per turn.",
             strength: 21,
             techLevel: 5,
             type: AttachmentType.PRIMARY,
         })
             .EnableSellable(360000)
             .EnableBuildable(new BlueprintBuilder().DefinedBuild(BlueprintBuilder.SIMPLE_BUILD(275000), "Sunfire Beam"))
-            .BattlePreTurnFn((battle) => {
+            .BattlePreTurnFn(({ battle }) => {
                 const base = 2;
                 const bonus = battle.TurnNumber * 2;
                 const effective = base + bonus; //damage cant be less than half the base + bonus
@@ -160,14 +179,15 @@ export const AttachmentGenerator = (): Attachment[] => {
 
         new AttachmentBuilder({
             name: "Void Ray",
-            description: "A destructive weapon that can do extreme damage, but firing it is unsustainable. Damage: 50 - 5 per turn.",
+            description:
+                "A destructive weapon that can do extreme damage, but firing it is unsustainable. Damage: 50 - 5 per turn.",
             strength: 21,
             techLevel: 5,
             type: AttachmentType.PRIMARY,
         })
             .EnableSellable(360000)
             .EnableBuildable(new BlueprintBuilder().DefinedBuild(BlueprintBuilder.SIMPLE_BUILD(275000), "Void Ray"))
-            .BattlePreTurnFn((battle) => {
+            .BattlePreTurnFn(({ battle }) => {
                 const base = 50;
                 const bonus = battle.TurnNumber * -5;
                 const effective = Math.max(base + bonus, 0); //damage cant be less than half the base + bonus
@@ -184,8 +204,10 @@ export const AttachmentGenerator = (): Attachment[] => {
             type: AttachmentType.PRIMARY,
         })
             .EnableSellable(360000)
-            .EnableBuildable(new BlueprintBuilder().DefinedBuild(BlueprintBuilder.SIMPLE_BUILD(275000), "Quasar Cannon"))
-            .BattlePreTurnFn((battle) => {
+            .EnableBuildable(
+                new BlueprintBuilder().DefinedBuild(BlueprintBuilder.SIMPLE_BUILD(275000), "Quasar Cannon")
+            )
+            .BattlePreTurnFn(({ battle }) => {
                 const effective = 30;
                 battle.Enemy.standardDamage(effective);
                 return { success: true, message: `Quasar Cannon: ${effective} damage.` };
@@ -194,14 +216,17 @@ export const AttachmentGenerator = (): Attachment[] => {
 
         new AttachmentBuilder({
             name: "Heavy Flak Launcher",
-            description: "A direct improvement of the Mini Scattergun. Damage: 10 per 50 opponent hp. Halved vs shield.",
+            description:
+                "A direct improvement of the Mini Scattergun. Damage: 10 per 50 opponent hp. Halved vs shield.",
             strength: 21,
             techLevel: 5,
             type: AttachmentType.PRIMARY,
         })
             .EnableSellable(385000)
-            .EnableBuildable(new BlueprintBuilder().DefinedBuild(BlueprintBuilder.MODERATE_BUILD(295000), "Heavy Flak Launcher"))
-            .BattlePreTurnFn((battle) => {
+            .EnableBuildable(
+                new BlueprintBuilder().DefinedBuild(BlueprintBuilder.MODERATE_BUILD(295000), "Heavy Flak Launcher")
+            )
+            .BattlePreTurnFn(({ battle }) => {
                 const base = 0;
                 const bonus = ~~(battle.Enemy.Hp / 50);
                 const effective = Math.max(base + bonus - battle.Enemy.Shield, (base + bonus) / 2); //damage cant be less than half the base + bonus
@@ -217,18 +242,19 @@ export const AttachmentGenerator = (): Attachment[] => {
         //#region PLATING
         new AttachmentBuilder({
             name: "Iron Plating",
-            description: "Not particularity impressive, but its a simple plating that provides some protection. Adds 25 hull.",
+            description:
+                "Not particularity impressive, but its a simple plating that provides some protection. Adds 25 hull.",
             type: AttachmentType.GENERAL,
             techLevel: 1,
             strength: 12,
         })
             .EnableSellable(24000)
             .EnableBuildable(new BlueprintBuilder().DefinedBuild(BlueprintBuilder.SIMPLE_BUILD(11000), "Iron Plating"))
-            .EquipFn((friendly) => {
+            .EquipFn(({ friendly }) => {
                 friendly.incrementStatistics({ hp: 25 });
                 return { message: `New Health: ${friendly.ShipStatistics.totalHp}`, success: true };
             })
-            .UnequipFn((friendly) => {
+            .UnequipFn(({ friendly }) => {
                 friendly.decrementStatistics({ hp: 25 });
                 return { message: `New Health: ${friendly.ShipStatistics.totalHp}`, success: true };
             })
@@ -243,11 +269,11 @@ export const AttachmentGenerator = (): Attachment[] => {
         })
             .EnableSellable(64000)
             .EnableBuildable(new BlueprintBuilder().DefinedBuild(BlueprintBuilder.SIMPLE_BUILD(38000), "Steel Plating"))
-            .EquipFn((friendly) => {
+            .EquipFn(({ friendly }) => {
                 friendly.incrementStatistics({ hp: 35 });
                 return { message: `New Health: ${friendly.ShipStatistics.totalHp}`, success: true };
             })
-            .UnequipFn((friendly) => {
+            .UnequipFn(({ friendly }) => {
                 friendly.decrementStatistics({ hp: 35 });
                 return { message: `New Health: ${friendly.ShipStatistics.totalHp}`, success: true };
             })
@@ -255,18 +281,21 @@ export const AttachmentGenerator = (): Attachment[] => {
 
         new AttachmentBuilder({
             name: "Titanium Plating",
-            description: "A tough and resistant shell that adds a solid chunk of strength to a ships hull. Adds 50 hull.",
+            description:
+                "A tough and resistant shell that adds a solid chunk of strength to a ships hull. Adds 50 hull.",
             type: AttachmentType.GENERAL,
             techLevel: 4,
             strength: 17,
         })
             .EnableSellable(224000)
-            .EnableBuildable(new BlueprintBuilder().DefinedBuild(BlueprintBuilder.SIMPLE_BUILD(175000), "Titanium Plating"))
-            .EquipFn((friendly) => {
+            .EnableBuildable(
+                new BlueprintBuilder().DefinedBuild(BlueprintBuilder.SIMPLE_BUILD(175000), "Titanium Plating")
+            )
+            .EquipFn(({ friendly }) => {
                 friendly.incrementStatistics({ hp: 50 });
                 return { message: `New Health: ${friendly.ShipStatistics.totalHp}`, success: true };
             })
-            .UnequipFn((friendly) => {
+            .UnequipFn(({ friendly }) => {
                 friendly.decrementStatistics({ hp: 50 });
                 return { message: `New Health: ${friendly.ShipStatistics.totalHp}`, success: true };
             })
@@ -280,12 +309,14 @@ export const AttachmentGenerator = (): Attachment[] => {
             strength: 22,
         })
             .EnableSellable(760000)
-            .EnableBuildable(new BlueprintBuilder().DefinedBuild(BlueprintBuilder.MODERATE_BUILD(530000), "Advanced Alloy Plating"))
-            .EquipFn((friendly) => {
+            .EnableBuildable(
+                new BlueprintBuilder().DefinedBuild(BlueprintBuilder.MODERATE_BUILD(530000), "Advanced Alloy Plating")
+            )
+            .EquipFn(({ friendly }) => {
                 friendly.incrementStatistics({ hp: 80 });
                 return { message: `New Health: ${friendly.ShipStatistics.totalHp}`, success: true };
             })
-            .UnequipFn((friendly) => {
+            .UnequipFn(({ friendly }) => {
                 friendly.decrementStatistics({ hp: 80 });
                 return { message: `New Health: ${friendly.ShipStatistics.totalHp}`, success: true };
             })
@@ -293,18 +324,21 @@ export const AttachmentGenerator = (): Attachment[] => {
 
         new AttachmentBuilder({
             name: "Ty'Linian Exoplate",
-            description: "A tough and resistant shell that adds a solid chunk of strength to a ships hull. Adds 125 hull.",
+            description:
+                "A tough and resistant shell that adds a solid chunk of strength to a ships hull. Adds 125 hull.",
             type: AttachmentType.GENERAL,
             techLevel: 7,
             strength: 28,
         })
             .EnableSellable(1120000)
-            .EnableBuildable(new BlueprintBuilder().DefinedBuild(BlueprintBuilder.ADVANCED_BUILD(920000), "Ty'Linian Exoplate"))
-            .EquipFn((friendly) => {
+            .EnableBuildable(
+                new BlueprintBuilder().DefinedBuild(BlueprintBuilder.ADVANCED_BUILD(920000), "Ty'Linian Exoplate")
+            )
+            .EquipFn(({ friendly }) => {
                 friendly.incrementStatistics({ hp: 125 });
                 return { message: `New Health: ${friendly.ShipStatistics.totalHp}`, success: true };
             })
-            .UnequipFn((friendly) => {
+            .UnequipFn(({ friendly }) => {
                 friendly.decrementStatistics({ hp: 125 });
                 return { message: `New Health: ${friendly.ShipStatistics.totalHp}`, success: true };
             })
@@ -319,13 +353,15 @@ export const AttachmentGenerator = (): Attachment[] => {
             strength: 45,
         })
             .EnableSellable(3800000)
-            .EnableBuildable(new BlueprintBuilder().DefinedBuild(BlueprintBuilder.ADVANCED_BUILD(3100000), "Antimatter Plating"))
-            .EquipFn((friendly) => {
+            .EnableBuildable(
+                new BlueprintBuilder().DefinedBuild(BlueprintBuilder.ADVANCED_BUILD(3100000), "Antimatter Plating")
+            )
+            .EquipFn(({ friendly }) => {
                 const shieldValue = friendly.BaseStatistics.baseShield;
                 friendly.incrementStatistics({ hp: shieldValue });
                 return { message: `New Health: ${friendly.ShipStatistics.totalHp}`, success: true };
             })
-            .UnequipFn((friendly) => {
+            .UnequipFn(({ friendly }) => {
                 const shieldValue = friendly.BaseStatistics.baseShield;
                 friendly.decrementStatistics({ hp: shieldValue });
                 return { message: `New Health: ${friendly.ShipStatistics.totalHp}`, success: true };
@@ -367,12 +403,14 @@ const ReserveGenerator = (): Attachment[] => {
             type: AttachmentType.GENERAL,
         })
             .EnableSellable(15000)
-            .EnableBuildable(new BlueprintBuilder().DefinedBuild(BlueprintBuilder.SIMPLE_BUILD(5000), "Basic Weapon Reserves"))
-            .EquipFn((ship) => {
+            .EnableBuildable(
+                new BlueprintBuilder().DefinedBuild(BlueprintBuilder.SIMPLE_BUILD(5000), "Basic Weapon Reserves")
+            )
+            .EquipFn(({ friendly: ship }) => {
                 ship.incrementStatistics({ energy: [levelOneSingle, 0, 0] });
                 return { message: `New Weapon Energy: ${ship.ShipStatistics.totalEnergy[0]}`, success: true };
             })
-            .UnequipFn((ship) => {
+            .UnequipFn(({ friendly: ship }) => {
                 ship.decrementStatistics({ energy: [levelOneSingle, 0, 0] });
                 return { message: `New Weapon Energy: ${ship.ShipStatistics.totalEnergy[0]}`, success: true };
             })
@@ -385,12 +423,14 @@ const ReserveGenerator = (): Attachment[] => {
             type: AttachmentType.GENERAL,
         })
             .EnableSellable(15000)
-            .EnableBuildable(new BlueprintBuilder().DefinedBuild(BlueprintBuilder.SIMPLE_BUILD(5000), "Basic Engine Reserves"))
-            .EquipFn((ship) => {
+            .EnableBuildable(
+                new BlueprintBuilder().DefinedBuild(BlueprintBuilder.SIMPLE_BUILD(5000), "Basic Engine Reserves")
+            )
+            .EquipFn(({ friendly: ship }) => {
                 ship.incrementStatistics({ energy: [0, levelOneSingle, 0] });
                 return { message: `New Engine Energy: ${ship.ShipStatistics.totalEnergy[1]}`, success: true };
             })
-            .UnequipFn((ship) => {
+            .UnequipFn(({ friendly: ship }) => {
                 ship.decrementStatistics({ energy: [0, levelOneSingle, 0] });
                 return { message: `New Engine Energy: ${ship.ShipStatistics.totalEnergy[1]}`, success: true };
             })
@@ -403,12 +443,14 @@ const ReserveGenerator = (): Attachment[] => {
             type: AttachmentType.GENERAL,
         })
             .EnableSellable(15000)
-            .EnableBuildable(new BlueprintBuilder().DefinedBuild(BlueprintBuilder.SIMPLE_BUILD(5000), "Basic Computer Reserves"))
-            .EquipFn((ship) => {
+            .EnableBuildable(
+                new BlueprintBuilder().DefinedBuild(BlueprintBuilder.SIMPLE_BUILD(5000), "Basic Computer Reserves")
+            )
+            .EquipFn(({ friendly: ship }) => {
                 ship.incrementStatistics({ energy: [0, 0, levelTwoSingle] });
                 return { message: `New Computer Energy: ${ship.ShipStatistics.totalEnergy[2]}`, success: true };
             })
-            .UnequipFn((ship) => {
+            .UnequipFn(({ friendly: ship }) => {
                 ship.decrementStatistics({ energy: [0, 0, levelTwoSingle] });
                 return { message: `New Computer Energy: ${ship.ShipStatistics.totalEnergy[2]}`, success: true };
             })
@@ -422,12 +464,14 @@ const ReserveGenerator = (): Attachment[] => {
             type: AttachmentType.GENERAL,
         })
             .EnableSellable(150000)
-            .EnableBuildable(new BlueprintBuilder().DefinedBuild(BlueprintBuilder.SIMPLE_BUILD(75000), "Weapons Battery"))
-            .EquipFn((ship) => {
+            .EnableBuildable(
+                new BlueprintBuilder().DefinedBuild(BlueprintBuilder.SIMPLE_BUILD(75000), "Weapons Battery")
+            )
+            .EquipFn(({ friendly: ship }) => {
                 ship.incrementStatistics({ energy: [levelTwoSingle, 0, 0] });
                 return { message: `New Weapon Energy: ${ship.ShipStatistics.totalEnergy[0]}`, success: true };
             })
-            .UnequipFn((ship) => {
+            .UnequipFn(({ friendly: ship }) => {
                 ship.decrementStatistics({ energy: [levelTwoSingle, 0, 0] });
                 return { message: `New Weapon Energy: ${ship.ShipStatistics.totalEnergy[0]}`, success: true };
             })
@@ -440,12 +484,14 @@ const ReserveGenerator = (): Attachment[] => {
             type: AttachmentType.GENERAL,
         })
             .EnableSellable(150000)
-            .EnableBuildable(new BlueprintBuilder().DefinedBuild(BlueprintBuilder.SIMPLE_BUILD(75000), "Engine Battery"))
-            .EquipFn((ship) => {
+            .EnableBuildable(
+                new BlueprintBuilder().DefinedBuild(BlueprintBuilder.SIMPLE_BUILD(75000), "Engine Battery")
+            )
+            .EquipFn(({ friendly: ship }) => {
                 ship.incrementStatistics({ energy: [0, levelTwoSingle, 0] });
                 return { message: `New Engine Energy: ${ship.ShipStatistics.totalEnergy[1]}`, success: true };
             })
-            .UnequipFn((ship) => {
+            .UnequipFn(({ friendly: ship }) => {
                 ship.decrementStatistics({ energy: [0, levelTwoSingle, 0] });
                 return { message: `New Engine Energy: ${ship.ShipStatistics.totalEnergy[1]}`, success: true };
             })
@@ -458,12 +504,14 @@ const ReserveGenerator = (): Attachment[] => {
             type: AttachmentType.GENERAL,
         })
             .EnableSellable(150000)
-            .EnableBuildable(new BlueprintBuilder().DefinedBuild(BlueprintBuilder.SIMPLE_BUILD(75000), "Computer Battery"))
-            .EquipFn((ship) => {
+            .EnableBuildable(
+                new BlueprintBuilder().DefinedBuild(BlueprintBuilder.SIMPLE_BUILD(75000), "Computer Battery")
+            )
+            .EquipFn(({ friendly: ship }) => {
                 ship.incrementStatistics({ energy: [0, 0, levelTwoSingle] });
                 return { message: `New Computer Energy: ${ship.ShipStatistics.totalEnergy[2]}`, success: true };
             })
-            .UnequipFn((ship) => {
+            .UnequipFn(({ friendly: ship }) => {
                 ship.decrementStatistics({ energy: [0, 0, levelTwoSingle] });
                 return { message: `New Computer Energy: ${ship.ShipStatistics.totalEnergy[2]}`, success: true };
             })
@@ -476,12 +524,14 @@ const ReserveGenerator = (): Attachment[] => {
             type: AttachmentType.GENERAL,
         })
             .EnableSellable(225000)
-            .EnableBuildable(new BlueprintBuilder().DefinedBuild(BlueprintBuilder.SIMPLE_BUILD(150000), "Full Spectrum Battery"))
-            .EquipFn((ship) => {
+            .EnableBuildable(
+                new BlueprintBuilder().DefinedBuild(BlueprintBuilder.SIMPLE_BUILD(150000), "Full Spectrum Battery")
+            )
+            .EquipFn(({ friendly: ship }) => {
                 ship.incrementStatistics({ energy: [levelTwoMulti, levelTwoMulti, levelTwoMulti] });
                 return { message: `New Energy (W,E,C): ${ship.ShipStatistics.totalEnergy}`, success: true };
             })
-            .UnequipFn((ship) => {
+            .UnequipFn(({ friendly: ship }) => {
                 ship.decrementStatistics({ energy: [levelTwoMulti, levelTwoMulti, levelTwoMulti] });
                 return { message: `New Energy (W,E,C): ${ship.ShipStatistics.totalEnergy}`, success: true };
             })
@@ -497,12 +547,14 @@ const ReserveGenerator = (): Attachment[] => {
             type: AttachmentType.GENERAL,
         })
             .EnableSellable(500000)
-            .EnableBuildable(new BlueprintBuilder().DefinedBuild(BlueprintBuilder.MODERATE_BUILD(390000), "Weapons Energy Cell"))
-            .EquipFn((ship) => {
+            .EnableBuildable(
+                new BlueprintBuilder().DefinedBuild(BlueprintBuilder.MODERATE_BUILD(390000), "Weapons Energy Cell")
+            )
+            .EquipFn(({ friendly: ship }) => {
                 ship.incrementStatistics({ energy: [levelThreeSingle, 0, 0] });
                 return { message: `New Weapon Energy: ${ship.ShipStatistics.totalEnergy[0]}`, success: true };
             })
-            .UnequipFn((ship) => {
+            .UnequipFn(({ friendly: ship }) => {
                 ship.decrementStatistics({ energy: [levelThreeSingle, 0, 0] });
                 return { message: `New Weapon Energy: ${ship.ShipStatistics.totalEnergy[0]}`, success: true };
             })
@@ -515,12 +567,14 @@ const ReserveGenerator = (): Attachment[] => {
             type: AttachmentType.GENERAL,
         })
             .EnableSellable(500000)
-            .EnableBuildable(new BlueprintBuilder().DefinedBuild(BlueprintBuilder.MODERATE_BUILD(390000), "Engine Fuel Deposit"))
-            .EquipFn((ship) => {
+            .EnableBuildable(
+                new BlueprintBuilder().DefinedBuild(BlueprintBuilder.MODERATE_BUILD(390000), "Engine Fuel Deposit")
+            )
+            .EquipFn(({ friendly: ship }) => {
                 ship.incrementStatistics({ energy: [0, levelThreeSingle, 0] });
                 return { message: `New Engine Energy: ${ship.ShipStatistics.totalEnergy[1]}`, success: true };
             })
-            .UnequipFn((ship) => {
+            .UnequipFn(({ friendly: ship }) => {
                 ship.decrementStatistics({ energy: [0, levelThreeSingle, 0] });
                 return { message: `New Engine Energy: ${ship.ShipStatistics.totalEnergy[1]}`, success: true };
             })
@@ -533,12 +587,14 @@ const ReserveGenerator = (): Attachment[] => {
             type: AttachmentType.GENERAL,
         })
             .EnableSellable(500000)
-            .EnableBuildable(new BlueprintBuilder().DefinedBuild(BlueprintBuilder.MODERATE_BUILD(390000), "Computer Battery"))
-            .EquipFn((ship) => {
+            .EnableBuildable(
+                new BlueprintBuilder().DefinedBuild(BlueprintBuilder.MODERATE_BUILD(390000), "Computer Battery")
+            )
+            .EquipFn(({ friendly: ship }) => {
                 ship.incrementStatistics({ energy: [0, 0, levelThreeSingle] });
                 return { message: `New Computer Energy: ${ship.ShipStatistics.totalEnergy[2]}`, success: true };
             })
-            .UnequipFn((ship) => {
+            .UnequipFn(({ friendly: ship }) => {
                 ship.decrementStatistics({ energy: [0, 0, levelThreeSingle] });
                 return { message: `New Computer Energy: ${ship.ShipStatistics.totalEnergy[2]}`, success: true };
             })
@@ -551,12 +607,14 @@ const ReserveGenerator = (): Attachment[] => {
             type: AttachmentType.GENERAL,
         })
             .EnableSellable(675000)
-            .EnableBuildable(new BlueprintBuilder().DefinedBuild(BlueprintBuilder.MODERATE_BUILD(595000), "Full Spectrum Battery"))
-            .EquipFn((ship) => {
+            .EnableBuildable(
+                new BlueprintBuilder().DefinedBuild(BlueprintBuilder.MODERATE_BUILD(595000), "Full Spectrum Battery")
+            )
+            .EquipFn(({ friendly: ship }) => {
                 ship.incrementStatistics({ energy: [levelThreeMulti, levelThreeMulti, levelThreeMulti] });
                 return { message: `New Energy (W,E,C): ${ship.ShipStatistics.totalEnergy}`, success: true };
             })
-            .UnequipFn((ship) => {
+            .UnequipFn(({ friendly: ship }) => {
                 ship.decrementStatistics({ energy: [levelThreeMulti, levelThreeMulti, levelThreeMulti] });
                 return { message: `New Energy (W,E,C): ${ship.ShipStatistics.totalEnergy}`, success: true };
             })
@@ -570,12 +628,14 @@ const ReserveGenerator = (): Attachment[] => {
             type: AttachmentType.GENERAL,
         })
             .EnableSellable(825000)
-            .EnableBuildable(new BlueprintBuilder().DefinedBuild(BlueprintBuilder.MODERATE_BUILD(715000), "Shield Cells"))
-            .EquipFn((ship) => {
+            .EnableBuildable(
+                new BlueprintBuilder().DefinedBuild(BlueprintBuilder.MODERATE_BUILD(715000), "Shield Cells")
+            )
+            .EquipFn(({ friendly: ship }) => {
                 ship.incrementStatistics({ shield: levelThreeShield });
                 return { message: `New Shield: ${ship.ShipStatistics.totalShield}`, success: true };
             })
-            .UnequipFn((ship) => {
+            .UnequipFn(({ friendly: ship }) => {
                 ship.decrementStatistics({ shield: levelThreeShield });
                 return { message: `New Shield: ${ship.ShipStatistics.totalShield}`, success: true };
             })
@@ -591,12 +651,14 @@ const ReserveGenerator = (): Attachment[] => {
             type: AttachmentType.GENERAL,
         })
             .EnableSellable(1500000)
-            .EnableBuildable(new BlueprintBuilder().DefinedBuild(BlueprintBuilder.MODERATE_BUILD(1290000), "Weapons Energy Matrix"))
-            .EquipFn((ship) => {
+            .EnableBuildable(
+                new BlueprintBuilder().DefinedBuild(BlueprintBuilder.MODERATE_BUILD(1290000), "Weapons Energy Matrix")
+            )
+            .EquipFn(({ friendly: ship }) => {
                 ship.incrementStatistics({ energy: [levelFourSingle, 0, 0] });
                 return { message: `New Weapon Energy: ${ship.ShipStatistics.totalEnergy[0]}`, success: true };
             })
-            .UnequipFn((ship) => {
+            .UnequipFn(({ friendly: ship }) => {
                 ship.decrementStatistics({ energy: [levelFourSingle, 0, 0] });
                 return { message: `New Weapon Energy: ${ship.ShipStatistics.totalEnergy[0]}`, success: true };
             })
@@ -609,12 +671,14 @@ const ReserveGenerator = (): Attachment[] => {
             type: AttachmentType.GENERAL,
         })
             .EnableSellable(1500000)
-            .EnableBuildable(new BlueprintBuilder().DefinedBuild(BlueprintBuilder.MODERATE_BUILD(1290000), "Engine Energy Matrix"))
-            .EquipFn((ship) => {
+            .EnableBuildable(
+                new BlueprintBuilder().DefinedBuild(BlueprintBuilder.MODERATE_BUILD(1290000), "Engine Energy Matrix")
+            )
+            .EquipFn(({ friendly: ship }) => {
                 ship.incrementStatistics({ energy: [0, levelFourSingle, 0] });
                 return { message: `New Engine Energy: ${ship.ShipStatistics.totalEnergy[1]}`, success: true };
             })
-            .UnequipFn((ship) => {
+            .UnequipFn(({ friendly: ship }) => {
                 ship.decrementStatistics({ energy: [0, levelFourSingle, 0] });
                 return { message: `New Engine Energy: ${ship.ShipStatistics.totalEnergy[1]}`, success: true };
             })
@@ -627,12 +691,14 @@ const ReserveGenerator = (): Attachment[] => {
             type: AttachmentType.GENERAL,
         })
             .EnableSellable(1500000)
-            .EnableBuildable(new BlueprintBuilder().DefinedBuild(BlueprintBuilder.MODERATE_BUILD(1290000), "Computational Matrix"))
-            .EquipFn((ship) => {
+            .EnableBuildable(
+                new BlueprintBuilder().DefinedBuild(BlueprintBuilder.MODERATE_BUILD(1290000), "Computational Matrix")
+            )
+            .EquipFn(({ friendly: ship }) => {
                 ship.incrementStatistics({ energy: [0, 0, levelFourSingle] });
                 return { message: `New Computer Energy: ${ship.ShipStatistics.totalEnergy[2]}`, success: true };
             })
-            .UnequipFn((ship) => {
+            .UnequipFn(({ friendly: ship }) => {
                 ship.decrementStatistics({ energy: [0, 0, levelFourSingle] });
                 return { message: `New Computer Energy: ${ship.ShipStatistics.totalEnergy[2]}`, success: true };
             })
@@ -645,12 +711,14 @@ const ReserveGenerator = (): Attachment[] => {
             type: AttachmentType.GENERAL,
         })
             .EnableSellable(1750000)
-            .EnableBuildable(new BlueprintBuilder().DefinedBuild(BlueprintBuilder.ADVANCED_BUILD(1450000), "Spectral Matrix"))
-            .EquipFn((ship) => {
+            .EnableBuildable(
+                new BlueprintBuilder().DefinedBuild(BlueprintBuilder.ADVANCED_BUILD(1450000), "Spectral Matrix")
+            )
+            .EquipFn(({ friendly: ship }) => {
                 ship.incrementStatistics({ energy: [levelFourMulti, levelFourMulti, levelFourMulti] });
                 return { message: `New Energy (W,E,C): ${ship.ShipStatistics.totalEnergy}`, success: true };
             })
-            .UnequipFn((ship) => {
+            .UnequipFn(({ friendly: ship }) => {
                 ship.decrementStatistics({ energy: [levelFourMulti, levelFourMulti, levelFourMulti] });
                 return { message: `New Energy (W,E,C): ${ship.ShipStatistics.totalEnergy}`, success: true };
             })
@@ -664,12 +732,14 @@ const ReserveGenerator = (): Attachment[] => {
             type: AttachmentType.GENERAL,
         })
             .EnableSellable(2000000)
-            .EnableBuildable(new BlueprintBuilder().DefinedBuild(BlueprintBuilder.ADVANCED_BUILD(1750000), "Shield Matrix"))
-            .EquipFn((ship) => {
+            .EnableBuildable(
+                new BlueprintBuilder().DefinedBuild(BlueprintBuilder.ADVANCED_BUILD(1750000), "Shield Matrix")
+            )
+            .EquipFn(({ friendly: ship }) => {
                 ship.incrementStatistics({ shield: levelFourShield });
                 return { message: `New Shield: ${ship.ShipStatistics.totalShield}`, success: true };
             })
-            .UnequipFn((ship) => {
+            .UnequipFn(({ friendly: ship }) => {
                 ship.decrementStatistics({ shield: levelFourShield });
                 return { message: `New Shield: ${ship.ShipStatistics.totalShield}`, success: true };
             })
@@ -685,12 +755,14 @@ const ReserveGenerator = (): Attachment[] => {
             type: AttachmentType.GENERAL,
         })
             .EnableSellable(3500000)
-            .EnableBuildable(new BlueprintBuilder().DefinedBuild(BlueprintBuilder.MODERATE_BUILD(2800000), "Modular Weapons System"))
-            .EquipFn((ship) => {
+            .EnableBuildable(
+                new BlueprintBuilder().DefinedBuild(BlueprintBuilder.MODERATE_BUILD(2800000), "Modular Weapons System")
+            )
+            .EquipFn(({ friendly: ship }) => {
                 ship.incrementStatistics({ energy: [levelFiveSingle, 0, 0] });
                 return { message: `New Weapon Energy: ${ship.ShipStatistics.totalEnergy[0]}`, success: true };
             })
-            .UnequipFn((ship) => {
+            .UnequipFn(({ friendly: ship }) => {
                 ship.decrementStatistics({ energy: [levelFiveSingle, 0, 0] });
                 return { message: `New Weapon Energy: ${ship.ShipStatistics.totalEnergy[0]}`, success: true };
             })
@@ -703,12 +775,14 @@ const ReserveGenerator = (): Attachment[] => {
             type: AttachmentType.GENERAL,
         })
             .EnableSellable(3500000)
-            .EnableBuildable(new BlueprintBuilder().DefinedBuild(BlueprintBuilder.MODERATE_BUILD(2800000), "Modular Fuel Cells"))
-            .EquipFn((ship) => {
+            .EnableBuildable(
+                new BlueprintBuilder().DefinedBuild(BlueprintBuilder.MODERATE_BUILD(2800000), "Modular Fuel Cells")
+            )
+            .EquipFn(({ friendly: ship }) => {
                 ship.incrementStatistics({ energy: [0, levelFiveSingle, 0] });
                 return { message: `New Engine Energy: ${ship.ShipStatistics.totalEnergy[1]}`, success: true };
             })
-            .UnequipFn((ship) => {
+            .UnequipFn(({ friendly: ship }) => {
                 ship.decrementStatistics({ energy: [0, levelFiveSingle, 0] });
                 return { message: `New Engine Energy: ${ship.ShipStatistics.totalEnergy[1]}`, success: true };
             })
@@ -721,12 +795,14 @@ const ReserveGenerator = (): Attachment[] => {
             type: AttachmentType.GENERAL,
         })
             .EnableSellable(3500000)
-            .EnableBuildable(new BlueprintBuilder().DefinedBuild(BlueprintBuilder.MODERATE_BUILD(2800000), "Modular Supercomputer"))
-            .EquipFn((ship) => {
+            .EnableBuildable(
+                new BlueprintBuilder().DefinedBuild(BlueprintBuilder.MODERATE_BUILD(2800000), "Modular Supercomputer")
+            )
+            .EquipFn(({ friendly: ship }) => {
                 ship.incrementStatistics({ energy: [0, 0, levelFiveSingle] });
                 return { message: `New Computer Energy: ${ship.ShipStatistics.totalEnergy[2]}`, success: true };
             })
-            .UnequipFn((ship) => {
+            .UnequipFn(({ friendly: ship }) => {
                 ship.decrementStatistics({ energy: [0, 0, levelFiveSingle] });
                 return { message: `New Computer Energy: ${ship.ShipStatistics.totalEnergy[2]}`, success: true };
             })
@@ -739,12 +815,14 @@ const ReserveGenerator = (): Attachment[] => {
             type: AttachmentType.GENERAL,
         })
             .EnableSellable(3750000)
-            .EnableBuildable(new BlueprintBuilder().DefinedBuild(BlueprintBuilder.ADVANCED_BUILD(3100000), "Modular Spectral Array"))
-            .EquipFn((ship) => {
+            .EnableBuildable(
+                new BlueprintBuilder().DefinedBuild(BlueprintBuilder.ADVANCED_BUILD(3100000), "Modular Spectral Array")
+            )
+            .EquipFn(({ friendly: ship }) => {
                 ship.incrementStatistics({ energy: [levelFiveMulti, levelFiveMulti, levelFiveMulti] });
                 return { message: `New Energy (W,E,C): ${ship.ShipStatistics.totalEnergy}`, success: true };
             })
-            .UnequipFn((ship) => {
+            .UnequipFn(({ friendly: ship }) => {
                 ship.decrementStatistics({ energy: [levelFiveMulti, levelFiveMulti, levelFiveMulti] });
                 return { message: `New Energy (W,E,C): ${ship.ShipStatistics.totalEnergy}`, success: true };
             })
@@ -758,16 +836,27 @@ const ReserveGenerator = (): Attachment[] => {
             type: AttachmentType.GENERAL,
         })
             .EnableSellable(4600000)
-            .EnableBuildable(new BlueprintBuilder().DefinedBuild(BlueprintBuilder.ADVANCED_BUILD(3700000), "Modular Shield Superchargers"))
-            .EquipFn((ship) => {
+            .EnableBuildable(
+                new BlueprintBuilder().DefinedBuild(
+                    BlueprintBuilder.ADVANCED_BUILD(3700000),
+                    "Modular Shield Superchargers"
+                )
+            )
+            .EquipFn(({ friendly: ship }) => {
                 const value = ship.BaseStatistics.baseEnergy.reduce((u, v) => u + v);
                 ship.incrementStatistics({ shield: value });
-                return { message: `New Shield: ${ship.ShipStatistics.totalShield}. Increased by ${value}.`, success: true };
+                return {
+                    message: `New Shield: ${ship.ShipStatistics.totalShield}. Increased by ${value}.`,
+                    success: true,
+                };
             })
-            .UnequipFn((ship) => {
+            .UnequipFn(({ friendly: ship }) => {
                 const value = ship.BaseStatistics.baseEnergy.reduce((u, v) => u + v);
                 ship.decrementStatistics({ shield: value });
-                return { message: `New Shield: ${ship.ShipStatistics.totalShield}. Increased by ${value}.`, success: true };
+                return {
+                    message: `New Shield: ${ship.ShipStatistics.totalShield}. Increased by ${value}.`,
+                    success: true,
+                };
             })
             .Build(),
 
@@ -782,9 +871,12 @@ const ReserveGenerator = (): Attachment[] => {
         })
             .EnableSellable(9250000)
             .EnableBuildable(
-                new BlueprintBuilder().DefinedBuild(BlueprintBuilder.ADVANCED_BUILD(8000000), "Multidimensional Energy Tesseract")
+                new BlueprintBuilder().DefinedBuild(
+                    BlueprintBuilder.ADVANCED_BUILD(8000000),
+                    "Multidimensional Energy Tesseract"
+                )
             )
-            .EquipFn((ship) => {
+            .EquipFn(({ friendly: ship }) => {
                 const values = ship.BaseStatistics;
                 ship.incrementStatistics({ shield: values.baseShield, energy: values.baseEnergy });
                 return {
@@ -792,7 +884,7 @@ const ReserveGenerator = (): Attachment[] => {
                     success: true,
                 };
             })
-            .UnequipFn((ship) => {
+            .UnequipFn(({ friendly: ship }) => {
                 const values = ship.BaseStatistics;
                 ship.decrementStatistics({ shield: values.baseShield, energy: values.baseEnergy });
                 return {
@@ -820,12 +912,14 @@ const CargoGenerator = (): Attachment[] => {
             type: AttachmentType.GENERAL,
         })
             .EnableSellable(70000)
-            .EnableBuildable(new BlueprintBuilder().DefinedBuild(BlueprintBuilder.SIMPLE_BUILD(45000), "Small Cargo Hold"))
-            .EquipFn((ship) => {
+            .EnableBuildable(
+                new BlueprintBuilder().DefinedBuild(BlueprintBuilder.SIMPLE_BUILD(45000), "Small Cargo Hold")
+            )
+            .EquipFn(({ friendly: ship }) => {
                 ship.incrementStatistics({ cargo: levelOne });
                 return { message: `New Cargo: ${ship.ShipStatistics.totalCargo}`, success: true };
             })
-            .UnequipFn((ship) => {
+            .UnequipFn(({ friendly: ship }) => {
                 ship.decrementStatistics({ cargo: levelOne });
                 return { message: `New Cargo: ${ship.ShipStatistics.totalCargo}`, success: true };
             })
@@ -839,12 +933,14 @@ const CargoGenerator = (): Attachment[] => {
             type: AttachmentType.GENERAL,
         })
             .EnableSellable(380000)
-            .EnableBuildable(new BlueprintBuilder().DefinedBuild(BlueprintBuilder.SIMPLE_BUILD(300000), "Medium Cargo Hold"))
-            .EquipFn((ship) => {
+            .EnableBuildable(
+                new BlueprintBuilder().DefinedBuild(BlueprintBuilder.SIMPLE_BUILD(300000), "Medium Cargo Hold")
+            )
+            .EquipFn(({ friendly: ship }) => {
                 ship.incrementStatistics({ cargo: levelTwo });
                 return { message: `New Cargo: ${ship.ShipStatistics.totalCargo}`, success: true };
             })
-            .UnequipFn((ship) => {
+            .UnequipFn(({ friendly: ship }) => {
                 ship.decrementStatistics({ cargo: levelTwo });
                 return { message: `New Cargo: ${ship.ShipStatistics.totalCargo}`, success: true };
             })
@@ -858,12 +954,14 @@ const CargoGenerator = (): Attachment[] => {
             type: AttachmentType.GENERAL,
         })
             .EnableSellable(680000)
-            .EnableBuildable(new BlueprintBuilder().DefinedBuild(BlueprintBuilder.MODERATE_BUILD(560000), "Large Cargo Hold"))
-            .EquipFn((ship) => {
+            .EnableBuildable(
+                new BlueprintBuilder().DefinedBuild(BlueprintBuilder.MODERATE_BUILD(560000), "Large Cargo Hold")
+            )
+            .EquipFn(({ friendly: ship }) => {
                 ship.incrementStatistics({ cargo: levelThree });
                 return { message: `New Cargo: ${ship.ShipStatistics.totalCargo}`, success: true };
             })
-            .UnequipFn((ship) => {
+            .UnequipFn(({ friendly: ship }) => {
                 ship.decrementStatistics({ cargo: levelThree });
                 return { message: `New Cargo: ${ship.ShipStatistics.totalCargo}`, success: true };
             })
@@ -877,12 +975,14 @@ const CargoGenerator = (): Attachment[] => {
             type: AttachmentType.GENERAL,
         })
             .EnableSellable(1120000)
-            .EnableBuildable(new BlueprintBuilder().DefinedBuild(BlueprintBuilder.MODERATE_BUILD(975000), "Compressing Cargo Hold"))
-            .EquipFn((ship) => {
+            .EnableBuildable(
+                new BlueprintBuilder().DefinedBuild(BlueprintBuilder.MODERATE_BUILD(975000), "Compressing Cargo Hold")
+            )
+            .EquipFn(({ friendly: ship }) => {
                 ship.incrementStatistics({ cargo: levelFour });
                 return { message: `New Cargo: ${ship.ShipStatistics.totalCargo}`, success: true };
             })
-            .UnequipFn((ship) => {
+            .UnequipFn(({ friendly: ship }) => {
                 ship.decrementStatistics({ cargo: levelFour });
                 return { message: `New Cargo: ${ship.ShipStatistics.totalCargo}`, success: true };
             })
@@ -896,12 +996,17 @@ const CargoGenerator = (): Attachment[] => {
             type: AttachmentType.GENERAL,
         })
             .EnableSellable(3800000)
-            .EnableBuildable(new BlueprintBuilder().DefinedBuild(BlueprintBuilder.ADVANCED_BUILD(3200000), "Interdimensional Cargo Hold"))
-            .EquipFn((ship) => {
+            .EnableBuildable(
+                new BlueprintBuilder().DefinedBuild(
+                    BlueprintBuilder.ADVANCED_BUILD(3200000),
+                    "Interdimensional Cargo Hold"
+                )
+            )
+            .EquipFn(({ friendly: ship }) => {
                 ship.incrementStatistics({ cargo: levelFive });
                 return { message: `New Cargo: ${ship.ShipStatistics.totalCargo}`, success: true };
             })
-            .UnequipFn((ship) => {
+            .UnequipFn(({ friendly: ship }) => {
                 ship.decrementStatistics({ cargo: levelFive });
                 return { message: `New Cargo: ${ship.ShipStatistics.totalCargo}`, success: true };
             })
@@ -922,12 +1027,14 @@ const ThrusterGenerator = (): Attachment[] => {
             type: AttachmentType.GENERAL,
         })
             .EnableSellable(1360000)
-            .EnableBuildable(new BlueprintBuilder().DefinedBuild(BlueprintBuilder.MODERATE_BUILD(1060000), "Basic Thruster"))
-            .EquipFn((ship) => {
+            .EnableBuildable(
+                new BlueprintBuilder().DefinedBuild(BlueprintBuilder.MODERATE_BUILD(1060000), "Basic Thruster")
+            )
+            .EquipFn(({ friendly: ship }) => {
                 ship.incrementStatistics({ handling: levelOne });
                 return { message: `New Handling: ${ship.ShipStatistics.totalHandling}`, success: true };
             })
-            .UnequipFn((ship) => {
+            .UnequipFn(({ friendly: ship }) => {
                 ship.decrementStatistics({ handling: levelOne });
                 return { message: `New Handling: ${ship.ShipStatistics.totalHandling}`, success: true };
             })
@@ -941,12 +1048,14 @@ const ThrusterGenerator = (): Attachment[] => {
             type: AttachmentType.GENERAL,
         })
             .EnableSellable(4360000)
-            .EnableBuildable(new BlueprintBuilder().DefinedBuild(BlueprintBuilder.ADVANCED_BUILD(3860000), "Full Phase Thrusters"))
-            .EquipFn((ship) => {
+            .EnableBuildable(
+                new BlueprintBuilder().DefinedBuild(BlueprintBuilder.ADVANCED_BUILD(3860000), "Full Phase Thrusters")
+            )
+            .EquipFn(({ friendly: ship }) => {
                 ship.incrementStatistics({ handling: levelTwo });
                 return { message: `New Handling: ${ship.ShipStatistics.totalHandling}`, success: true };
             })
-            .UnequipFn((ship) => {
+            .UnequipFn(({ friendly: ship }) => {
                 ship.decrementStatistics({ handling: levelTwo });
                 return { message: `New Handling: ${ship.ShipStatistics.totalHandling}`, success: true };
             })
@@ -965,7 +1074,7 @@ const ShieldGenerator = (): Attachment[] => {
         })
             .EnableSellable(35000)
             .EnableBuildable(new BlueprintBuilder().DefinedBuild(BlueprintBuilder.SIMPLE_BUILD(21000), "Blink Shield"))
-            .CriticalDamageFn((friendly, _opponent) => {
+            .CriticalDamageFn(({ friendly, enemy, dmg }) => {
                 friendly.hpIncrease(1);
                 friendly.shieldIncrease(15);
                 return { message: "Critical Damage Taken! Adding 15 shield and 1 hull.", success: true };
@@ -979,7 +1088,7 @@ const ShieldGenerator = (): Attachment[] => {
             type: AttachmentType.SHIELD,
         })
             .EnableSellable(8790)
-            .BattlePreTurnFn((battle) => {
+            .BattlePreTurnFn(({ battle }) => {
                 const rnd = rb(0, 3);
                 battle.Friendly.shieldIncrease(rnd);
                 return { message: `Shield increased by ${rnd}.`, success: true };
@@ -994,8 +1103,10 @@ const ShieldGenerator = (): Attachment[] => {
             type: AttachmentType.SHIELD,
         })
             .EnableSellable(465000)
-            .EnableBuildable(new BlueprintBuilder().DefinedBuild(BlueprintBuilder.SIMPLE_BUILD(390000), "Emergency Shield Systems"))
-            .CriticalDamageFn((friendly, _opponent) => {
+            .EnableBuildable(
+                new BlueprintBuilder().DefinedBuild(BlueprintBuilder.SIMPLE_BUILD(390000), "Emergency Shield Systems")
+            )
+            .CriticalDamageFn(({ friendly, enemy, dmg }) => {
                 friendly.hpIncrease(1);
                 friendly.shieldIncrease(30);
                 return { message: "Critical Damage Taken! Adding 30 shield and 1 hull.", success: true };
@@ -1010,7 +1121,7 @@ const ShieldGenerator = (): Attachment[] => {
         })
             .EnableSellable(535000)
             .EnableBuildable(new BlueprintBuilder().DefinedBuild(BlueprintBuilder.SIMPLE_BUILD(425000), "Holo-Shield"))
-            .BattlePreTurnFn((battle) => {
+            .BattlePreTurnFn(({battle}) => {
                 const rnd = rb(4, 8);
                 battle.Friendly.shieldIncrease(rnd);
                 return { message: `Shield increased by ${rnd}.`, success: true };
@@ -1024,8 +1135,10 @@ const ShieldGenerator = (): Attachment[] => {
             type: AttachmentType.SHIELD,
         })
             .EnableSellable(617000)
-            .EnableBuildable(new BlueprintBuilder().DefinedBuild(BlueprintBuilder.SIMPLE_BUILD(505000), "Energising Shield"))
-            .BattlePreTurnFn((battle) => {
+            .EnableBuildable(
+                new BlueprintBuilder().DefinedBuild(BlueprintBuilder.SIMPLE_BUILD(505000), "Energising Shield")
+            )
+            .BattlePreTurnFn(({battle}) => {
                 const rnd = rb(2, 5);
                 battle.Friendly.shieldIncrease(rnd);
                 battle.Friendly.weaponIncrease(rnd);

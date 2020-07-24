@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.AttachmentType = exports.GameEvent = exports.AttachmentBuilder = exports.Attachment = void 0;
+exports.AttachmentType = exports.AttachmentBuilder = exports.Attachment = void 0;
 const GameAsset_1 = require("../GameAsset");
 class Attachment extends GameAsset_1.GameAsset {
     constructor(data, functions) {
@@ -23,84 +23,11 @@ class Attachment extends GameAsset_1.GameAsset {
     isInvocable() {
         return this.functions.onBattleInvoked != undefined;
     }
-    Triggers() {
-        const Catalysts = new Array();
-        if (this.functions.onBattleStart)
-            Catalysts.push(GameEvent.BATTLE_START);
-        if (this.functions.onBattlePreTurn)
-            Catalysts.push(GameEvent.BATTLE_PRE_TURN);
-        if (this.functions.onBattlePostTurn)
-            Catalysts.push(GameEvent.BATTLE_POST_TURN);
-        if (this.functions.onBattleInvoked)
-            Catalysts.push(GameEvent.BATTLE_INVOKED);
-        if (this.functions.onDamageTaken)
-            Catalysts.push(GameEvent.BATTLE_DAMAGE_TAKEN);
-        if (this.functions.onBattleEnd)
-            Catalysts.push(GameEvent.BATTLE_END);
-        if (this.functions.onCriticalDamageTaken)
-            Catalysts.push(GameEvent.BATTLE_CRITICAL_DAMAGE_TAKEN);
-        if (this.functions.onEquip)
-            Catalysts.push(GameEvent.EQUIP);
-        if (this.functions.onUnequip)
-            Catalysts.push(GameEvent.UNEQUIP);
-        if (this.functions.onWarp)
-            Catalysts.push(GameEvent.WARP);
-        if (this.functions.onMine)
-            Catalysts.push(GameEvent.MINE);
-        return Catalysts;
-    }
-    dispatch(event, ...args) {
-        switch (event) {
-            case GameEvent.BATTLE_DAMAGE_TAKEN:
-                if (this.functions.onDamageTaken)
-                    return this.functions.onDamageTaken.apply(this, args);
-                break;
-            case GameEvent.BATTLE_END:
-                if (this.functions.onBattleEnd)
-                    return this.functions.onBattleEnd.apply(this, args);
-                break;
-            case GameEvent.BATTLE_INVOKED:
-                if (this.functions.onBattleInvoked)
-                    return this.functions.onBattleInvoked.apply(this, args);
-                break;
-            case GameEvent.BATTLE_POST_TURN:
-                if (this.functions.onBattlePostTurn)
-                    return this.functions.onBattlePostTurn.apply(this, args);
-                break;
-            case GameEvent.BATTLE_PRE_TURN:
-                if (this.functions.onBattlePreTurn)
-                    return this.functions.onBattlePreTurn.apply(this, args);
-                break;
-            case GameEvent.BATTLE_START:
-                if (this.functions.onBattleStart)
-                    return this.functions.onBattleStart.apply(this, args);
-                break;
-            case GameEvent.BATTLE_CRITICAL_DAMAGE_TAKEN:
-                if (this.functions.onCriticalDamageTaken)
-                    return this.functions.onCriticalDamageTaken.apply(this, args);
-                break;
-            case GameEvent.EQUIP:
-                if (this.functions.onEquip) {
-                    return this.functions.onEquip.apply(this, args);
-                }
-                break;
-            case GameEvent.UNEQUIP:
-                if (this.functions.onUnequip)
-                    return this.functions.onUnequip.apply(this, args);
-                break;
-            case GameEvent.MINE:
-                if (this.functions.onMine)
-                    return this.functions.onMine.apply(this, args);
-                break;
-            case GameEvent.WARP:
-                if (this.functions.onWarp)
-                    return this.functions.onWarp.apply(this, args);
-                break;
-            case GameEvent.WARP_POLL:
-                if (this.functions.onWarpPoll)
-                    return this.functions.onWarpPoll.apply(this, args);
-                break;
-        }
+    emit(event, args) {
+        const e = this.functions[event];
+        //@ts-ignore
+        if (e)
+            return e(args);
     }
 }
 exports.Attachment = Attachment;
@@ -115,6 +42,15 @@ class AttachmentBuilder {
     }
     EnableBuildable(blueprint) {
         this.options.blueprint = blueprint;
+        return this;
+    }
+    /**
+     * preferred method to add functions to the attachment
+     * @param e
+     * @param func
+     */
+    addFunction(e, func) {
+        this.functions[e] = func;
         return this;
     }
     /**
@@ -221,21 +157,6 @@ class AttachmentBuilder {
     }
 }
 exports.AttachmentBuilder = AttachmentBuilder;
-var GameEvent;
-(function (GameEvent) {
-    GameEvent[GameEvent["BATTLE_START"] = 0] = "BATTLE_START";
-    GameEvent[GameEvent["BATTLE_END"] = 1] = "BATTLE_END";
-    GameEvent[GameEvent["BATTLE_INVOKED"] = 2] = "BATTLE_INVOKED";
-    GameEvent[GameEvent["BATTLE_PRE_TURN"] = 3] = "BATTLE_PRE_TURN";
-    GameEvent[GameEvent["BATTLE_POST_TURN"] = 4] = "BATTLE_POST_TURN";
-    GameEvent[GameEvent["BATTLE_CRITICAL_DAMAGE_TAKEN"] = 5] = "BATTLE_CRITICAL_DAMAGE_TAKEN";
-    GameEvent[GameEvent["BATTLE_DAMAGE_TAKEN"] = 6] = "BATTLE_DAMAGE_TAKEN";
-    GameEvent[GameEvent["EQUIP"] = 7] = "EQUIP";
-    GameEvent[GameEvent["UNEQUIP"] = 8] = "UNEQUIP";
-    GameEvent[GameEvent["MINE"] = 9] = "MINE";
-    GameEvent[GameEvent["WARP"] = 10] = "WARP";
-    GameEvent[GameEvent["WARP_POLL"] = 11] = "WARP_POLL";
-})(GameEvent = exports.GameEvent || (exports.GameEvent = {}));
 var AttachmentType;
 (function (AttachmentType) {
     AttachmentType[AttachmentType["GENERAL"] = 0] = "GENERAL";

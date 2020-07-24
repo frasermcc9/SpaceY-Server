@@ -88,9 +88,12 @@ export class SocketManager extends EventEmitter {
             const store = player.Location.nodeAllStores().find((s) => s.Name == storeName);
             if (store == undefined)
                 return this.emitResult(client, false, player.raw(), { failMsg: "Store not found." });
-            const result =
-                (await store.buyFromStore({ trader: player, item: itemName, quantity: quantity })).code == 200;
-            return this.emitResult(client, result, player.raw(), { successMsg: `Item purchase successful.` });
+            const result = await store.buyFromStore({ trader: player, item: itemName, quantity: quantity });
+
+            return this.emitResult(client, result.code == 200, player.raw(), {
+                successMsg: `Item purchase successful.`,
+                failMsg: result.code + "",
+            });
         });
 
         client.on("sell", async ({ id, itemName, quantity, storeName }: ClientPlayerEvents["sell"]) => {
@@ -98,9 +101,12 @@ export class SocketManager extends EventEmitter {
             const store = player.Location.nodeAllStores().find((s) => s.Name == storeName);
             if (store == undefined)
                 return this.emitResult(client, false, player.raw(), { failMsg: "Store not found." });
-            const result =
-                (await store.sellToStore({ trader: player, item: itemName, quantity: quantity })).code == 200;
-            return this.emitResult(client, result, player.raw(), { successMsg: `Item sold successfully.` });
+            const result = await store.sellToStore({ trader: player, item: itemName, quantity: quantity });
+
+            return this.emitResult(client, result.code == 200, player.raw(), {
+                successMsg: `Item sold successfully.`,
+                failMsg: result.code + "",
+            });
         });
 
         client.on("forceSell", async ({ id, itemName, quantity, storeName }: ClientPlayerEvents["forceSell"]) => {
@@ -108,9 +114,12 @@ export class SocketManager extends EventEmitter {
             const store = player.Location.nodeAllStores().find((s) => s.Name == storeName);
             if (store == undefined)
                 return this.emitResult(client, false, player.raw(), { failMsg: "Store not found." });
-            const result =
-                (await store.sellToStoreForce({ trader: player, item: itemName, quantity: quantity })).code == 200;
-            return this.emitResult(client, result, player.raw(), { successMsg: `Item sold successfully.` });
+            const result = await store.sellToStoreForce({ trader: player, item: itemName, quantity: quantity });
+
+            return this.emitResult(client, result.code == 200, player.raw(), {
+                successMsg: `Item sold successfully.`,
+                failMsg: result.code + "",
+            });
         });
         //#endregion
 
@@ -141,6 +150,8 @@ export class SocketManager extends EventEmitter {
         const emitObj: ServerEvents["res"] = { success: result, playerStringified: stringify(player), msg: msg };
         client.emit("res", emitObj);
     }
+
+    
 
     private async getPlayer(id: string) {
         return PlayerModel.findOneOrCreate({ uId: id });

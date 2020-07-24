@@ -19,12 +19,28 @@ export const location_stores_inventory_get = (req: Request, res: Response) => {
         .find((s) => s.Name == store);
     if (storeObj == undefined) return { status: "404" };
 
-    const storeItems = storeObj.getStoreItems();
-    const storeCosts = storeObj.StoreItemCosts;
+    const storeItems = Object.fromEntries(storeObj.getStoreItems(true));
+    const storeCosts = Object.fromEntries(storeObj.StoreItemCosts);
 
-    return {
+    const returnValue: StoreStock = {
         status: "200",
-        inventory: JSON.stringify(Object.fromEntries(storeItems)),
-        costs: JSON.stringify(Object.fromEntries(storeCosts)),
+        data: {
+            identity: storeObj.identity(),
+            credits: storeObj.Credits,
+            inventory: storeItems,
+            costs: storeCosts,
+        },
     };
+
+    res.send(returnValue);
 };
+
+interface StoreStock {
+    status: string;
+    data: {
+        identity: string;
+        credits: number;
+        inventory: { [k: string]: number };
+        costs: { [k: string]: number };
+    };
+}

@@ -57,7 +57,7 @@ class ShipWrapper {
             baseStats: this.BaseStatistics,
             playerStats: this.Statistics,
             weaponCapacities: Object.fromEntries(this.WeaponCapacities),
-            equippedSlots: Object.fromEntries(this.availableSlots()),
+            availableSlots: Object.fromEntries(this.availableSlots()),
             maxTech: this.MaxTech,
             strength: this.Strength,
             baseShip: this.ship,
@@ -101,7 +101,11 @@ class ShipWrapper {
             shield: base.totalShield,
             handling: base.totalHandling,
             cargo: base.totalCargo,
-            energy: [e[0] + this.lvlIncrease(levels[0]), e[1] + this.lvlIncrease(levels[1]), e[2] + this.lvlIncrease(levels[2])],
+            energy: [
+                e[0] + this.lvlIncrease(levels[0]),
+                e[1] + this.lvlIncrease(levels[1]),
+                e[2] + this.lvlIncrease(levels[2]),
+            ],
         };
     }
     /**
@@ -201,8 +205,17 @@ class ShipWrapper {
             return { code: 403 };
         this.Slots.set(Type, NumEquipped + 1);
         this.attachments.push(attachment);
-        attachment.dispatch(Attachment_1.GameEvent.EQUIP, this);
+        attachment.emit("onEquip", { friendly: this });
         return { code: 200 };
+    }
+    emit(event, args) {
+        const reports = new Array();
+        this.attachments.forEach((a) => {
+            const report = a.emit(event, args);
+            if (report != undefined)
+                reports.push(report);
+        });
+        return reports;
     }
     getTotalTech() {
         return this.attachments.reduce((acc, val) => acc + val.TechLevel, 0);
@@ -219,7 +232,7 @@ class ShipWrapper {
         if (idxAttachment == undefined)
             return { code: 404 };
         const Attachment = this.attachments.splice(idxAttachment, 1);
-        Attachment[0].dispatch(Attachment_1.GameEvent.UNEQUIP, this);
+        Attachment[0].emit("onUnequip", { friendly: this });
         return { code: 200, removedAttachment: Attachment[0] };
     }
     pollWarp(warpRequired) {
@@ -227,7 +240,7 @@ class ShipWrapper {
             return true;
         const result = [];
         this.attachments.forEach((attachment) => {
-            const data = attachment.dispatch(Attachment_1.GameEvent.WARP_POLL, this, warpRequired);
+            const data = attachment.emit("onWarpPoll", { friendly: this, warp: warpRequired });
             if (data != undefined)
                 result.push(data);
         });
@@ -240,7 +253,7 @@ class ShipWrapper {
     warp(warpRequired) {
         const result = [];
         this.attachments.forEach((attachment) => {
-            const data = attachment.dispatch(Attachment_1.GameEvent.WARP, this, warpRequired);
+            const data = attachment.emit("onWarp", { friendly: this, warp: warpRequired });
             if (data != undefined)
                 result.push(data);
         });
@@ -252,7 +265,7 @@ class ShipWrapper {
     }
     mineEvent(asteroid) {
         this.attachments.forEach((attachment) => {
-            attachment.dispatch(Attachment_1.GameEvent.MINE, asteroid);
+            attachment.emit("onMine", { asteroid: asteroid });
         });
     }
 }

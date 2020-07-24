@@ -1,5 +1,5 @@
 import { Asteroid } from "../../GameMechanics/Asteroid";
-import { Attachment, AttachmentType } from "../Attachment/Attachment";
+import { Attachment, AttachmentReport, AttachmentType, EventArgs } from "../Attachment/Attachment";
 import { Player } from "../Player/Player";
 import { Ship } from "./Ship";
 import { MapCollection } from "../../../Extensions/Collections";
@@ -45,7 +45,7 @@ export declare class ShipWrapper {
         weaponCapacities: {
             [k: string]: number;
         };
-        equippedSlots: {
+        availableSlots: {
             [k: string]: number;
         };
         maxTech: number;
@@ -113,6 +113,7 @@ export declare class ShipWrapper {
     addAttachment(attachment: Attachment | string): {
         code: 200 | 403 | 404;
     };
+    emit<K extends keyof EventArgs>(event: K, args: EventArgs[K]): AttachmentReport[];
     getTotalTech(): number;
     /**
      *

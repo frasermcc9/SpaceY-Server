@@ -7,3 +7,4 @@ import { Request, Response } from "express";
  * @returns JSON string of item
  */
 export declare const item_get: (req: Request, res: Response) => void;
+export declare const item_blueprint_get: (req: Request, res: Response) => Response<any> | undefined;

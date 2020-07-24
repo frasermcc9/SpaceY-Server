@@ -1,5 +1,4 @@
 import { Battleship } from "../GameAsset/Ship/Battleship";
-import { GameEvent } from "../GameAsset/Attachment/Attachment";
 
 export class Battle implements IBattleData {
     private playerShip: Battleship;
@@ -89,9 +88,7 @@ export class Battle implements IBattleData {
         if (player.Hp <= 0) {
             this.victory(enemy);
         }
-        player.Ship.copyAttachments().forEach((attachment) => {
-            attachment.dispatch(GameEvent.BATTLE_DAMAGE_TAKEN, player, this.getEnemy(player), damage);
-        });
+        player.Ship.emit("onDamageTaken", { friendly: player, enemy: this.getEnemy(player), dmg: damage });
     };
 
     /**
@@ -100,9 +97,9 @@ export class Battle implements IBattleData {
      * @param damage - the amount of damage that was taken
      * @param player - the player that received the damage
      */
-    private handleCriticalDamageTaken = (player: Battleship, _damage: number) => {
+    private handleCriticalDamageTaken = (player: Battleship, damage: number) => {
         player.Ship.copyAttachments().forEach((attachment) => {
-            attachment.dispatch(GameEvent.BATTLE_CRITICAL_DAMAGE_TAKEN, player, this.getEnemy(player));
+            player.Ship.emit("onCriticalDamageTaken", { friendly: player, enemy: this.getEnemy(player), dmg: damage });
         });
     };
 
@@ -114,10 +111,7 @@ export class Battle implements IBattleData {
     private handleTurnStart = (player: Battleship) => {
         this.inactiveShip = this.activeShip;
         this.activeShip = player;
-
-        player.Ship.copyAttachments().forEach((attachment) => {
-            attachment.dispatch(GameEvent.BATTLE_PRE_TURN, this);
-        });
+        player.Ship.emit("onBattlePreTurn", { battle: this });
     };
 
     //#endregion listeners

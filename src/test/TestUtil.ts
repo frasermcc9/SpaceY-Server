@@ -3,7 +3,12 @@ import { Material, MaterialBuilder } from "../lib/GameTypes/GameAsset/Material/M
 import { Blueprint, BlueprintBuilder } from "../lib/GameTypes/GameAsset/Blueprint/Blueprint";
 import { Ship, ShipBuilder } from "../lib/GameTypes/GameAsset/Ship/Ship";
 import { Faction, FactionBuilder } from "../lib/GameTypes/GameAsset/Faction/Faction";
-import { Attachment, AttachmentBuilder, AttachmentType, AttachmentReport } from "../lib/GameTypes/GameAsset/Attachment/Attachment";
+import {
+    Attachment,
+    AttachmentBuilder,
+    AttachmentType,
+    AttachmentReport,
+} from "../lib/GameTypes/GameAsset/Attachment/Attachment";
 import { ShipWrapper } from "../lib/GameTypes/GameAsset/Ship/ShipWrapper";
 import { Asteroid } from "../lib/GameTypes/GameMechanics/Asteroid";
 
@@ -45,8 +50,14 @@ export function GENERATED_MATERIALS() {
             .EnableMine()
             .SetRarity(10)
             .Build(),
-        new MaterialBuilder({ name: "Food", description: "Food for one person.", techLevel: 1 }).EnableSell(5).SetRarity(1).Build(),
-        new MaterialBuilder({ name: "Tech", description: "Pile of tech pieces.", techLevel: 7 }).EnableSell(50).SetRarity(6).Build(),
+        new MaterialBuilder({ name: "Food", description: "Food for one person.", techLevel: 1 })
+            .EnableSell(5)
+            .SetRarity(1)
+            .Build(),
+        new MaterialBuilder({ name: "Tech", description: "Pile of tech pieces.", techLevel: 7 })
+            .EnableSell(50)
+            .SetRarity(6)
+            .Build(),
     ];
 }
 export function GENERATED_SHIPS() {
@@ -108,15 +119,15 @@ export function GENERATED_FACTIONS() {
     ];
 }
 export function GENERATED_ATTACHMENTS() {
-    const PlatingEquip: (friendly: ShipWrapper) => AttachmentReport = (friendly) => {
+    const PlatingEquip: ({ friendly }: { friendly: ShipWrapper }) => AttachmentReport = ({ friendly }) => {
         friendly.incrementStatistics({ hp: 20 });
         return { message: `New Health: ${friendly.ShipStatistics.totalHp}`, success: true };
     };
-    const PlatingUnequip: (friendly: ShipWrapper) => AttachmentReport = (friendly) => {
+    const PlatingUnequip: ({ friendly }: { friendly: ShipWrapper }) => AttachmentReport = ({ friendly }) => {
         friendly.decrementStatistics({ hp: 20 });
         return { message: `New Health: ${friendly.ShipStatistics.totalHp}`, success: true };
     };
-    const LaserMine: (inputCollection: Asteroid) => AttachmentReport = (asteroid) => {
+    const LaserMine: ({ asteroid }: { asteroid: Asteroid }) => AttachmentReport = ({asteroid}) => {
         asteroid.forEach((val, key) => {
             asteroid.set(key, val * 2);
         });
@@ -277,7 +288,9 @@ export function generateIntegrationSet() {
         .SetStats({ baseHp: 250, baseShield: 90, baseEnergy: [28, 20, 18], baseCargo: 850, baseHandling: 8 })
         .SetWeapons({ primaryCap: 2, shieldCap: 2, heavyCap: 4, minerCap: 1, generalCap: 4 })
         .EnableSell(2121000)
-        .EnableBuildable(new BlueprintBuilder().DefinedBuild(BlueprintBuilder.MODERATE_BUILD(1821000), "Quargic Cruiser"))
+        .EnableBuildable(
+            new BlueprintBuilder().DefinedBuild(BlueprintBuilder.MODERATE_BUILD(1821000), "Quargic Cruiser")
+        )
         .SetMisc({ uri: "", subclass: "Light Cruiser" })
         .Build();
     const S4 = new ShipBuilder({
@@ -288,7 +301,9 @@ export function generateIntegrationSet() {
         .SetStats({ baseHp: 340, baseShield: 195, baseEnergy: [28, 24, 26], baseCargo: 1400, baseHandling: 8 })
         .SetWeapons({ primaryCap: 2, shieldCap: 2, heavyCap: 5, minerCap: 1, generalCap: 5 })
         .EnableSell(3307000)
-        .EnableBuildable(new BlueprintBuilder().DefinedBuild(BlueprintBuilder.MODERATE_BUILD(2607000), "Ty'Linic Crawler"))
+        .EnableBuildable(
+            new BlueprintBuilder().DefinedBuild(BlueprintBuilder.MODERATE_BUILD(2607000), "Ty'Linic Crawler")
+        )
         .SetMisc({ uri: "", subclass: "Heavy Cruiser" })
         .Build();
     const S5 = new ShipBuilder({
@@ -300,7 +315,9 @@ export function generateIntegrationSet() {
         .SetStats({ baseHp: 290, baseShield: 480, baseEnergy: [32, 28, 29], baseCargo: 1280, baseHandling: 6 })
         .SetWeapons({ primaryCap: 3, shieldCap: 3, heavyCap: 5, minerCap: 1, generalCap: 4 })
         .EnableSell(5134000)
-        .EnableBuildable(new BlueprintBuilder().DefinedBuild(BlueprintBuilder.ADVANCED_BUILD(280000), "Asarin Enforcer"))
+        .EnableBuildable(
+            new BlueprintBuilder().DefinedBuild(BlueprintBuilder.ADVANCED_BUILD(280000), "Asarin Enforcer")
+        )
         .SetMisc({ uri: "", subclass: "Dreadnought" })
         .Build();
     const S6 = new ShipBuilder({
@@ -312,7 +329,9 @@ export function generateIntegrationSet() {
         .SetStats({ baseHp: 450, baseShield: 450, baseEnergy: [72, 42, 28], baseCargo: 2400, baseHandling: 6 })
         .SetWeapons({ primaryCap: 4, shieldCap: 2, heavyCap: 7, minerCap: 1, generalCap: 7 })
         .EnableSell(9800000)
-        .EnableBuildable(new BlueprintBuilder().DefinedBuild(BlueprintBuilder.ADVANCED_BUILD(9000000), "The Celestial Destroyer"))
+        .EnableBuildable(
+            new BlueprintBuilder().DefinedBuild(BlueprintBuilder.ADVANCED_BUILD(9000000), "The Celestial Destroyer")
+        )
         .SetMisc({ uri: "", subclass: "CAPITAL" })
         .Build();
 

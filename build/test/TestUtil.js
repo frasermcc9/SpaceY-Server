@@ -124,9 +124,7 @@ function GENERATED_ATTACHMENTS() {
         return { message: `New Health: ${friendly.ShipStatistics.totalHp}`, success: true };
     };
     const LaserMine = ({ asteroid }) => {
-        asteroid.forEach((val, key) => {
-            asteroid.set(key, val * 2);
-        });
+        asteroid.buffCollection(2);
         return { message: "Success", success: true };
     };
     return [

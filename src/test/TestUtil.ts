@@ -11,6 +11,7 @@ import {
 } from "../lib/GameTypes/GameAsset/Attachment/Attachment";
 import { ShipWrapper } from "../lib/GameTypes/GameAsset/Ship/ShipWrapper";
 import { Asteroid } from "../lib/GameTypes/GameMechanics/Asteroid";
+import { AttachmentAsteroid } from "../lib/GameTypes/GameMechanics/MutableAsteroid";
 
 export function GenerateMaterialsForActiveClient() {
     const client = Server.Get();
@@ -127,10 +128,8 @@ export function GENERATED_ATTACHMENTS() {
         friendly.decrementStatistics({ hp: 20 });
         return { message: `New Health: ${friendly.ShipStatistics.totalHp}`, success: true };
     };
-    const LaserMine: ({ asteroid }: { asteroid: Asteroid }) => AttachmentReport = ({asteroid}) => {
-        asteroid.forEach((val, key) => {
-            asteroid.set(key, val * 2);
-        });
+    const LaserMine: ({ asteroid }: { asteroid: AttachmentAsteroid }) => AttachmentReport = ({ asteroid }) => {
+        asteroid.buffCollection(2);
         return { message: "Success", success: true };
     };
     return [

@@ -5,7 +5,7 @@ import { ShipWrapper } from "../Ship/ShipWrapper";
 import { MaterialCollection } from "../../GameCollections/MaterialCollection";
 import { Asteroid } from "../../GameMechanics/Asteroid";
 import { StrengthComparable } from "../AssetDecorators";
-import { Battleship } from "../Ship/Battleship";
+import { Battleship, IBattleship } from "../../GameBattle/Battleship";
 import { IBattleData } from "../../GameBattle/Battle";
 
 export class Attachment extends GameAsset implements IAttachment, StrengthComparable {
@@ -13,6 +13,7 @@ export class Attachment extends GameAsset implements IAttachment, StrengthCompar
     private strength: number;
 
     private energyCost: number[] = [0, 0, 0];
+    private cooldown: number = 0;
 
     constructor(data: AttachmentOptions, private readonly functions: AttachmentFunctions) {
         super(data);
@@ -184,11 +185,12 @@ export class AttachmentBuilder {
 interface AttachmentOptions extends IGameAssetOptions, IStrengthOptions {
     type: AttachmentType;
     energyCost?: number[];
+    cooldown?: number;
 }
 
 interface FunctionArgs {
     BattleFunction: { battle: IBattleData };
-    DamageTakenFunction: { friendly: Battleship; enemy: Battleship; dmg: number };
+    DamageTakenFunction: { friendly: IBattleship; enemy: IBattleship; dmg: number };
     ShipFunction: { friendly: ShipWrapper };
     MineFunction: { asteroid: Asteroid };
     WarpFunction: { friendly: ShipWrapper; warp: number };
@@ -236,6 +238,7 @@ export type AttachmentReport = {
     message: string;
     success: boolean;
     damage?: number;
+    keepTurn?: boolean;
 };
 
 export enum AttachmentType {

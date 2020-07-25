@@ -1,4 +1,5 @@
-import { Battleship } from "../GameAsset/Ship/Battleship";
+import { Battleship, IBattleship } from "./Battleship";
+import { IBattleshipStat } from "./BattleshipStat";
 
 export class Battle implements IBattleData {
     private playerShip: Battleship;
@@ -9,37 +10,24 @@ export class Battle implements IBattleData {
     private activeShip: Battleship;
     private inactiveShip: Battleship;
 
-    /**
-     * Additional listeners that are dynamically added during the battle by
-     * attachments. This allows for attachments of type 'do x for y turns',
-     * where x can be something simple (do 5 damage), or more complex things
-     * (listen for the enemy to increase in shield, and deny it).
-     *
-     * The key of the array is the event (the event, its callback function), the
-     * value is the number of turns the listener is to remain on for. Note that
-     * 1 turn counts as each time another player gets control, so a sequence of
-     * [player 1 turn, player 2 turn, player 1 turn] counts as 3 turns.
-     *
-     * @example
-     * const fn = (params)=>{console.log("shield damaged!")}
-     * Enemy.on("shieldIncrease", fn);
-     * activatedListeners.set(["shieldIncrease",fn], 4)
-     * @description
-     * will add fn to activated listeners. It will be removed after 4
-     * half-turns.
-     */
-    private activatedListeners: Map<[string, any], number> = new Map();
+    private turnLog: string[] = [];
 
     //#region IBattleData
 
     public get TurnNumber(): number {
         return ~~(this.battleTurn / 2);
     }
-    public get Friendly(): Battleship {
+    public get Friendly(): IBattleship {
         return this.activeShip;
     }
-    public get Enemy(): Battleship {
+    public get Enemy(): IBattleship {
         return this.inactiveShip;
+    }
+    public notify(info: string) {
+        this.turnLog.push(info);
+    }
+    public getEnemyOf(player: IBattleship): IBattleship {
+        return this.getEnemy(player);
     }
 
     //#endregion IBattleData
@@ -64,14 +52,6 @@ export class Battle implements IBattleData {
     public nextTurn() {
         this.battleTurn++;
 
-        //decrease the turns left for all activated listeners
-        this.activatedListeners.forEach((duration, event) => {
-            this.activatedListeners.set(event, duration - 1);
-            if (duration - 1 == -1) {
-                this.aiShip.removeListener(event[0], event[1]);
-            }
-        });
-
         this.inactiveShip.startTurn();
     }
 
@@ -85,7 +65,7 @@ export class Battle implements IBattleData {
      */
     private handleDamageTakenEvent = (player: Battleship, damage: number) => {
         const enemy = this.getEnemy(player);
-        if (player.Hp <= 0) {
+        if (player.getStat("hp") <= 0) {
             this.victory(enemy);
         }
         player.Ship.emit("onDamageTaken", { friendly: player, enemy: this.getEnemy(player), dmg: damage });
@@ -109,6 +89,7 @@ export class Battle implements IBattleData {
      * @param player - the player that just started its turn
      */
     private handleTurnStart = (player: Battleship) => {
+        this.activeShip.typedEmit("turnEnd", this.activeShip);
         this.inactiveShip = this.activeShip;
         this.activeShip = player;
         player.Ship.emit("onBattlePreTurn", { battle: this });
@@ -116,16 +97,17 @@ export class Battle implements IBattleData {
 
     //#endregion listeners
 
-    private victory(victor: Battleship): void {}
-
     /**
      * Given the player, gives the opposing player
      * @param player
      */
-    private getEnemy(player: Battleship): Battleship {
+    private getEnemy(player: IBattleship): IBattleship {
         return this.aiShip == player ? this.playerShip : this.aiShip;
     }
 
+    private victory(victor: IBattleship): void {}
+
+    //TODO write logic for generating enemy battleship
     private generateOpponentShip(): Battleship {
         const faction = this.playerShip.Ship.Owner.Location.Faction;
         const pool = faction.UsableShips;
@@ -136,6 +118,8 @@ export class Battle implements IBattleData {
 
 export interface IBattleData {
     TurnNumber: number;
-    Friendly: Battleship;
-    Enemy: Battleship;
+    Friendly: IBattleship;
+    Enemy: IBattleship;
+    notify(info: string): void;
+    getEnemyOf(player: IBattleship): IBattleship;
 }

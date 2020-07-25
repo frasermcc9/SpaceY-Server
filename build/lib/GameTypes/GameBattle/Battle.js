@@ -5,26 +5,7 @@ class Battle {
     //#endregion IBattleData
     constructor(player) {
         this.battleTurn = 0;
-        /**
-         * Additional listeners that are dynamically added during the battle by
-         * attachments. This allows for attachments of type 'do x for y turns',
-         * where x can be something simple (do 5 damage), or more complex things
-         * (listen for the enemy to increase in shield, and deny it).
-         *
-         * The key of the array is the event (the event, its callback function), the
-         * value is the number of turns the listener is to remain on for. Note that
-         * 1 turn counts as each time another player gets control, so a sequence of
-         * [player 1 turn, player 2 turn, player 1 turn] counts as 3 turns.
-         *
-         * @example
-         * const fn = (params)=>{console.log("shield damaged!")}
-         * Enemy.on("shieldIncrease", fn);
-         * activatedListeners.set(["shieldIncrease",fn], 4)
-         * @description
-         * will add fn to activated listeners. It will be removed after 4
-         * half-turns.
-         */
-        this.activatedListeners = new Map();
+        this.turnLog = [];
         //#region  - listeners
         /**
          * Fires all damage taken events on the attachments of the players ship.
@@ -34,7 +15,7 @@ class Battle {
          */
         this.handleDamageTakenEvent = (player, damage) => {
             const enemy = this.getEnemy(player);
-            if (player.Hp <= 0) {
+            if (player.getStat("hp") <= 0) {
                 this.victory(enemy);
             }
             player.Ship.emit("onDamageTaken", { friendly: player, enemy: this.getEnemy(player), dmg: damage });
@@ -56,6 +37,7 @@ class Battle {
          * @param player - the player that just started its turn
          */
         this.handleTurnStart = (player) => {
+            this.activeShip.typedEmit("turnEnd", this.activeShip);
             this.inactiveShip = this.activeShip;
             this.activeShip = player;
             player.Ship.emit("onBattlePreTurn", { battle: this });
@@ -81,19 +63,17 @@ class Battle {
     get Enemy() {
         return this.inactiveShip;
     }
+    notify(info) {
+        this.turnLog.push(info);
+    }
+    getEnemyOf(player) {
+        return this.getEnemy(player);
+    }
     nextTurn() {
         this.battleTurn++;
-        //decrease the turns left for all activated listeners
-        this.activatedListeners.forEach((duration, event) => {
-            this.activatedListeners.set(event, duration - 1);
-            if (duration - 1 == -1) {
-                this.aiShip.removeListener(event[0], event[1]);
-            }
-        });
         this.inactiveShip.startTurn();
     }
     //#endregion listeners
-    victory(victor) { }
     /**
      * Given the player, gives the opposing player
      * @param player
@@ -101,6 +81,8 @@ class Battle {
     getEnemy(player) {
         return this.aiShip == player ? this.playerShip : this.aiShip;
     }
+    victory(victor) { }
+    //TODO write logic for generating enemy battleship
     generateOpponentShip() {
         const faction = this.playerShip.Ship.Owner.Location.Faction;
         const pool = faction.UsableShips;

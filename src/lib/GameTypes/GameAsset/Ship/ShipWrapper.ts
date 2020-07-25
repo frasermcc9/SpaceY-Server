@@ -4,6 +4,7 @@ import { Attachment, AttachmentReport, AttachmentType, EventArgs } from "../Atta
 import { Player } from "../Player/Player";
 import { Ship } from "./Ship";
 import { MapCollection } from "../../../Extensions/Collections";
+import { AttachmentAsteroid } from "../../GameMechanics/MutableAsteroid";
 
 export class ShipWrapper {
     private ship: Ship;
@@ -265,7 +266,7 @@ export class ShipWrapper {
         if (result.length > 1) return false;
         return result[0]?.success;
     }
-    public mineEvent(asteroid: Asteroid): void {
+    public mineEvent(asteroid: AttachmentAsteroid): void {
         this.attachments.forEach((attachment) => {
             attachment.emit("onMine", { asteroid: asteroid });
         });

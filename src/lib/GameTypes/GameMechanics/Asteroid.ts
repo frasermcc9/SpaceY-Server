@@ -1,6 +1,7 @@
 import { MaterialCollection, IMaterialCollectionOptions } from "../GameCollections/MaterialCollection";
 import { Player } from "../GameAsset/Player/Player";
 import { Server } from "../../Server/Server";
+import { CreateMutable } from "./MutableAsteroid";
 
 export class Asteroid extends MaterialCollection {
     private cooldown: number;
@@ -71,19 +72,25 @@ export class Asteroid extends MaterialCollection {
      * 200 - success<br />  \
      * 403 - on cooldown
      */
-    public async mine(player: Player, percent?: number, cooldownOverride?: boolean): Promise<{ code: 200 | 403; cooldown?: number }> {
+    public async mine(
+        player: Player,
+        percent?: number,
+        cooldownOverride?: boolean
+    ): Promise<{ code: 200 | 403; cooldown?: number }> {
         if (this.autoCd) this.cooldown = Server.Reg.DefaultAsteroidCooldown;
         //check cooldown
         const cd = this.remainingCooldown(player);
         if (cd > 0 && !cooldownOverride) return { code: 403, cooldown: cd };
+
+        const mutableCollection = CreateMutable(this, this.tags);
         //apply probabilities
-        if (percent != undefined) this.applyDeviation(percent);
+        if (percent != undefined) mutableCollection.applyDeviation(percent);
         //apply mining laser
-        player.getShipWrapper().mineEvent(this);
+        player.getShipWrapper().mineEvent(mutableCollection);
         //set cooldown
         this.cooldownManager(player, this.cooldown);
         //add to player
-        await player.InventorySum("materials", this);
+        await player.InventorySum("materials", mutableCollection);
         return { code: 200 };
     }
 
@@ -109,22 +116,7 @@ export class Asteroid extends MaterialCollection {
     public PlayerMineAndSave(player: Player): void {
         player.InventorySum("materials", this);
     }
-    /**
-     * Modifies the collection, applying a random percent change to the values
-     * of the collection. Makes the collection more dynamic.
-     * @param percent should be entered as '20' for 20%, not 0.2.
-     * @internal
-     */
-    private applyDeviation(percent: number): void {
-        let mean = ~~(this.CollectionSize / this.size),
-            deviation = Math.ceil(mean * (percent / 100)),
-            max = mean + deviation,
-            min = mean - deviation > 0 ? mean - deviation : 0;
-        this.forEach((el, key) => {
-            const NewAmount = el + Math.ceil(Math.random() * (max - min) - (max - min) / 2);
-            if (el != 0) this.set(key, NewAmount);
-        });
-    }
+
 
     public get Name(): string {
         return this.name;

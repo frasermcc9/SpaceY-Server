@@ -7,6 +7,7 @@ import { Asteroid } from "../../GameMechanics/Asteroid";
 import { StrengthComparable } from "../AssetDecorators";
 import { Battleship, IBattleship } from "../../GameBattle/Battleship";
 import { IBattleData } from "../../GameBattle/Battle";
+import { IMutableAsteroid, AttachmentAsteroid } from "../../GameMechanics/MutableAsteroid";
 
 export class Attachment extends GameAsset implements IAttachment, StrengthComparable {
     private type: AttachmentType;
@@ -192,7 +193,7 @@ interface FunctionArgs {
     BattleFunction: { battle: IBattleData };
     DamageTakenFunction: { friendly: IBattleship; enemy: IBattleship; dmg: number };
     ShipFunction: { friendly: ShipWrapper };
-    MineFunction: { asteroid: Asteroid };
+    MineFunction: { asteroid: AttachmentAsteroid };
     WarpFunction: { friendly: ShipWrapper; warp: number };
 }
 

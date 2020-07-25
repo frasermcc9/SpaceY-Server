@@ -9,7 +9,7 @@ const BaseStore_1 = require("../lib/GameTypes/GameStore/BaseStore");
 const ShipStore_1 = require("../lib/GameTypes/GameStore/ShipStore");
 const AttachmentStore_1 = require("../lib/GameTypes/GameStore/AttachmentStore");
 exports.NodeGenerator = () => {
-    return [...KalenGen()];
+    return [...KalenGen(), ...ErisnaGen()];
 };
 const KalenGen = () => {
     return [
@@ -122,8 +122,95 @@ const KalenGen = () => {
             storeName: "Orion Ordinance",
             maxToSell: 3,
             storeFaction: main_1.Client.Reg.ResolveFactionFromName("Kalen"),
-            type: BaseStore_1.StoreType.SHIP_STORE,
+            type: BaseStore_1.StoreType.ATTACHMENT_STORE,
             marketForces: true,
+        }))
+            .build(),
+    ];
+};
+const ErisnaGen = () => {
+    return [
+        new SpacemapNode_1.SpacemapNodeBuilder({
+            name: "Erisna",
+            requiredWarp: SpacemapNode_1.WarpPower.NONE,
+            faction: main_1.Client.Reg.ResolveFactionFromName("Erisna"),
+            img: "https://cdn.discordapp.com/attachments/732459193545523261/732463349345943662/unknown.png",
+            tech: 4,
+        })
+            .addAsteroid(new Asteroid_1.AsteroidBuilder("ERI01").BuildRandom({ value: 875 }))
+            .addStore(new ShipStore_1.ShipStore({
+            storeName: "Erisna Fabrications",
+            type: BaseStore_1.StoreType.SHIP_STORE,
+            initialCredits: 35000,
+            maxToSell: 1,
+            storeFaction: main_1.Client.Reg.ResolveFactionFromName("Erisna"),
+            marketForces: true,
+        }))
+            .addStore(new MaterialStore_1.MaterialStore({
+            initialCredits: 2750,
+            storeName: "Odds and Ends",
+            type: BaseStore_1.StoreType.MATERIAL_STORE,
+            generationValue: 2975,
+            marketForces: true,
+            centralRarity: 2,
+            minRarity: 0,
+            maxRarity: 6,
+            enableRarityEffects: true,
+            minTech: 0,
+            maxTech: 5,
+        }))
+            .build(),
+        new SpacemapNode_1.SpacemapNodeBuilder({
+            name: "Aquarius",
+            requiredWarp: SpacemapNode_1.WarpPower.LOW,
+            faction: main_1.Client.Reg.ResolveFactionFromName("Erisna"),
+            img: "https://cdn.discordapp.com/attachments/732459193545523261/732463349345943662/unknown.png",
+            tech: 3,
+        })
+            .addAsteroid(new Asteroid_1.AsteroidBuilder("AQR01").BuildRandom({ value: 915 }))
+            .addAsteroid(new Asteroid_1.AsteroidBuilder("AQR02").BuildRandom({ value: 825 }))
+            .addAsteroid(new Asteroid_1.AsteroidBuilder("AQR03").BuildRandom({ value: 780 }))
+            .addAsteroid(new Asteroid_1.AsteroidBuilder("AQR04").BuildRandom({ value: 900 }))
+            .build(),
+        new SpacemapNode_1.SpacemapNodeBuilder({
+            name: "Ceti",
+            requiredWarp: SpacemapNode_1.WarpPower.LOW,
+            faction: main_1.Client.Reg.ResolveFactionFromName("Erisna"),
+            img: "https://cdn.discordapp.com/attachments/732459193545523261/732463349345943662/unknown.png",
+            tech: 4,
+        })
+            .addAsteroid(new Asteroid_1.AsteroidBuilder("CET01").BuildRandom({ value: 1025 }))
+            .addAsteroid(new Asteroid_1.AsteroidBuilder("CET02").BuildRandom({ value: 985 }))
+            .addStore(new AttachmentStore_1.AttachmentStore({
+            initialCredits: 15000,
+            storeName: "Ceti Military Distributions",
+            maxToSell: 3,
+            storeFaction: main_1.Client.Reg.ResolveFactionFromName("Erisna"),
+            type: BaseStore_1.StoreType.ATTACHMENT_STORE,
+            marketForces: true,
+        }))
+            .build(),
+        new SpacemapNode_1.SpacemapNodeBuilder({
+            name: "Delphinus",
+            requiredWarp: SpacemapNode_1.WarpPower.LOW,
+            faction: main_1.Client.Reg.ResolveFactionFromName("Erisna"),
+            img: "https://cdn.discordapp.com/attachments/732459193545523261/732463349345943662/unknown.png",
+            tech: 4,
+        })
+            .addAsteroid(new Asteroid_1.AsteroidBuilder("DPH01").BuildRandom({ value: 980 }))
+            .addAsteroid(new Asteroid_1.AsteroidBuilder("DPH01").BuildRandom({ value: 950 }))
+            .addStore(new MaterialStore_1.MaterialStore({
+            initialCredits: 350,
+            storeName: "Erisnian Rarities",
+            type: BaseStore_1.StoreType.MATERIAL_STORE,
+            generationValue: 3100,
+            marketForces: true,
+            centralRarity: 6,
+            minRarity: 6,
+            maxRarity: 10,
+            enableRarityEffects: true,
+            minTech: 0,
+            maxTech: 5,
         }))
             .build(),
     ];

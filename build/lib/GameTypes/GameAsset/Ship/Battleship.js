@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Battleship = void 0;
 const events_1 = require("events");
+const mnemonist_1 = require("mnemonist");
 /**
  * Battleship Class
  *
@@ -16,6 +17,27 @@ class Battleship extends events_1.EventEmitter {
     constructor(playerShip) {
         super();
         this.statNames = ["hp", "shield", "weapon", "engine", "cpu"];
+        /**
+         * Additional listeners that are dynamically added during the battle by
+         * attachments. This allows for attachments of type 'do x for y turns',
+         * where x can be something simple (do 5 damage), or more complex things
+         * (listen for the enemy to increase in shield, and deny it).
+         *
+         * The key of the map is the array with 2 elements: (the event and its
+         * callback function). The value is the number of turns the listener is to
+         * remain on for. Note that 1 turn counts as each time another player gets
+         * control, so a sequence of [player 1 turn, player 2 turn, player 1 turn]
+         * counts as 3 turns.
+         *
+         * @example
+         * const fn = (params)=>{console.log("shield damaged!")}
+         * Enemy.on("shieldIncrease", fn);
+         * activatedListeners.set(["shieldIncrease",fn], 4)
+         * @description
+         * will add fn to activated listeners. It will be removed after 4
+         * half-turns.
+         */
+        this.persistentEffects = new mnemonist_1.MultiMap();
         this.criticalDamage = false;
         this.playerShip = playerShip;
         this.cooldownArray = new Array(playerShip.copyAttachments().length);
@@ -40,8 +62,23 @@ class Battleship extends events_1.EventEmitter {
     get C() {
         return this.currentStats.cpu;
     }
+    get MaxHp() {
+        return this.maxStats.hp;
+    }
+    get MaxShield() {
+        return this.maxStats.shield;
+    }
+    get MaxW() {
+        return this.maxStats.weapon;
+    }
+    get MaxE() {
+        return this.maxStats.engine;
+    }
+    get MaxC() {
+        return this.maxStats.cpu;
+    }
     //#endregion gets
-    //#region - Stat Modifiers
+    //#region - Current Stat Modifiers
     weaponIncrease(n, emit = true) {
         if (n < 0)
             throw new Error("Negative value passed into weaponIncrease method");
@@ -51,7 +88,7 @@ class Battleship extends events_1.EventEmitter {
         this.currentStats.weapon += n;
         if (emit)
             this.emit("weaponIncrease", this, n);
-        return this;
+        return n;
     }
     weaponDecrease(n, emit = true) {
         if (n < 0)
@@ -62,7 +99,7 @@ class Battleship extends events_1.EventEmitter {
         this.currentStats.weapon -= n;
         if (emit)
             this.emit("weaponDecrease", this, n);
-        return this;
+        return n;
     }
     engineIncrease(n, emit = true) {
         if (n < 0)
@@ -73,7 +110,7 @@ class Battleship extends events_1.EventEmitter {
         this.currentStats.engine += n;
         if (emit)
             this.emit("engineIncrease", this, n);
-        return this;
+        return n;
     }
     engineDecrease(n, emit = true) {
         if (n < 0)
@@ -84,7 +121,7 @@ class Battleship extends events_1.EventEmitter {
         if (emit)
             this.currentStats.engine -= n;
         this.emit("engineDecrease", this, n);
-        return this;
+        return n;
     }
     cpuIncrease(n, emit = true) {
         if (n < 0)
@@ -95,7 +132,7 @@ class Battleship extends events_1.EventEmitter {
         this.currentStats.cpu += n;
         if (emit)
             this.emit("cpuIncrease", this, n);
-        return this;
+        return n;
     }
     cpuDecrease(n, emit = true) {
         if (n < 0)
@@ -106,7 +143,7 @@ class Battleship extends events_1.EventEmitter {
         this.currentStats.cpu -= n;
         if (emit)
             this.emit("cpuDecrease", this, n);
-        return this;
+        return n;
     }
     shieldIncrease(n, emit = true) {
         if (n < 0)
@@ -117,7 +154,7 @@ class Battleship extends events_1.EventEmitter {
         this.currentStats.shield += n;
         if (emit)
             this.emit("shieldIncrease", this, n);
-        return this;
+        return n;
     }
     shieldDecrease(n, emit = true) {
         if (n < 0)
@@ -128,7 +165,7 @@ class Battleship extends events_1.EventEmitter {
         this.currentStats.shield -= n;
         if (emit)
             this.emit("shieldDecrease", this, n);
-        return this;
+        return n;
     }
     hpIncrease(n, emit = true) {
         if (n < 0)
@@ -139,40 +176,11 @@ class Battleship extends events_1.EventEmitter {
         this.currentStats.hp += n;
         if (emit)
             this.emit("hpIncrease", this, n);
-        return this;
-    }
-    //#endregion stat modifiers
-    startTurn() {
-        this.reduceCooldown();
-        this.statGain();
-        this.emit("turnStart", this);
-        return this;
-    }
-    statGain() {
-        this.hpIncrease(this.gainStats.hp);
-        this.shieldIncrease(this.gainStats.shield);
-        this.weaponIncrease(this.gainStats.weapon);
-        this.engineIncrease(this.gainStats.engine);
-        this.cpuIncrease(this.gainStats.cpu);
-        return this;
-    }
-    showInvocable() {
-        const invocable = [];
-        this.Ship.copyAttachments().forEach((attachment, idx) => {
-            if (attachment.isInvocable() && this.cooldownArray[idx] <= 0) {
-                invocable.push(attachment);
-            }
-        });
-        return invocable;
-    }
-    reduceCooldown(n = 1) {
-        for (let i = 0; i < this.cooldownArray.length; i++) {
-            this.cooldownArray[i] -= n;
-            if (this.cooldownArray[i] < 0)
-                this.cooldownArray[i] = 0;
-        }
+        return n;
     }
     standardDamage(n) {
+        if (n < 0)
+            throw new Error("Negative value passed into hpIncrease method");
         if (n <= this.currentStats.shield)
             this.currentStats.shield -= n;
         else {
@@ -184,9 +192,72 @@ class Battleship extends events_1.EventEmitter {
         return this;
     }
     hullDamage(n) {
+        if (n < 0)
+            throw new Error("Negative value passed into hpIncrease method");
         this.currentStats.hp -= n;
         this.fireDamageTaken(n);
         return this;
+    }
+    //#endregion stat modifiers
+    addMaxStats(increments) {
+        this.maxStats.hp += increments.hp ?? 0;
+        this.maxStats.shield += increments.shield ?? 0;
+        this.maxStats.weapon += increments.weapon ?? 0;
+        this.maxStats.engine += increments.engine ?? 0;
+        this.maxStats.cpu += increments.cpu ?? 0;
+        return this;
+    }
+    canAfford(cost) {
+        return this.W >= cost[0] && this.E >= cost[1] && this.C >= cost[2];
+    }
+    isReady(cost) {
+        return false;
+        //TODO cooldown system
+    }
+    //#region Turn Start
+    startTurn() {
+        this.preTurnInit();
+        this.emit("turnStart", this);
+        return this;
+    }
+    preTurnInit() {
+        return this.reduceCooldown().statGain().updatePersistent();
+    }
+    reduceCooldown(n = 1) {
+        for (let i = 0; i < this.cooldownArray.length; i++) {
+            this.cooldownArray[i] -= n;
+            if (this.cooldownArray[i] < 0)
+                this.cooldownArray[i] = 0;
+        }
+        return this;
+    }
+    statGain() {
+        this.hpIncrease(this.gainStats.hp);
+        this.shieldIncrease(this.gainStats.shield);
+        this.weaponIncrease(this.gainStats.weapon);
+        this.engineIncrease(this.gainStats.engine);
+        this.cpuIncrease(this.gainStats.cpu);
+        return this;
+    }
+    updatePersistent() {
+        this.persistentEffects.forEach((val, key) => {
+            this.persistentEffects.set(key, val - 1);
+            if (val - 1 == 0) {
+                this.removeListener(...key);
+                this.persistentEffects.delete(key);
+            }
+        });
+        return this;
+    }
+    //#endregion
+    showInvocable() {
+        const invocable = [];
+        this.Ship.copyAttachments().forEach((attachment, idx) => {
+            if (attachment.isInvocable() && this.cooldownArray[idx] <= 0) {
+                invocable.push(attachment);
+            }
+        });
+        return invocable;
     }
     fireDamageTaken(dmg) {
         if (this.currentStats.hp < 0 && !this.criticalDamage) {
@@ -194,6 +265,10 @@ class Battleship extends events_1.EventEmitter {
             this.emit("criticalDamage", this, dmg);
         }
         this.emit("damageTaken", dmg, this);
+    }
+    onPersist(e, duration, listener) {
+        this.on(e, listener);
+        this.persistentEffects.set([e, listener], duration);
     }
     init() {
         const maxStats = this.playerShip.ShipStatistics;

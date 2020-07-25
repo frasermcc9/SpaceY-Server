@@ -17,7 +17,7 @@ exports.AttachmentGenerator = () => {
             .EnableBuildable(new Blueprint_1.BlueprintBuilder().DefinedBuild(Blueprint_1.BlueprintBuilder.SIMPLE_BUILD(14000), "Standard Blaster"))
             .BattlePreTurnFn(({ battle }) => {
             const rnd = rb(4, 12);
-            battle.Enemy.standardDamage(rnd);
+            battle.Enemy.damage(rnd);
             return { success: true, message: `Standard Blaster: ${rnd} damage.` };
         })
             .Build(),
@@ -32,7 +32,7 @@ exports.AttachmentGenerator = () => {
             .EnableBuildable(new Blueprint_1.BlueprintBuilder().DefinedBuild(Blueprint_1.BlueprintBuilder.SIMPLE_BUILD(42000), "Hardened Blaster"))
             .BattlePreTurnFn(({ battle }) => {
             const rnd = rb(8, 12);
-            battle.Enemy.standardDamage(rnd);
+            battle.Enemy.damage(rnd);
             return { success: true, message: `Hardened Blaster: ${rnd} damage.` };
         })
             .Build(),
@@ -47,7 +47,7 @@ exports.AttachmentGenerator = () => {
             .EnableBuildable(new Blueprint_1.BlueprintBuilder().DefinedBuild(Blueprint_1.BlueprintBuilder.SIMPLE_BUILD(145000), "Rapidfire Blaster"))
             .BattlePreTurnFn(({ battle }) => {
             const rnd = rb(8, 18);
-            battle.Enemy.standardDamage(rnd);
+            battle.Enemy.damage(rnd);
             return { success: true, message: `Hardened Blaster: ${rnd} damage.` };
         })
             .Build(),
@@ -62,9 +62,9 @@ exports.AttachmentGenerator = () => {
             .EnableBuildable(new Blueprint_1.BlueprintBuilder().DefinedBuild(Blueprint_1.BlueprintBuilder.SIMPLE_BUILD(295000), "Mini Scattergun"))
             .BattlePreTurnFn(({ battle }) => {
             const base = 10;
-            const bonus = ~~(battle.Enemy.Hp / 100);
-            const effective = Math.max(base + bonus - battle.Enemy.Shield, (base + bonus) / 2); //damage cant be less than half the base + bonus
-            battle.Enemy.standardDamage(effective);
+            const bonus = ~~(battle.Enemy.getStat("hp") / 100);
+            const effective = Math.max(base + bonus - battle.Enemy.getStat("shield"), (base + bonus) / 2); //damage cant be less than half the base + bonus
+            battle.Enemy.damage(effective);
             return { success: true, message: `Mini Scattergun: ${effective} damage.` };
         })
             .Build(),
@@ -81,7 +81,7 @@ exports.AttachmentGenerator = () => {
             const base = 4;
             const bonus = battle.TurnNumber * 1;
             const effective = base + bonus; //damage cant be less than half the base + bonus
-            battle.Enemy.standardDamage(effective);
+            battle.Enemy.damage(effective);
             return { success: true, message: `Thermic Focuser: ${base} + ${bonus} damage.` };
         })
             .Build(),
@@ -96,7 +96,7 @@ exports.AttachmentGenerator = () => {
             .EnableBuildable(new Blueprint_1.BlueprintBuilder().DefinedBuild(Blueprint_1.BlueprintBuilder.SIMPLE_BUILD(200000), "Precision Railgun"))
             .BattlePreTurnFn(({ battle }) => {
             const base = rb(8, 12);
-            battle.Enemy.standardDamage(base);
+            battle.Enemy.damage(base);
             return { success: true, message: `Precision Railgun: ${base} hull damage.` };
         })
             .Build(),
@@ -111,7 +111,7 @@ exports.AttachmentGenerator = () => {
             .EnableBuildable(new Blueprint_1.BlueprintBuilder().DefinedBuild(Blueprint_1.BlueprintBuilder.MODERATE_BUILD(520000), "Plasma Cannon"))
             .BattlePreTurnFn(({ battle }) => {
             const base = rb(15, 25);
-            battle.Enemy.standardDamage(base);
+            battle.Enemy.damage(base);
             return { success: true, message: `Plasma Cannon: ${base} damage.` };
         })
             .Build(),
@@ -126,9 +126,9 @@ exports.AttachmentGenerator = () => {
             .EnableBuildable(new Blueprint_1.BlueprintBuilder().DefinedBuild(Blueprint_1.BlueprintBuilder.MODERATE_BUILD(295000), "Flak Cannon"))
             .BattlePreTurnFn(({ battle }) => {
             const base = 0;
-            const bonus = ~~(battle.Enemy.Hp / 50);
-            const effective = Math.max(base + bonus - battle.Enemy.Shield, (base + bonus) / 2); //damage cant be less than half the base + bonus
-            battle.Enemy.standardDamage(effective);
+            const bonus = ~~(battle.Enemy.getStat("hp") / 50);
+            const effective = Math.max(base + bonus - battle.Enemy.getStat("shield"), (base + bonus) / 2); //damage cant be less than half the base + bonus
+            battle.Enemy.damage(effective);
             return { success: true, message: `Flak Cannon: ${effective} damage.` };
         })
             .Build(),
@@ -145,7 +145,7 @@ exports.AttachmentGenerator = () => {
             const base = 2;
             const bonus = battle.TurnNumber * 2;
             const effective = base + bonus; //damage cant be less than half the base + bonus
-            battle.Enemy.standardDamage(effective);
+            battle.Enemy.damage(effective);
             return { success: true, message: `Thermic Focuser: ${base} + ${bonus} damage.` };
         })
             .Build(),
@@ -162,7 +162,7 @@ exports.AttachmentGenerator = () => {
             const base = 50;
             const bonus = battle.TurnNumber * -5;
             const effective = Math.max(base + bonus, 0); //damage cant be less than half the base + bonus
-            battle.Enemy.standardDamage(effective);
+            battle.Enemy.damage(effective);
             return { success: true, message: `Void Ray: ${effective} damage.` };
         })
             .Build(),
@@ -177,7 +177,7 @@ exports.AttachmentGenerator = () => {
             .EnableBuildable(new Blueprint_1.BlueprintBuilder().DefinedBuild(Blueprint_1.BlueprintBuilder.SIMPLE_BUILD(275000), "Quasar Cannon"))
             .BattlePreTurnFn(({ battle }) => {
             const effective = 30;
-            battle.Enemy.standardDamage(effective);
+            battle.Enemy.damage(effective);
             return { success: true, message: `Quasar Cannon: ${effective} damage.` };
         })
             .Build(),
@@ -192,9 +192,9 @@ exports.AttachmentGenerator = () => {
             .EnableBuildable(new Blueprint_1.BlueprintBuilder().DefinedBuild(Blueprint_1.BlueprintBuilder.MODERATE_BUILD(295000), "Heavy Flak Launcher"))
             .BattlePreTurnFn(({ battle }) => {
             const base = 0;
-            const bonus = ~~(battle.Enemy.Hp / 50);
-            const effective = Math.max(base + bonus - battle.Enemy.Shield, (base + bonus) / 2); //damage cant be less than half the base + bonus
-            battle.Enemy.standardDamage(effective);
+            const bonus = ~~(battle.Enemy.getStat("hp") / 50);
+            const effective = Math.max(base + bonus - battle.Enemy.getStat("shield"), (base + bonus) / 2); //damage cant be less than half the base + bonus
+            battle.Enemy.damage(effective);
             return { success: true, message: `Heavy Flak Launcher: ${effective} damage.` };
         })
             .Build(),
@@ -916,8 +916,8 @@ const ShieldGenerator = () => {
             .EnableSellable(35000)
             .EnableBuildable(new Blueprint_1.BlueprintBuilder().DefinedBuild(Blueprint_1.BlueprintBuilder.SIMPLE_BUILD(21000), "Blink Shield"))
             .CriticalDamageFn(({ friendly, enemy, dmg }) => {
-            friendly.hpIncrease(1);
-            friendly.shieldIncrease(15);
+            friendly.increaseStat("hp", 1);
+            friendly.increaseStat("shield", 15);
             return { message: "Critical Damage Taken! Adding 15 shield and 1 hull.", success: true };
         })
             .Build(),
@@ -931,7 +931,7 @@ const ShieldGenerator = () => {
             .EnableSellable(8790)
             .BattlePreTurnFn(({ battle }) => {
             const rnd = rb(0, 3);
-            battle.Friendly.shieldIncrease(rnd);
+            battle.Friendly.increaseStat("shield", rnd);
             return { message: `Shield increased by ${rnd}.`, success: true };
         })
             .Build(),
@@ -945,8 +945,8 @@ const ShieldGenerator = () => {
             .EnableSellable(465000)
             .EnableBuildable(new Blueprint_1.BlueprintBuilder().DefinedBuild(Blueprint_1.BlueprintBuilder.SIMPLE_BUILD(390000), "Emergency Shield Systems"))
             .CriticalDamageFn(({ friendly, enemy, dmg }) => {
-            friendly.hpIncrease(1);
-            friendly.shieldIncrease(30);
+            friendly.increaseStat("hp", 1);
+            friendly.increaseStat("shield", 30);
             return { message: "Critical Damage Taken! Adding 30 shield and 1 hull.", success: true };
         })
             .Build(),
@@ -961,7 +961,7 @@ const ShieldGenerator = () => {
             .EnableBuildable(new Blueprint_1.BlueprintBuilder().DefinedBuild(Blueprint_1.BlueprintBuilder.SIMPLE_BUILD(425000), "Holo-Shield"))
             .BattlePreTurnFn(({ battle }) => {
             const rnd = rb(4, 8);
-            battle.Friendly.shieldIncrease(rnd);
+            battle.Friendly.increaseStat("shield", rnd);
             return { message: `Shield increased by ${rnd}.`, success: true };
         })
             .Build(),
@@ -976,11 +976,778 @@ const ShieldGenerator = () => {
             .EnableBuildable(new Blueprint_1.BlueprintBuilder().DefinedBuild(Blueprint_1.BlueprintBuilder.SIMPLE_BUILD(505000), "Energising Shield"))
             .BattlePreTurnFn(({ battle }) => {
             const rnd = rb(2, 5);
-            battle.Friendly.shieldIncrease(rnd);
-            battle.Friendly.weaponIncrease(rnd);
-            battle.Friendly.engineIncrease(rnd);
-            battle.Friendly.cpuIncrease(rnd);
+            battle.Friendly.multiIncrease({ shield: rnd, w: rnd, e: rnd, c: rnd });
             return { message: `All energy types (including shield) increased by ${rnd}.`, success: true };
+        })
+            .Build(),
+    ];
+};
+const TierOneAbility = () => {
+    return [
+        new Attachment_1.AttachmentBuilder({
+            name: "Disruption Burst",
+            description: `Deal 5 damage. Do 12 bonus damage for each energy type your opponent has higher than you (includes shield).`,
+            strength: 10,
+            techLevel: 2,
+            type: Attachment_1.AttachmentType.HEAVY,
+            energyCost: [4, 2, 8],
+            cooldown: 4,
+        })
+            .EnableSellable(23000)
+            .EnableBuildable(new Blueprint_1.BlueprintBuilder().DefinedBuild(Blueprint_1.BlueprintBuilder.SIMPLE_BUILD(13000), "Disruption Burst"))
+            .addFunction("onBattleInvoked", ({ battle }) => {
+            let dmg = 5;
+            if (battle.Enemy.getStat("w") > battle.Friendly.getStat("w"))
+                dmg += 12;
+            if (battle.Enemy.getStat("e") > battle.Friendly.getStat("e"))
+                dmg += 12;
+            if (battle.Enemy.getStat("c") > battle.Friendly.getStat("c"))
+                dmg += 12;
+            if (battle.Enemy.getStat("shield") > battle.Friendly.getStat("shield"))
+                dmg += 12;
+            battle.Enemy.damage(dmg);
+            return { success: true, message: `Disruption Burst: ${dmg} damage.` };
+        })
+            .Build(),
+        new Attachment_1.AttachmentBuilder({
+            name: "Basic Capacitor",
+            description: `Add 2 to maximum weapon, engine and computer energy. Doesn't end your turn.`,
+            strength: 12,
+            techLevel: 2,
+            type: Attachment_1.AttachmentType.HEAVY,
+            energyCost: [3, 3, 3],
+            cooldown: 3,
+        })
+            .EnableSellable(42000)
+            .EnableBuildable(new Blueprint_1.BlueprintBuilder().DefinedBuild(Blueprint_1.BlueprintBuilder.SIMPLE_BUILD(25000), "Basic Capacitor"))
+            .addFunction("onBattleInvoked", ({ battle }) => {
+            battle.Friendly.multiMaxIncrease({ w: 2, e: 2, c: 2 });
+            return {
+                success: true,
+                message: `Basic Capacitor: +2 to weapon, engine and computer max.`,
+                keepTurn: true,
+            };
+        })
+            .Build(),
+        new Attachment_1.AttachmentBuilder({
+            name: "Zap",
+            description: `Deal 5-12 damage based on opponents current hull. Doesn't end your turn.`,
+            strength: 15,
+            techLevel: 2,
+            type: Attachment_1.AttachmentType.HEAVY,
+            energyCost: [4, 0, 0],
+            cooldown: 0,
+        })
+            .EnableSellable(28000)
+            .EnableBuildable(new Blueprint_1.BlueprintBuilder().DefinedBuild(Blueprint_1.BlueprintBuilder.SIMPLE_BUILD(19000), "Zap"))
+            .addFunction("onBattleInvoked", ({ battle }) => {
+            const ratio = battle.Enemy.getStat("hp") / battle.Enemy.getMaxOfStat("hp");
+            const dmg = ~~(5 + 7 * ratio);
+            battle.Enemy.damage(dmg);
+            return { success: true, message: `Zap: +${dmg} damage.`, keepTurn: true };
+        })
+            .Build(),
+        new Attachment_1.AttachmentBuilder({
+            name: "Viral Drone",
+            description: `Drains 10 CPU from your opponent, +1 per 3 engine energy, adding twice the amount to your shield. Doesn't end your turn.`,
+            strength: 18,
+            techLevel: 3,
+            type: Attachment_1.AttachmentType.HEAVY,
+            energyCost: [2, 2, 6],
+            cooldown: 4,
+        })
+            .EnableSellable(48000)
+            .EnableBuildable(new Blueprint_1.BlueprintBuilder().DefinedBuild(Blueprint_1.BlueprintBuilder.SIMPLE_BUILD(31000), "Viral Drone"))
+            .addFunction("onBattleInvoked", ({ battle }) => {
+            const drain = ~~(battle.Friendly.getStat("e") / 3) + 10;
+            const enemyDrain = battle.Enemy.decreaseStat("c", drain);
+            const friendlyGain = battle.Friendly.increaseStat("c", 2 * enemyDrain);
+            return {
+                success: true,
+                message: `Viral Drone: Opponent lost ${enemyDrain} CPU energy. You gained ${friendlyGain} shield.`,
+                keepTurn: true,
+            };
+        })
+            .Build(),
+        new Attachment_1.AttachmentBuilder({
+            name: "Heat Seeking Missiles",
+            description: `Does 1 damage per point of your opponents highest energy amount (excluding shield).`,
+            strength: 15,
+            techLevel: 2,
+            type: Attachment_1.AttachmentType.HEAVY,
+            energyCost: [8, 5, 0],
+            cooldown: 5,
+        })
+            .EnableSellable(27000)
+            .EnableBuildable(new Blueprint_1.BlueprintBuilder().DefinedBuild(Blueprint_1.BlueprintBuilder.SIMPLE_BUILD(15000), "Heat Seeking Missiles"))
+            .addFunction("onBattleInvoked", ({ battle }) => {
+            const highest = Math.max(battle.Enemy.getStat("w"), battle.Enemy.getStat("e"), battle.Enemy.getStat("c"));
+            const dmg = battle.Enemy.damage(highest);
+            return {
+                success: true,
+                message: `Heat Seeking Missiles: +${dmg} damage.`,
+                keepTurn: false,
+            };
+        })
+            .Build(),
+        new Attachment_1.AttachmentBuilder({
+            name: "Shield Nullifier",
+            description: `Prevent your opponents shield from regenerating for 3 turns.`,
+            strength: 25,
+            techLevel: 3,
+            type: Attachment_1.AttachmentType.HEAVY,
+            energyCost: [0, 5, 7],
+            cooldown: 6,
+        })
+            .EnableSellable(44000)
+            .EnableBuildable(new Blueprint_1.BlueprintBuilder().DefinedBuild(Blueprint_1.BlueprintBuilder.SIMPLE_BUILD(30000), "Shield Nullifier"))
+            .addFunction("onBattleInvoked", ({ battle }) => {
+            battle.Enemy.onPersist("shieldIncrease", 3, (player, amount) => {
+                player.decreaseStat("shield", amount);
+                battle.notify(`Shield Nullifier: Denied ${amount} shield.`);
+            });
+            return { success: true, message: `Shield Nullifier: Opponent cannot gain shield for 3 turns.` };
+        })
+            .Build(),
+        new Attachment_1.AttachmentBuilder({
+            name: "Cyber Attack",
+            description: `Drains 3 shield from your opponent for 5 turns, adding it to your own.`,
+            strength: 13,
+            techLevel: 3,
+            type: Attachment_1.AttachmentType.HEAVY,
+            energyCost: [5, 0, 8],
+            cooldown: 6,
+        })
+            .EnableSellable(27000)
+            .EnableBuildable(new Blueprint_1.BlueprintBuilder().DefinedBuild(Blueprint_1.BlueprintBuilder.SIMPLE_BUILD(15000), "Cyber Attack"))
+            .addFunction("onBattleInvoked", ({ battle }) => {
+            battle.Enemy.onPersist("turnStart", 5, (player) => {
+                const amount = player.decreaseStat("shield", 3);
+                battle.getEnemyOf(player).increaseStat("shield", amount);
+                battle.notify(`Cyber Attach: Siphoned ${amount} shield.`);
+            });
+            return { success: true, message: `Cyber Attack: 5 turns of up to 3 shield siphon.` };
+        })
+            .Build(),
+        new Attachment_1.AttachmentBuilder({
+            name: "Shield Transformer",
+            description: `Drain up to 20 points from your weapon, engine and computing energy, adding it to your shield.`,
+            strength: 15,
+            techLevel: 3,
+            type: Attachment_1.AttachmentType.HEAVY,
+            energyCost: [0, 0, 0],
+            cooldown: 3,
+        })
+            .EnableSellable(52000)
+            .EnableBuildable(new Blueprint_1.BlueprintBuilder().DefinedBuild(Blueprint_1.BlueprintBuilder.SIMPLE_BUILD(39000), "Shield Transformer"))
+            .addFunction("onBattleInvoked", ({ battle }) => {
+            let inc = 0;
+            inc += battle.Friendly.decreaseStat("w", 20);
+            inc += battle.Friendly.decreaseStat("e", 20);
+            inc += battle.Friendly.decreaseStat("c", 20);
+            const amountIncrease = battle.Friendly.increaseStat("shield", inc);
+            return {
+                success: true,
+                message: `Shield Transformer: Drained up to 20 from each energy type, adding ${amountIncrease} to shields.`,
+                keepTurn: true,
+            };
+        })
+            .Build(),
+        new Attachment_1.AttachmentBuilder({
+            name: "Repair Scanner",
+            description: `Drains your Engine, adding 1 point to your hull for each point drained. Doesn't end your turn.`,
+            strength: 19,
+            techLevel: 4,
+            type: Attachment_1.AttachmentType.HEAVY,
+            energyCost: [0, 0, 7],
+            cooldown: 4,
+        })
+            .EnableSellable(25000)
+            .EnableBuildable(new Blueprint_1.BlueprintBuilder().DefinedBuild(Blueprint_1.BlueprintBuilder.SIMPLE_BUILD(15000), "Repair Scanner"))
+            .addFunction("onBattleInvoked", ({ battle }) => {
+            const engine = battle.Friendly.minimizeStat("e");
+            const amountIncrease = battle.Friendly.increaseStat("shield", engine);
+            return {
+                success: true,
+                message: `Repair Scanner: Drained ${engine} engine energy, adding ${amountIncrease} to hull.`,
+                keepTurn: true,
+            };
+        })
+            .Build(),
+        new Attachment_1.AttachmentBuilder({
+            name: "Energy Hyperdrive",
+            description: `Increases all energy gains by 50% for 3 turns.`,
+            strength: 26,
+            techLevel: 4,
+            type: Attachment_1.AttachmentType.HEAVY,
+            energyCost: [2, 10, 6],
+            cooldown: 4,
+        })
+            .EnableSellable(51000)
+            .EnableBuildable(new Blueprint_1.BlueprintBuilder().DefinedBuild(Blueprint_1.BlueprintBuilder.SIMPLE_BUILD(39000), "Energy Hyperdrive"))
+            .addFunction("onBattleInvoked", ({ battle }) => {
+            battle.Friendly.onPersist("weaponIncrease", 3, (player, amount) => {
+                player.increaseStat("w", ~~(amount * 1.5));
+                battle.notify(`Increased players weapon by extra ${amount}.`);
+            });
+            battle.Friendly.onPersist("engineIncrease", 3, (player, amount) => {
+                player.increaseStat("e", ~~(amount * 1.5));
+                battle.notify(`Increased players engine by extra ${amount}.`);
+            });
+            battle.Friendly.onPersist("cpuIncrease", 3, (player, amount) => {
+                player.increaseStat("c", ~~(amount * 1.5));
+                battle.notify(`Increased players computer by extra ${amount}.`);
+            });
+            return {
+                success: true,
+                message: `Energy Hyperdrive: 50% increased weapon, engine and computer energy gain for 3 turns.`,
+            };
+        })
+            .Build(),
+    ];
+};
+const TierTwoAbility = () => {
+    return [
+        new Attachment_1.AttachmentBuilder({
+            name: "Weapons Uplink",
+            description: `Permanently increase maximum weapon energy by 20. Doesn't end your turn.`,
+            strength: 23,
+            techLevel: 4,
+            type: Attachment_1.AttachmentType.HEAVY,
+            energyCost: [0, 10, 10],
+            cooldown: 12,
+        })
+            .EnableSellable(622000)
+            .EnableBuildable(new Blueprint_1.BlueprintBuilder().DefinedBuild(Blueprint_1.BlueprintBuilder.SIMPLE_BUILD(450000), "Weapons Uplink"))
+            .addFunction("onBattleInvoked", ({ battle }) => {
+            battle.Friendly.increaseMaxOfStat("w", 20);
+            return { success: true, message: `Weapons Uplink: +20 max weapon energy`, keepTurn: true };
+        })
+            .Build(),
+        new Attachment_1.AttachmentBuilder({
+            name: "Improved Capacitor",
+            description: `Add 4 to maximum Weapon, CPU and Engine energy. Doesn't end your turn.`,
+            strength: 19,
+            techLevel: 5,
+            type: Attachment_1.AttachmentType.HEAVY,
+            energyCost: [5, 5, 5],
+            cooldown: 4,
+        })
+            .EnableSellable(704000)
+            .EnableBuildable(new Blueprint_1.BlueprintBuilder().DefinedBuild(Blueprint_1.BlueprintBuilder.SIMPLE_BUILD(529000), "Improved Capacitor"))
+            .addFunction("onBattleInvoked", ({ battle }) => {
+            battle.Friendly.multiMaxIncrease({ w: 4, e: 4, c: 4 });
+            return {
+                success: true,
+                message: `Improved Capacitor: +2 to weapon, engine and computer max.`,
+                keepTurn: true,
+            };
+        })
+            .Build(),
+        new Attachment_1.AttachmentBuilder({
+            name: "Armour Piercing Laser",
+            description: `Damage: 1 per 3 weapon energy you have. Double damage if your opponent has less than 20 shield.`,
+            strength: 23,
+            techLevel: 5,
+            type: Attachment_1.AttachmentType.HEAVY,
+            energyCost: [11, 0, 5],
+            cooldown: 4,
+        })
+            .EnableSellable(562000)
+            .EnableBuildable(new Blueprint_1.BlueprintBuilder().DefinedBuild(Blueprint_1.BlueprintBuilder.SIMPLE_BUILD(409100), "Armour Piercing Laser"))
+            .addFunction("onBattleInvoked", ({ battle }) => {
+            let dmg = battle.Friendly.getStat("w") / 3;
+            if (battle.Enemy.getStat("shield") < 20)
+                dmg *= 2;
+            battle.Enemy.damage(dmg);
+            return {
+                success: true,
+                message: `Armour Piercing Laser: +${dmg} damage.`,
+                keepTurn: false,
+            };
+        })
+            .Build(),
+        new Attachment_1.AttachmentBuilder({
+            name: "Equalizer",
+            description: `Does damage equal to your missing health, up to 30% of your opponents max health.`,
+            strength: 27,
+            techLevel: 5,
+            type: Attachment_1.AttachmentType.HEAVY,
+            energyCost: [10, 4, 4],
+            cooldown: 5,
+        })
+            .EnableSellable(504000)
+            .EnableBuildable(new Blueprint_1.BlueprintBuilder().DefinedBuild(Blueprint_1.BlueprintBuilder.SIMPLE_BUILD(390000), "Equalizer"))
+            .addFunction("onBattleInvoked", ({ battle }) => {
+            let base = battle.Friendly.getMaxOfStat("hp") - battle.Friendly.getStat("hp");
+            let cap = ~~(battle.Enemy.getMaxOfStat("hp") * 0.3);
+            const dmg = Math.max(base, cap);
+            battle.Enemy.damage(dmg);
+            return {
+                success: true,
+                message: `Equalizer: +${dmg} damage.`,
+                keepTurn: false,
+            };
+        })
+            .Build(),
+        new Attachment_1.AttachmentBuilder({
+            name: "Weapons Surge",
+            description: `Reduces cooldown on all your abilities by 2 turns. Doesn't end your turn.`,
+            strength: 24,
+            techLevel: 5,
+            type: Attachment_1.AttachmentType.HEAVY,
+            energyCost: [6, 6, 6],
+            cooldown: 5,
+        })
+            .EnableSellable(634000)
+            .EnableBuildable(new Blueprint_1.BlueprintBuilder().DefinedBuild(Blueprint_1.BlueprintBuilder.SIMPLE_BUILD(515000), "Weapons Surge"))
+            .addFunction("onBattleInvoked", ({ battle }) => {
+            battle.Friendly.reduceCooldowns(2);
+            return {
+                success: true,
+                message: `Weapons Surge: Cooldowns reduced by 2 turns.`,
+                keepTurn: true,
+            };
+        })
+            .Build(),
+        new Attachment_1.AttachmentBuilder({
+            name: "Phase Adjuster",
+            description: `Maximises both players energy (not shield). Doesn't end your turn.`,
+            strength: 20,
+            techLevel: 5,
+            type: Attachment_1.AttachmentType.HEAVY,
+            energyCost: [0, 10, 8],
+            cooldown: 6,
+        })
+            .EnableSellable(438000)
+            .EnableBuildable(new Blueprint_1.BlueprintBuilder().DefinedBuild(Blueprint_1.BlueprintBuilder.SIMPLE_BUILD(315000), "Phase Adjuster"))
+            .addFunction("onBattleInvoked", ({ battle }) => {
+            battle.Friendly.multiMaximize("w", "e", "c");
+            battle.Enemy.multiMaximize("w", "e", "c");
+            return {
+                success: true,
+                message: `Phase Adjuster: Maximized both players energies.`,
+                keepTurn: true,
+            };
+        })
+            .Build(),
+        new Attachment_1.AttachmentBuilder({
+            name: "Repair Bot",
+            description: `Restore 20 hull points + 1% of your missing hull per 4 engine energy you have.`,
+            strength: 32,
+            techLevel: 5,
+            type: Attachment_1.AttachmentType.HEAVY,
+            energyCost: [0, 12, 4],
+            cooldown: 5,
+        })
+            .EnableSellable(473000)
+            .EnableBuildable(new Blueprint_1.BlueprintBuilder().DefinedBuild(Blueprint_1.BlueprintBuilder.SIMPLE_BUILD(360000), "Repair Bot"))
+            .addFunction("onBattleInvoked", ({ battle }) => {
+            const player = battle.Friendly;
+            let amount = 20;
+            const onePercentHp = (player.getMaxOfStat("hp") - player.getStat("hp")) / 100;
+            const multiplier = ~~(player.getStat("e") / 4);
+            amount += ~~(onePercentHp * multiplier);
+            player.increaseStat("hp", amount);
+            return {
+                success: true,
+                message: `Repair Bot: +${amount} hull.`,
+                keepTurn: false,
+            };
+        })
+            .Build(),
+        new Attachment_1.AttachmentBuilder({
+            name: "Energy Beam",
+            description: `Drains 10 from each of your opponents energy (including shield) adding it to your own.`,
+            strength: 36,
+            techLevel: 5,
+            type: Attachment_1.AttachmentType.HEAVY,
+            energyCost: [8, 2, 12],
+            cooldown: 4,
+        })
+            .EnableSellable(458000)
+            .EnableBuildable(new Blueprint_1.BlueprintBuilder().DefinedBuild(Blueprint_1.BlueprintBuilder.SIMPLE_BUILD(347000), "Energy Beam"))
+            .addFunction("onBattleInvoked", ({ battle }) => {
+            const sDrain = battle.Enemy.decreaseStat("shield", 10);
+            const wDrain = battle.Enemy.decreaseStat("w", 10);
+            const eDrain = battle.Enemy.decreaseStat("e", 10);
+            const cDrain = battle.Enemy.decreaseStat("c", 10);
+            battle.Friendly.increaseStat("shield", sDrain);
+            battle.Friendly.increaseStat("w", wDrain);
+            battle.Friendly.increaseStat("e", eDrain);
+            battle.Friendly.increaseStat("c", cDrain);
+            return {
+                success: true,
+                message: `Energy Beam: Siphoned ${sDrain} shield, ${wDrain} weapon, ${eDrain} engine and ${cDrain} computer. `,
+                keepTurn: false,
+            };
+        })
+            .Build(),
+        new Attachment_1.AttachmentBuilder({
+            name: "Data Matrix",
+            description: `Add 10 to your CPU energy. Doesn't end your turn.`,
+            strength: 27,
+            techLevel: 4,
+            type: Attachment_1.AttachmentType.HEAVY,
+            energyCost: [0, 6, 0],
+            cooldown: 3,
+        })
+            .EnableSellable(410000)
+            .EnableBuildable(new Blueprint_1.BlueprintBuilder().DefinedBuild(Blueprint_1.BlueprintBuilder.SIMPLE_BUILD(298000), "Data Matrix"))
+            .addFunction("onBattleInvoked", ({ battle }) => {
+            const cGain = battle.Friendly.increaseStat("c", 10);
+            return {
+                success: true,
+                message: `Data Matrix: +${cGain} computer energy. `,
+                keepTurn: true,
+            };
+        })
+            .Build(),
+        new Attachment_1.AttachmentBuilder({
+            name: "Phase Laser",
+            description: `Damage: 10 + 1 per 3 weapon energy. If weapon energy is at max, does hull damage.`,
+            strength: 38,
+            techLevel: 5,
+            type: Attachment_1.AttachmentType.HEAVY,
+            energyCost: [12, 0, 8],
+            cooldown: 4,
+        })
+            .EnableSellable(694000)
+            .EnableBuildable(new Blueprint_1.BlueprintBuilder().DefinedBuild(Blueprint_1.BlueprintBuilder.SIMPLE_BUILD(514000), "Phase Laser"))
+            .addFunction("onBattleInvoked", ({ battle }) => {
+            const isMax = battle.Friendly.getStat("w") == battle.Friendly.getMaxOfStat("w");
+            const dmg = 10 + ~~(battle.Friendly.getStat("w") / 3);
+            let msg;
+            if (isMax) {
+                battle.Enemy.hullDamage(dmg);
+                msg = `Phase Laser: +${dmg} hull damage.`;
+            }
+            else {
+                battle.Enemy.damage(dmg);
+                msg = `Phase Laser: +${dmg} damage.`;
+            }
+            return {
+                success: true,
+                message: msg,
+                keepTurn: false,
+            };
+        })
+            .Build(),
+    ];
+};
+const TierFiveAbility = () => {
+    return [
+        new Attachment_1.AttachmentBuilder({
+            name: "Erisnian Temporal Accelerator",
+            description: `All abilities have their cooldown reduced to 0. Doesn't end your turn.`,
+            strength: 140,
+            techLevel: 9,
+            type: Attachment_1.AttachmentType.HEAVY,
+            energyCost: [12, 12, 12],
+            cooldown: 7,
+        })
+            .EnableSellable(4760000)
+            .EnableBuildable(new Blueprint_1.BlueprintBuilder().DefinedBuild(Blueprint_1.BlueprintBuilder.ADVANCED_BUILD(4060000), "Erisnian Temporal Accelerator"))
+            .addFunction("onBattleInvoked", ({ battle }) => {
+            battle.Friendly.reduceCooldowns(99);
+            return {
+                success: true,
+                message: `Erisnian Temporal Accelerator: All cooldowns reduced to 0.`,
+                keepTurn: true,
+            };
+        })
+            .Build(),
+        new Attachment_1.AttachmentBuilder({
+            name: "Alairan Dark Beam",
+            description: `Reduces all opponent energy to 0, including shield.`,
+            strength: 130,
+            techLevel: 9,
+            type: Attachment_1.AttachmentType.HEAVY,
+            energyCost: [14, 6, 18],
+            cooldown: 6,
+        })
+            .EnableSellable(5120000)
+            .EnableBuildable(new Blueprint_1.BlueprintBuilder().DefinedBuild(Blueprint_1.BlueprintBuilder.ADVANCED_BUILD(4320000), "Alairan Dark Beam"))
+            .addFunction("onBattleInvoked", ({ battle }) => {
+            battle.Enemy.multiMinimize("shield", "w", "e", "c");
+            return {
+                success: true,
+                message: `Alairan Dark Beam: All opponent energy reduced to 0.`,
+                keepTurn: false,
+            };
+        })
+            .Build(),
+        new Attachment_1.AttachmentBuilder({
+            name: "Quargic Prismatic Death Ray",
+            description: `Halves your opponents current hull.`,
+            strength: 165,
+            techLevel: 10,
+            type: Attachment_1.AttachmentType.HEAVY,
+            energyCost: [28, 18, 0],
+            cooldown: 8,
+        })
+            .EnableSellable(6150000)
+            .EnableBuildable(new Blueprint_1.BlueprintBuilder().DefinedBuild(Blueprint_1.BlueprintBuilder.ADVANCED_BUILD(5520000), "Quargic Prismatic Death Ray"))
+            .addFunction("onBattleInvoked", ({ battle }) => {
+            const dmg = battle.Enemy.getStat("hp");
+            battle.Enemy.hullDamage(dmg);
+            return {
+                success: true,
+                message: `Quargic Prismatic Death Ray: ${dmg} hull damage.`,
+                keepTurn: false,
+            };
+        })
+            .Build(),
+        new Attachment_1.AttachmentBuilder({
+            name: "Supernova Drive",
+            description: `Maximises Weapon, CPU and Engine.`,
+            strength: 134,
+            techLevel: 9,
+            type: Attachment_1.AttachmentType.HEAVY,
+            energyCost: [0, 6, 9],
+            cooldown: 8,
+        })
+            .EnableSellable(5060000)
+            .EnableBuildable(new Blueprint_1.BlueprintBuilder().DefinedBuild(Blueprint_1.BlueprintBuilder.ADVANCED_BUILD(4320000), "Supernova Drive"))
+            .addFunction("onBattleInvoked", ({ battle }) => {
+            battle.Friendly.multiMaximize("w", "e", "c");
+            return {
+                success: true,
+                message: `Supernova Drive: Maximized weapon, engine and computer.`,
+                keepTurn: false,
+            };
+        })
+            .Build(),
+        new Attachment_1.AttachmentBuilder({
+            name: "Lumissian Harbinger",
+            description: `Damage: 1 per 2 points of any energy (excluding shield) across both players.`,
+            strength: 152,
+            techLevel: 10,
+            type: Attachment_1.AttachmentType.HEAVY,
+            energyCost: [16, 12, 12],
+            cooldown: 6,
+        })
+            .EnableSellable(5320000)
+            .EnableBuildable(new Blueprint_1.BlueprintBuilder().DefinedBuild(Blueprint_1.BlueprintBuilder.ADVANCED_BUILD(4520000), "Lumissian Harbinger"))
+            .addFunction("onBattleInvoked", ({ battle }) => {
+            const dmg = ~~((battle.Friendly.getStat("w") +
+                battle.Friendly.getStat("e") +
+                battle.Friendly.getStat("c") +
+                battle.Enemy.getStat("w") +
+                battle.Enemy.getStat("e") +
+                battle.Enemy.getStat("c")) /
+                2);
+            return {
+                success: true,
+                message: `Lumissian Harbinger: +${dmg} damage.`,
+                keepTurn: false,
+            };
+        })
+            .Build(),
+        new Attachment_1.AttachmentBuilder({
+            name: "Ty'Linic Shield",
+            description: `Reduces the opponents weapon energy to 0. Adds 5 shield for every point drained.`,
+            strength: 139,
+            techLevel: 10,
+            type: Attachment_1.AttachmentType.HEAVY,
+            energyCost: [0, 17, 22],
+            cooldown: 7,
+        })
+            .EnableSellable(4990000)
+            .EnableBuildable(new Blueprint_1.BlueprintBuilder().DefinedBuild(Blueprint_1.BlueprintBuilder.ADVANCED_BUILD(4120000), "Ty'Linic Shield"))
+            .addFunction("onBattleInvoked", ({ battle }) => {
+            const multiplier = battle.Enemy.minimizeStat("w");
+            const shieldInc = battle.Friendly.increaseStat("shield", 5 * multiplier);
+            return {
+                success: true,
+                message: `Ty'Linic Shield: -${multiplier} opponent weapon energy, +${shieldInc} shield.`,
+                keepTurn: false,
+            };
+        })
+            .Build(),
+        new Attachment_1.AttachmentBuilder({
+            name: "Terrian Superblaster",
+            description: `Damage: 100. Doesn't end your turn.`,
+            strength: 129,
+            techLevel: 9,
+            type: Attachment_1.AttachmentType.HEAVY,
+            energyCost: [20, 0, 0],
+            cooldown: 4,
+        })
+            .EnableSellable(4010000)
+            .EnableBuildable(new Blueprint_1.BlueprintBuilder().DefinedBuild(Blueprint_1.BlueprintBuilder.ADVANCED_BUILD(3200000), "Terrian Superblaster"))
+            .addFunction("onBattleInvoked", ({ battle }) => {
+            battle.Enemy.damage(100);
+            return {
+                success: true,
+                message: `Terrian Superblaster: +100 damage.`,
+                keepTurn: true,
+            };
+        })
+            .Build(),
+        new Attachment_1.AttachmentBuilder({
+            name: "Volian Solar Flare",
+            description: `For 5 turns, drain 6 of each energy type from your opponent.`,
+            strength: 147,
+            techLevel: 9,
+            type: Attachment_1.AttachmentType.HEAVY,
+            energyCost: [0, 20, 15],
+            cooldown: 9,
+        })
+            .EnableSellable(5670000)
+            .EnableBuildable(new Blueprint_1.BlueprintBuilder().DefinedBuild(Blueprint_1.BlueprintBuilder.ADVANCED_BUILD(4770000), "Volian Solar Flare"))
+            .addFunction("onBattleInvoked", ({ battle }) => {
+            battle.Enemy.onPersist("turnStart", 5, (player) => {
+                player.multiDecrease({ w: 6, e: 6, c: 6 });
+                battle.notify(`Volian Solar Flare: 6 of each energy type drained.`);
+            });
+            return {
+                success: true,
+                message: `Volian Solar Flare: For 5 turns, each opponent energy type is drained by 6.`,
+                keepTurn: false,
+            };
+        })
+            .Build(),
+        new Attachment_1.AttachmentBuilder({
+            name: "Volian Modular Repair",
+            description: `Drains your weapon energy. Adds 2 to hull and shield for each point removed.`,
+            strength: 140,
+            techLevel: 9,
+            type: Attachment_1.AttachmentType.HEAVY,
+            energyCost: [0, 7, 11],
+            cooldown: 5,
+        })
+            .EnableSellable(3980000)
+            .EnableBuildable(new Blueprint_1.BlueprintBuilder().DefinedBuild(Blueprint_1.BlueprintBuilder.ADVANCED_BUILD(3080000), "Volian Modular Repair"))
+            .addFunction("onBattleInvoked", ({ battle }) => {
+            const wDrain = battle.Friendly.minimizeStat("w");
+            const hGain = battle.Friendly.increaseStat("hp", wDrain * 2);
+            const sGain = battle.Friendly.increaseStat("shield", wDrain * 2);
+            return {
+                success: true,
+                message: `Volian Modular Repair: -${wDrain} weapon, +${sGain} shield, +${hGain} hull.`,
+                keepTurn: false,
+            };
+        })
+            .Build(),
+        new Attachment_1.AttachmentBuilder({
+            name: "Kalian Pacifier",
+            description: `For the next 3 turns, your opponent's weapon energy is drained. Deal 1% of max hull per 2 points drained.`,
+            strength: 149,
+            techLevel: 9,
+            type: Attachment_1.AttachmentType.HEAVY,
+            energyCost: [0, 16, 18],
+            cooldown: 9,
+        })
+            .EnableSellable(4970000)
+            .EnableBuildable(new Blueprint_1.BlueprintBuilder().DefinedBuild(Blueprint_1.BlueprintBuilder.ADVANCED_BUILD(4000000), "Kalian Pacifier"))
+            .addFunction("onBattleInvoked", ({ battle }) => {
+            battle.Enemy.onPersist("turnStart", 3, (player) => {
+                const wDrain = player.minimizeStat("w");
+                const onePercent = player.getMaxOfStat("hp") / 100;
+                const dmg = player.hullDamage(~~(onePercent * ~~(wDrain / 2)));
+                battle.notify(`Kalian Pacifier: ${dmg} hull damage taken. ${wDrain} weapon energy lost.`);
+            });
+            return {
+                success: true,
+                message: `Kalian Pacifier: For 3 turns, reduce your opponent's weapon energy to 0 and deal 1% of max hull per 2 points drained.`,
+                keepTurn: false,
+            };
+        })
+            .Build(),
+    ];
+};
+const TierSixAbility = () => {
+    return [
+        new Attachment_1.AttachmentBuilder({
+            name: "Cosmic Unravelling",
+            description: `Apply the Unravelling effect on your opponent for 10 turns, damaging 10% of their current hull each turn.`,
+            strength: 195,
+            techLevel: 11,
+            type: Attachment_1.AttachmentType.HEAVY,
+            energyCost: [30, 30, 30],
+            cooldown: 15,
+        })
+            .EnableSellable(9010000)
+            .EnableBuildable(new Blueprint_1.BlueprintBuilder().DefinedBuild(Blueprint_1.BlueprintBuilder.ADVANCED_BUILD(7510000), "Cosmic Unravelling"))
+            .addFunction("onBattleInvoked", ({ battle }) => {
+            battle.Enemy.onPersist("turnStart", 10, (player) => {
+                const dmg = player.getStat("hp");
+                player.hullDamage(dmg);
+                battle.notify(`Cosmic Unravelling: ${dmg} hull damage taken.`);
+            });
+            return {
+                success: true,
+                message: `Cosmic Unravelling: For 10 turns, your opponent will lose 10% of their current hull.`,
+                keepTurn: false,
+            };
+        })
+            .Build(),
+        new Attachment_1.AttachmentBuilder({
+            name: "Harmony",
+            description: `Completely replenish your Hull, Shield, Weapon, CPU and Engine energy.`,
+            strength: 186,
+            techLevel: 11,
+            type: Attachment_1.AttachmentType.HEAVY,
+            energyCost: [0, 20, 35],
+            cooldown: 50,
+        })
+            .EnableSellable(11310000)
+            .EnableBuildable(new Blueprint_1.BlueprintBuilder().DefinedBuild(Blueprint_1.BlueprintBuilder.ADVANCED_BUILD(9310000), "Harmony"))
+            .addFunction("onBattleInvoked", ({ battle }) => {
+            battle.Friendly.multiMaximize("hp", "shield", "w", "e", "c");
+            return {
+                success: true,
+                message: `Harmony: Maximized all ship statistics.`,
+                keepTurn: false,
+            };
+        })
+            .Build(),
+        new Attachment_1.AttachmentBuilder({
+            name: "Transcend",
+            description: `Apply the Transcendence effect on your ship for 3 turns, rendering its hull immune to damage.`,
+            strength: 179,
+            techLevel: 11,
+            type: Attachment_1.AttachmentType.HEAVY,
+            energyCost: [6, 10, 13],
+            cooldown: 12,
+        })
+            .EnableSellable(10600000)
+            .EnableBuildable(new Blueprint_1.BlueprintBuilder().DefinedBuild(Blueprint_1.BlueprintBuilder.ADVANCED_BUILD(8110000), "Transcend"))
+            .addFunction("onBattleInvoked", ({ battle }) => {
+            battle.Friendly.onPersist("hullDecrease", 3, (player, amount) => {
+                const hGain = player.increaseStat("hp", amount);
+                battle.notify(`Transcend: Restored ${hGain} hull.`);
+            });
+            return {
+                success: true,
+                message: `Transcend: Replenish all hull damage for the next 3 turns.`,
+                keepTurn: false,
+            };
+        })
+            .Build(),
+        new Attachment_1.AttachmentBuilder({
+            name: "Gravitational Collapse",
+            description: `Your opponent takes damage equal to the sum of their weapon, engine and CPU energy at the end of their turn, for the rest of the battle.`,
+            strength: 187,
+            techLevel: 11,
+            type: Attachment_1.AttachmentType.HEAVY,
+            energyCost: [30, 20, 25],
+            cooldown: 4,
+        })
+            .EnableSellable(10600000)
+            .EnableBuildable(new Blueprint_1.BlueprintBuilder().DefinedBuild(Blueprint_1.BlueprintBuilder.ADVANCED_BUILD(8110000), "Gravitational Collapse"))
+            .addFunction("onBattleInvoked", ({ battle }) => {
+            battle.Friendly.onPersist("turnEnd", 99, (player) => {
+                const dmg = player.getStat("w") + player.getStat("e") + player.getStat("c");
+                player.damage(dmg);
+                battle.notify(`Gravitational Collapse: ${dmg} damage taken.`);
+            });
+            return {
+                success: true,
+                message: `Gravitational Collapse: Opponent takes damage equal to the sum of their energies (not shield) for the rest of the game.`,
+                keepTurn: false,
+            };
         })
             .Build(),
     ];

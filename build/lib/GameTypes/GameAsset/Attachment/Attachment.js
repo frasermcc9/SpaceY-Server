@@ -7,6 +7,7 @@ class Attachment extends GameAsset_1.GameAsset {
         super(data);
         this.functions = functions;
         this.energyCost = [0, 0, 0];
+        this.cooldown = 0;
         this.type = data.type;
         this.strength = data.strength;
         this.energyCost = data.energyCost ?? [0, 0, 0];

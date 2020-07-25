@@ -1,10 +1,10 @@
 import { GameAsset, IGameAssetOptions, IStrengthOptions } from "../GameAsset";
 import { Blueprint } from "../Blueprint/Blueprint";
 import { ShipWrapper } from "../Ship/ShipWrapper";
-import { Asteroid } from "../../GameMechanics/Asteroid";
 import { StrengthComparable } from "../AssetDecorators";
 import { IBattleship } from "../../GameBattle/Battleship";
 import { IBattleData } from "../../GameBattle/Battle";
+import { AttachmentAsteroid } from "../../GameMechanics/MutableAsteroid";
 export declare class Attachment extends GameAsset implements IAttachment, StrengthComparable {
     private readonly functions;
     private type;
@@ -117,7 +117,7 @@ interface FunctionArgs {
         friendly: ShipWrapper;
     };
     MineFunction: {
-        asteroid: Asteroid;
+        asteroid: AttachmentAsteroid;
     };
     WarpFunction: {
         friendly: ShipWrapper;

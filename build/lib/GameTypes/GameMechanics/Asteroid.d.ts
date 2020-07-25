@@ -55,13 +55,6 @@ export declare class Asteroid extends MaterialCollection {
      * @internal
      */
     PlayerMineAndSave(player: Player): void;
-    /**
-     * Modifies the collection, applying a random percent change to the values
-     * of the collection. Makes the collection more dynamic.
-     * @param percent should be entered as '20' for 20%, not 0.2.
-     * @internal
-     */
-    private applyDeviation;
     get Name(): string;
     hasTag(tag: string): boolean;
 }

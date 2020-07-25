@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AsteroidBuilder = exports.Asteroid = void 0;
 const MaterialCollection_1 = require("../GameCollections/MaterialCollection");
 const Server_1 = require("../../Server/Server");
+const MutableAsteroid_1 = require("./MutableAsteroid");
 class Asteroid extends MaterialCollection_1.MaterialCollection {
     constructor(options, cooldown = Server_1.Server.Reg.DefaultAsteroidCooldown, autoCd, name, tags) {
         super(options);
@@ -64,15 +65,16 @@ class Asteroid extends MaterialCollection_1.MaterialCollection {
         const cd = this.remainingCooldown(player);
         if (cd > 0 && !cooldownOverride)
             return { code: 403, cooldown: cd };
+        const mutableCollection = MutableAsteroid_1.CreateMutable(this, this.tags);
         //apply probabilities
         if (percent != undefined)
-            this.applyDeviation(percent);
+            mutableCollection.applyDeviation(percent);
         //apply mining laser
-        player.getShipWrapper().mineEvent(this);
+        player.getShipWrapper().mineEvent(mutableCollection);
         //set cooldown
         this.cooldownManager(player, this.cooldown);
         //add to player
-        await player.InventorySum("materials", this);
+        await player.InventorySum("materials", mutableCollection);
         return { code: 200 };
     }
     clearCooldowns() {
@@ -95,20 +97,6 @@ class Asteroid extends MaterialCollection_1.MaterialCollection {
      */
     PlayerMineAndSave(player) {
         player.InventorySum("materials", this);
-    }
-    /**
-     * Modifies the collection, applying a random percent change to the values
-     * of the collection. Makes the collection more dynamic.
-     * @param percent should be entered as '20' for 20%, not 0.2.
-     * @internal
-     */
-    applyDeviation(percent) {
-        let mean = ~~(this.CollectionSize / this.size), deviation = Math.ceil(mean * (percent / 100)), max = mean + deviation, min = mean - deviation > 0 ? mean - deviation : 0;
-        this.forEach((el, key) => {
-            const NewAmount = el + Math.ceil(Math.random() * (max - min) - (max - min) / 2);
-            if (el != 0)
-                this.set(key, NewAmount);
-        });
     }
     get Name() {
         return this.name;

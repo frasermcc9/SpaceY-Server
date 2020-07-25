@@ -6,6 +6,144 @@ const Blueprint_1 = require("../lib/GameTypes/GameAsset/Blueprint/Blueprint");
 exports.AttachmentGenerator = () => {
     return [
         //#region Primary
+        ...PrimaryGenerator(),
+        //#endregion Primary
+        //#region SHIELDS
+        ...ShieldGenerator(),
+        //#endregion shields
+        //#region PLATING
+        new Attachment_1.AttachmentBuilder({
+            name: "Iron Plating",
+            description: "Not particularity impressive, but its a simple plating that provides some protection. Adds 25 hull.",
+            type: Attachment_1.AttachmentType.GENERAL,
+            techLevel: 1,
+            strength: 12,
+        })
+            .EnableSellable(24000)
+            .EnableBuildable(new Blueprint_1.BlueprintBuilder().DefinedBuild(Blueprint_1.BlueprintBuilder.SIMPLE_BUILD(11000), "Iron Plating"))
+            .EquipFn(({ friendly }) => {
+            friendly.incrementStatistics({ hp: 25 });
+            return { message: `New Health: ${friendly.ShipStatistics.totalHp}`, success: true };
+        })
+            .UnequipFn(({ friendly }) => {
+            friendly.decrementStatistics({ hp: 25 });
+            return { message: `New Health: ${friendly.ShipStatistics.totalHp}`, success: true };
+        })
+            .Build(),
+        new Attachment_1.AttachmentBuilder({
+            name: "Steel Plating",
+            description: "A slightly improved armoured plating, much tougher than iron plating. Adds 35 hull.",
+            type: Attachment_1.AttachmentType.GENERAL,
+            techLevel: 3,
+            strength: 14,
+        })
+            .EnableSellable(64000)
+            .EnableBuildable(new Blueprint_1.BlueprintBuilder().DefinedBuild(Blueprint_1.BlueprintBuilder.SIMPLE_BUILD(38000), "Steel Plating"))
+            .EquipFn(({ friendly }) => {
+            friendly.incrementStatistics({ hp: 35 });
+            return { message: `New Health: ${friendly.ShipStatistics.totalHp}`, success: true };
+        })
+            .UnequipFn(({ friendly }) => {
+            friendly.decrementStatistics({ hp: 35 });
+            return { message: `New Health: ${friendly.ShipStatistics.totalHp}`, success: true };
+        })
+            .Build(),
+        new Attachment_1.AttachmentBuilder({
+            name: "Titanium Plating",
+            description: "A tough and resistant shell that adds a solid chunk of strength to a ships hull. Adds 50 hull.",
+            type: Attachment_1.AttachmentType.GENERAL,
+            techLevel: 4,
+            strength: 17,
+        })
+            .EnableSellable(224000)
+            .EnableBuildable(new Blueprint_1.BlueprintBuilder().DefinedBuild(Blueprint_1.BlueprintBuilder.SIMPLE_BUILD(175000), "Titanium Plating"))
+            .EquipFn(({ friendly }) => {
+            friendly.incrementStatistics({ hp: 50 });
+            return { message: `New Health: ${friendly.ShipStatistics.totalHp}`, success: true };
+        })
+            .UnequipFn(({ friendly }) => {
+            friendly.decrementStatistics({ hp: 50 });
+            return { message: `New Health: ${friendly.ShipStatistics.totalHp}`, success: true };
+        })
+            .Build(),
+        new Attachment_1.AttachmentBuilder({
+            name: "Advanced Alloy Plating",
+            description: "An advanced armour made from highly engineered advanced alloys. Adds 80 hull.",
+            type: Attachment_1.AttachmentType.GENERAL,
+            techLevel: 6,
+            strength: 22,
+        })
+            .EnableSellable(760000)
+            .EnableBuildable(new Blueprint_1.BlueprintBuilder().DefinedBuild(Blueprint_1.BlueprintBuilder.MODERATE_BUILD(530000), "Advanced Alloy Plating"))
+            .EquipFn(({ friendly }) => {
+            friendly.incrementStatistics({ hp: 80 });
+            return { message: `New Health: ${friendly.ShipStatistics.totalHp}`, success: true };
+        })
+            .UnequipFn(({ friendly }) => {
+            friendly.decrementStatistics({ hp: 80 });
+            return { message: `New Health: ${friendly.ShipStatistics.totalHp}`, success: true };
+        })
+            .Build(),
+        new Attachment_1.AttachmentBuilder({
+            name: "Ty'Linian Exoplate",
+            description: "A tough and resistant shell that adds a solid chunk of strength to a ships hull. Adds 125 hull.",
+            type: Attachment_1.AttachmentType.GENERAL,
+            techLevel: 7,
+            strength: 28,
+        })
+            .EnableSellable(1120000)
+            .EnableBuildable(new Blueprint_1.BlueprintBuilder().DefinedBuild(Blueprint_1.BlueprintBuilder.ADVANCED_BUILD(920000), "Ty'Linian Exoplate"))
+            .EquipFn(({ friendly }) => {
+            friendly.incrementStatistics({ hp: 125 });
+            return { message: `New Health: ${friendly.ShipStatistics.totalHp}`, success: true };
+        })
+            .UnequipFn(({ friendly }) => {
+            friendly.decrementStatistics({ hp: 125 });
+            return { message: `New Health: ${friendly.ShipStatistics.totalHp}`, success: true };
+        })
+            .Build(),
+        new Attachment_1.AttachmentBuilder({
+            name: "Antimatter Plating",
+            description: "Rare and expensive antimatter technology provides plating that is charged by the ships shield. Adds ship base shield value to hull.",
+            type: Attachment_1.AttachmentType.GENERAL,
+            techLevel: 10,
+            strength: 45,
+        })
+            .EnableSellable(3800000)
+            .EnableBuildable(new Blueprint_1.BlueprintBuilder().DefinedBuild(Blueprint_1.BlueprintBuilder.ADVANCED_BUILD(3100000), "Antimatter Plating"))
+            .EquipFn(({ friendly }) => {
+            const shieldValue = friendly.BaseStatistics.baseShield;
+            friendly.incrementStatistics({ hp: shieldValue });
+            return { message: `New Health: ${friendly.ShipStatistics.totalHp}`, success: true };
+        })
+            .UnequipFn(({ friendly }) => {
+            const shieldValue = friendly.BaseStatistics.baseShield;
+            friendly.decrementStatistics({ hp: shieldValue });
+            return { message: `New Health: ${friendly.ShipStatistics.totalHp}`, success: true };
+        })
+            .Build(),
+        //#endregion plating
+        //#region RESERVES
+        ...ReserveGenerator(),
+        //#endregion reserves
+        //#region CARGO
+        ...CargoGenerator(),
+        //#endregion cargo
+        //#region THRUSTERS
+        ...ThrusterGenerator(),
+        //#endregion thrusters
+        //#region ABILITIES
+        ...TierOneAbility(),
+        ...TierTwoAbility(),
+        ...TierFiveAbility(),
+        ...TierSixAbility(),
+        //#endregion
+        //#region MINING
+        ...MiningGenerator(),
+    ];
+};
+const PrimaryGenerator = () => {
+    return [
         new Attachment_1.AttachmentBuilder({
             name: "Standard Blaster",
             description: "Old, common but reliable blaster that has been around for centuries. Damage: 4-12.",
@@ -198,130 +336,6 @@ exports.AttachmentGenerator = () => {
             return { success: true, message: `Heavy Flak Launcher: ${effective} damage.` };
         })
             .Build(),
-        //#endregion Primary
-        //#region SHIELDS
-        ...ShieldGenerator(),
-        //#endregion shields
-        //#region PLATING
-        new Attachment_1.AttachmentBuilder({
-            name: "Iron Plating",
-            description: "Not particularity impressive, but its a simple plating that provides some protection. Adds 25 hull.",
-            type: Attachment_1.AttachmentType.GENERAL,
-            techLevel: 1,
-            strength: 12,
-        })
-            .EnableSellable(24000)
-            .EnableBuildable(new Blueprint_1.BlueprintBuilder().DefinedBuild(Blueprint_1.BlueprintBuilder.SIMPLE_BUILD(11000), "Iron Plating"))
-            .EquipFn(({ friendly }) => {
-            friendly.incrementStatistics({ hp: 25 });
-            return { message: `New Health: ${friendly.ShipStatistics.totalHp}`, success: true };
-        })
-            .UnequipFn(({ friendly }) => {
-            friendly.decrementStatistics({ hp: 25 });
-            return { message: `New Health: ${friendly.ShipStatistics.totalHp}`, success: true };
-        })
-            .Build(),
-        new Attachment_1.AttachmentBuilder({
-            name: "Steel Plating",
-            description: "A slightly improved armoured plating, much tougher than iron plating. Adds 35 hull.",
-            type: Attachment_1.AttachmentType.GENERAL,
-            techLevel: 3,
-            strength: 14,
-        })
-            .EnableSellable(64000)
-            .EnableBuildable(new Blueprint_1.BlueprintBuilder().DefinedBuild(Blueprint_1.BlueprintBuilder.SIMPLE_BUILD(38000), "Steel Plating"))
-            .EquipFn(({ friendly }) => {
-            friendly.incrementStatistics({ hp: 35 });
-            return { message: `New Health: ${friendly.ShipStatistics.totalHp}`, success: true };
-        })
-            .UnequipFn(({ friendly }) => {
-            friendly.decrementStatistics({ hp: 35 });
-            return { message: `New Health: ${friendly.ShipStatistics.totalHp}`, success: true };
-        })
-            .Build(),
-        new Attachment_1.AttachmentBuilder({
-            name: "Titanium Plating",
-            description: "A tough and resistant shell that adds a solid chunk of strength to a ships hull. Adds 50 hull.",
-            type: Attachment_1.AttachmentType.GENERAL,
-            techLevel: 4,
-            strength: 17,
-        })
-            .EnableSellable(224000)
-            .EnableBuildable(new Blueprint_1.BlueprintBuilder().DefinedBuild(Blueprint_1.BlueprintBuilder.SIMPLE_BUILD(175000), "Titanium Plating"))
-            .EquipFn(({ friendly }) => {
-            friendly.incrementStatistics({ hp: 50 });
-            return { message: `New Health: ${friendly.ShipStatistics.totalHp}`, success: true };
-        })
-            .UnequipFn(({ friendly }) => {
-            friendly.decrementStatistics({ hp: 50 });
-            return { message: `New Health: ${friendly.ShipStatistics.totalHp}`, success: true };
-        })
-            .Build(),
-        new Attachment_1.AttachmentBuilder({
-            name: "Advanced Alloy Plating",
-            description: "An advanced armour made from highly engineered advanced alloys. Adds 80 hull.",
-            type: Attachment_1.AttachmentType.GENERAL,
-            techLevel: 6,
-            strength: 22,
-        })
-            .EnableSellable(760000)
-            .EnableBuildable(new Blueprint_1.BlueprintBuilder().DefinedBuild(Blueprint_1.BlueprintBuilder.MODERATE_BUILD(530000), "Advanced Alloy Plating"))
-            .EquipFn(({ friendly }) => {
-            friendly.incrementStatistics({ hp: 80 });
-            return { message: `New Health: ${friendly.ShipStatistics.totalHp}`, success: true };
-        })
-            .UnequipFn(({ friendly }) => {
-            friendly.decrementStatistics({ hp: 80 });
-            return { message: `New Health: ${friendly.ShipStatistics.totalHp}`, success: true };
-        })
-            .Build(),
-        new Attachment_1.AttachmentBuilder({
-            name: "Ty'Linian Exoplate",
-            description: "A tough and resistant shell that adds a solid chunk of strength to a ships hull. Adds 125 hull.",
-            type: Attachment_1.AttachmentType.GENERAL,
-            techLevel: 7,
-            strength: 28,
-        })
-            .EnableSellable(1120000)
-            .EnableBuildable(new Blueprint_1.BlueprintBuilder().DefinedBuild(Blueprint_1.BlueprintBuilder.ADVANCED_BUILD(920000), "Ty'Linian Exoplate"))
-            .EquipFn(({ friendly }) => {
-            friendly.incrementStatistics({ hp: 125 });
-            return { message: `New Health: ${friendly.ShipStatistics.totalHp}`, success: true };
-        })
-            .UnequipFn(({ friendly }) => {
-            friendly.decrementStatistics({ hp: 125 });
-            return { message: `New Health: ${friendly.ShipStatistics.totalHp}`, success: true };
-        })
-            .Build(),
-        new Attachment_1.AttachmentBuilder({
-            name: "Antimatter Plating",
-            description: "Rare and expensive antimatter technology provides plating that is charged by the ships shield. Adds ship base shield value to hull.",
-            type: Attachment_1.AttachmentType.GENERAL,
-            techLevel: 10,
-            strength: 45,
-        })
-            .EnableSellable(3800000)
-            .EnableBuildable(new Blueprint_1.BlueprintBuilder().DefinedBuild(Blueprint_1.BlueprintBuilder.ADVANCED_BUILD(3100000), "Antimatter Plating"))
-            .EquipFn(({ friendly }) => {
-            const shieldValue = friendly.BaseStatistics.baseShield;
-            friendly.incrementStatistics({ hp: shieldValue });
-            return { message: `New Health: ${friendly.ShipStatistics.totalHp}`, success: true };
-        })
-            .UnequipFn(({ friendly }) => {
-            const shieldValue = friendly.BaseStatistics.baseShield;
-            friendly.decrementStatistics({ hp: shieldValue });
-            return { message: `New Health: ${friendly.ShipStatistics.totalHp}`, success: true };
-        })
-            .Build(),
-        //#endregion plating
-        //#region RESERVES
-        ...ReserveGenerator(),
-        //#endregion reserves
-        //#region CARGO
-        ...CargoGenerator(),
-        //#endregion cargo
-        //#region THRUSTERS
-        ...ThrusterGenerator(),
     ];
 };
 const ReserveGenerator = () => {
@@ -1729,14 +1743,14 @@ const TierSixAbility = () => {
         new Attachment_1.AttachmentBuilder({
             name: "Gravitational Collapse",
             description: `Your opponent takes damage equal to the sum of their weapon, engine and CPU energy at the end of their turn, for the rest of the battle.`,
-            strength: 187,
+            strength: 195,
             techLevel: 11,
             type: Attachment_1.AttachmentType.HEAVY,
             energyCost: [30, 20, 25],
-            cooldown: 4,
+            cooldown: 50,
         })
-            .EnableSellable(10600000)
-            .EnableBuildable(new Blueprint_1.BlueprintBuilder().DefinedBuild(Blueprint_1.BlueprintBuilder.ADVANCED_BUILD(8110000), "Gravitational Collapse"))
+            .EnableSellable(12780000)
+            .EnableBuildable(new Blueprint_1.BlueprintBuilder().DefinedBuild(Blueprint_1.BlueprintBuilder.ADVANCED_BUILD(9510000), "Gravitational Collapse"))
             .addFunction("onBattleInvoked", ({ battle }) => {
             battle.Friendly.onPersist("turnEnd", 99, (player) => {
                 const dmg = player.getStat("w") + player.getStat("e") + player.getStat("c");
@@ -1747,6 +1761,170 @@ const TierSixAbility = () => {
                 success: true,
                 message: `Gravitational Collapse: Opponent takes damage equal to the sum of their energies (not shield) for the rest of the game.`,
                 keepTurn: false,
+            };
+        })
+            .Build(),
+    ];
+};
+const MiningGenerator = () => {
+    return [
+        new Attachment_1.AttachmentBuilder({
+            name: "Recovered Mining Laser",
+            description: `Yield from mining increased by 20%.`,
+            strength: 0,
+            techLevel: 1,
+            type: Attachment_1.AttachmentType.MINER,
+        })
+            .EnableSellable(13000)
+            .EnableBuildable(new Blueprint_1.BlueprintBuilder().DefinedBuild(Blueprint_1.BlueprintBuilder.SIMPLE_BUILD(5000), "Recovered Mining Laser"))
+            .addFunction("onMine", ({ asteroid }) => {
+            asteroid.buffCollection(1.2);
+            return { success: true, message: "Recovered Mining Laser: 20% increased mining gains." };
+        })
+            .Build(),
+        new Attachment_1.AttachmentBuilder({
+            name: "Basic Mining Laser",
+            description: `Yield from mining increased by 30%.`,
+            strength: 0,
+            techLevel: 1,
+            type: Attachment_1.AttachmentType.MINER,
+        })
+            .EnableSellable(65000)
+            .EnableBuildable(new Blueprint_1.BlueprintBuilder().DefinedBuild(Blueprint_1.BlueprintBuilder.SIMPLE_BUILD(36000), "Basic Mining Laser"))
+            .addFunction("onMine", ({ asteroid }) => {
+            asteroid.buffCollection(1.3);
+            return { success: true, message: "30% increased mining gains." };
+        })
+            .Build(),
+        new Attachment_1.AttachmentBuilder({
+            name: "Hardened Mining Laser",
+            description: `Yield from mining increased by 40%.`,
+            strength: 0,
+            techLevel: 2,
+            type: Attachment_1.AttachmentType.MINER,
+        })
+            .EnableSellable(156000)
+            .EnableBuildable(new Blueprint_1.BlueprintBuilder().DefinedBuild(Blueprint_1.BlueprintBuilder.SIMPLE_BUILD(100000), "Hardened Mining Laser"))
+            .addFunction("onMine", ({ asteroid }) => {
+            asteroid.buffCollection(1.4);
+            return { success: true, message: "Hardened Mining Laser: 40% increased mining gains." };
+        })
+            .Build(),
+        new Attachment_1.AttachmentBuilder({
+            name: "Accelerant Mining Laser",
+            description: `Yield from mining increased by 50%.`,
+            strength: 0,
+            techLevel: 3,
+            type: Attachment_1.AttachmentType.MINER,
+        })
+            .EnableSellable(275000)
+            .EnableBuildable(new Blueprint_1.BlueprintBuilder().DefinedBuild(Blueprint_1.BlueprintBuilder.SIMPLE_BUILD(197000), "Accelerant Mining Laser"))
+            .addFunction("onMine", ({ asteroid }) => {
+            asteroid.buffCollection(1.5);
+            return { success: true, message: "Accelerant Mining Laser: 50% increased mining gains." };
+        })
+            .Build(),
+        new Attachment_1.AttachmentBuilder({
+            name: "Industrial Mining Laser",
+            description: `Yield from mining increased by 60%.`,
+            strength: 0,
+            techLevel: 4,
+            type: Attachment_1.AttachmentType.MINER,
+        })
+            .EnableSellable(398000)
+            .EnableBuildable(new Blueprint_1.BlueprintBuilder().DefinedBuild(Blueprint_1.BlueprintBuilder.MODERATE_BUILD(295000), "Industrial Mining Laser"))
+            .addFunction("onMine", ({ asteroid }) => {
+            asteroid.buffCollection(1.6);
+            return { success: true, message: "Industrial Mining Laser: 60% increased mining gains." };
+        })
+            .Build(),
+        new Attachment_1.AttachmentBuilder({
+            name: "Advanced Mining Laser",
+            description: `Yield from mining increased by 70%.`,
+            strength: 0,
+            techLevel: 5,
+            type: Attachment_1.AttachmentType.MINER,
+        })
+            .EnableSellable(590000)
+            .EnableBuildable(new Blueprint_1.BlueprintBuilder().DefinedBuild(Blueprint_1.BlueprintBuilder.MODERATE_BUILD(485000), "Advanced Mining Laser"))
+            .addFunction("onMine", ({ asteroid }) => {
+            asteroid.buffCollection(1.7);
+            return { success: true, message: "Advanced Mining Laser: 70% increased mining gains." };
+        })
+            .Build(),
+        new Attachment_1.AttachmentBuilder({
+            name: "Enterprise Grade Mining Laser",
+            description: `Yield from mining increased by 80%.`,
+            strength: 0,
+            techLevel: 6,
+            type: Attachment_1.AttachmentType.MINER,
+        })
+            .EnableSellable(670000)
+            .EnableBuildable(new Blueprint_1.BlueprintBuilder().DefinedBuild(Blueprint_1.BlueprintBuilder.MODERATE_BUILD(545000), "Enterprise Grade Mining Laser"))
+            .addFunction("onMine", ({ asteroid }) => {
+            asteroid.buffCollection(1.8);
+            return { success: true, message: "Enterprise Grade Mining Laser: 80% increased mining gains." };
+        })
+            .Build(),
+        new Attachment_1.AttachmentBuilder({
+            name: "Superior Mining Laser",
+            description: `Yield from mining increased by 90%.`,
+            strength: 0,
+            techLevel: 7,
+            type: Attachment_1.AttachmentType.MINER,
+        })
+            .EnableSellable(931000)
+            .EnableBuildable(new Blueprint_1.BlueprintBuilder().DefinedBuild(Blueprint_1.BlueprintBuilder.ADVANCED_BUILD(780000), "Superior Mining Laser"))
+            .addFunction("onMine", ({ asteroid }) => {
+            asteroid.buffCollection(1.9);
+            return { success: true, message: "Superior Mining Laser: 90% increased mining gains." };
+        })
+            .Build(),
+        new Attachment_1.AttachmentBuilder({
+            name: "Precision Mining Laser",
+            description: `Yield from mining doubled.`,
+            strength: 0,
+            techLevel: 8,
+            type: Attachment_1.AttachmentType.MINER,
+        })
+            .EnableSellable(1190000)
+            .EnableBuildable(new Blueprint_1.BlueprintBuilder().DefinedBuild(Blueprint_1.BlueprintBuilder.ADVANCED_BUILD(995000), "Precision Mining Laser"))
+            .addFunction("onMine", ({ asteroid }) => {
+            asteroid.buffCollection(2);
+            return { success: true, message: "Precision Mining Laser: double mining gains." };
+        })
+            .Build(),
+        new Attachment_1.AttachmentBuilder({
+            name: "Kalian Perfected Mining Laser",
+            description: `Mining yields 150% more resources.`,
+            strength: 0,
+            techLevel: 9,
+            type: Attachment_1.AttachmentType.MINER,
+        })
+            .EnableSellable(2250000)
+            .EnableBuildable(new Blueprint_1.BlueprintBuilder().DefinedBuild(Blueprint_1.BlueprintBuilder.ADVANCED_BUILD(1950000), "Kalian Perfected Mining Laser"))
+            .addFunction("onMine", ({ asteroid }) => {
+            asteroid.buffCollection(2.5);
+            return { success: true, message: "Kalian Perfected Mining Laser: 150% increased mining yield." };
+        })
+            .Build(),
+        new Attachment_1.AttachmentBuilder({
+            name: "Alairan UltraExtractor",
+            description: `Triple mining yield. Double gain from public asteroids.`,
+            strength: 0,
+            techLevel: 10,
+            type: Attachment_1.AttachmentType.MINER,
+        })
+            .EnableSellable(6755000)
+            .EnableBuildable(new Blueprint_1.BlueprintBuilder().DefinedBuild(Blueprint_1.BlueprintBuilder.ADVANCED_BUILD(5855000), "Alairan UltraExtractor"))
+            .addFunction("onMine", ({ asteroid }) => {
+            asteroid.buffCollection(3);
+            if (asteroid.hasTag("public")) {
+                asteroid.buffCollection(2);
+            }
+            return {
+                success: true,
+                message: "Alairan UltraExtractor: Triple mining yield. Double gain from public asteroids.",
             };
         })
             .Build(),

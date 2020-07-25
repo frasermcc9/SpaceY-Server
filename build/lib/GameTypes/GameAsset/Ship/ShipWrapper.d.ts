@@ -1,8 +1,8 @@
-import { Asteroid } from "../../GameMechanics/Asteroid";
 import { Attachment, AttachmentReport, AttachmentType, EventArgs } from "../Attachment/Attachment";
 import { Player } from "../Player/Player";
 import { Ship } from "./Ship";
 import { MapCollection } from "../../../Extensions/Collections";
+import { AttachmentAsteroid } from "../../GameMechanics/MutableAsteroid";
 export declare class ShipWrapper {
     private ship;
     private owner;
@@ -36,9 +36,9 @@ export declare class ShipWrapper {
         }[];
         baseStats: {
             baseHp: number;
-            baseShield: number; /**value: capacity, key: type */
+            baseShield: number;
             baseEnergy: [number, number, number];
-            baseCargo: number;
+            baseCargo: number; /**value: capacity, key: type */
             baseHandling: number;
         };
         playerStats: IShipStats;
@@ -85,9 +85,9 @@ export declare class ShipWrapper {
      */
     get BaseStatistics(): {
         baseHp: number;
-        baseShield: number; /**value: capacity, key: type */
+        baseShield: number;
         baseEnergy: [number, number, number];
-        baseCargo: number;
+        baseCargo: number; /**value: capacity, key: type */
         baseHandling: number;
     };
     incrementStatistics(stats: BonusStatChanger): void;
@@ -126,7 +126,7 @@ export declare class ShipWrapper {
     };
     pollWarp(warpRequired: number): boolean;
     warp(warpRequired: number): boolean;
-    mineEvent(asteroid: Asteroid): void;
+    mineEvent(asteroid: AttachmentAsteroid): void;
 }
 declare type BonusStatChanger = {
     hp?: number;

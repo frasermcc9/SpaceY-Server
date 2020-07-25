@@ -9,7 +9,7 @@ import { ShipWrapper } from "../../../lib/GameTypes/GameAsset/Ship/ShipWrapper";
 import { default as must } from "must";
 import { Client, Setup } from "../../../lib/main";
 import { Battle, IBattleData } from "../../../lib/GameTypes/GameBattle/Battle";
-import { Battleship } from "../../../lib/GameTypes/GameAsset/Ship/Battleship";
+import { Battleship } from "../../../lib/GameTypes/GameBattle/Battleship";
 import { MaterialBuilder } from "../../../lib/GameTypes/GameAsset/Material/Material";
 import { BlueprintBuilder } from "../../../lib/GameTypes/GameAsset/Blueprint/Blueprint";
 import { Asteroid } from "../../../lib/GameTypes/GameMechanics/Asteroid";

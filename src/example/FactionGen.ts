@@ -1,5 +1,6 @@
 import { FactionBuilder, Faction } from "../lib/GameTypes/GameAsset/Faction/Faction";
 import { Client } from "../lib/main";
+import { TierOneAbility } from "./AttachmentGen";
 
 export const FactionGenerator = (): Faction[] => {
     return [
@@ -17,17 +18,20 @@ export const FactionGenerator = (): Faction[] => {
             techLevel: 2,
         })
             .addSoldShips([Client.Reg.ResolveShipFromName("Kalen Tradeship")!])
-            .addSoldAttachments(
-                Client.Reg.ResolveAttachmentsFromName(
+            .addSoldAttachments([
+                ...Client.Reg.ResolveAttachmentsFromName(
                     "Iron Plating",
                     "Steel Plating",
                     "Standard Blaster",
                     "Hardened Blaster",
                     "Basic Weapon Reserves",
                     "Basic Engine Reserves",
-                    "Basic Computer Reserves"
-                )
-            )
+                    "Basic Computer Reserves",
+                    "Kinetic Missile",
+                    "Blink Shield"
+                ),
+                ...TierOneAbility(),
+            ])
             .setImageUri("https://cdn.discordapp.com/attachments/730728698478854275/730728735631867944/kalen.png")
             .Build(),
 
@@ -89,7 +93,7 @@ export const FactionGenerator = (): Faction[] => {
         new FactionBuilder({
             name: "Alaira",
             description:
-                "Galaxies that belong to the Alairan alliance were all fully dominated by the technocratic Alairan race. Technology and advancement is seen as the " +
+                "Galaxies that belong to the Alairan alliance are all fully dominated by the technocratic Alairan race. Technology and advancement is seen as the " +
                 "peak goal for all Alairans, and as such, the alliance often produces some of the most technologically impressive equipment in the galaxy.",
             techLevel: 10,
         })

@@ -6,6 +6,11 @@ export const AttachmentGenerator = (): Attachment[] => {
         //#region Primary
         ...PrimaryGenerator(),
         //#endregion Primary
+        
+        //#region Secondary
+        ...SecondaryGenerator(),
+        //#endregion
+        
         //#region SHIELDS
         ...ShieldGenerator(),
         //#endregion shields
@@ -393,6 +398,391 @@ const PrimaryGenerator = (): Attachment[] => {
                 const effective = Math.max(base + bonus - battle.Enemy.getStat("shield"), (base + bonus) / 2); //damage cant be less than half the base + bonus
                 battle.Enemy.damage(effective);
                 return { success: true, message: `Heavy Flak Launcher: ${effective} damage.` };
+            })
+            .Build(),
+    ];
+};
+
+const SecondaryGenerator = (): Attachment[] => {
+    return [
+        new AttachmentBuilder({
+            name: "Kinetic Missile",
+            description: "Standard Missile. Damage: 6 + 1 per 5 weapon energy.",
+            strength: 4,
+            techLevel: 2,
+            type: AttachmentType.HEAVY,
+            energyCost: [5, 0, 0],
+            cooldown: 1,
+        })
+            .EnableSellable(23000)
+            .EnableBuildable(
+                new BlueprintBuilder().DefinedBuild(BlueprintBuilder.SIMPLE_BUILD(11000), "Kinetic Missile")
+            )
+            .addFunction("onBattleInvoked", ({ battle }) => {
+                const dmg = 6 + ~~(battle.Friendly.getStat("w") / 5);
+                battle.Enemy.damage(dmg);
+                return { success: true, message: `Kinetic Missile: ${dmg} damage.` };
+            })
+            .Build(),
+        new AttachmentBuilder({
+            name: "Jet Rocket",
+            description: "A fast and slim missile. Damage: 8 + 1 per 4 weapon energy.",
+            strength: 6,
+            techLevel: 2,
+            type: AttachmentType.HEAVY,
+            energyCost: [9, 2, 0],
+            cooldown: 1,
+        })
+            .EnableSellable(76000)
+            .EnableBuildable(new BlueprintBuilder().DefinedBuild(BlueprintBuilder.SIMPLE_BUILD(49000), "Jet Rocket"))
+            .addFunction("onBattleInvoked", ({ battle }) => {
+                const dmg = 8 + ~~(battle.Friendly.getStat("w") / 4);
+                battle.Enemy.damage(dmg);
+                return { success: true, message: `Jet Rocket: ${dmg} damage.` };
+            })
+            .Build(),
+
+        new AttachmentBuilder({
+            name: "Cluster Missile",
+            description: "A fast and slim missile. Damage: 7 + 1 per 2 weapon energy.",
+            strength: 12,
+            techLevel: 3,
+            type: AttachmentType.HEAVY,
+            energyCost: [14, 5, 0],
+            cooldown: 1,
+        })
+            .EnableSellable(215000)
+            .EnableBuildable(
+                new BlueprintBuilder().DefinedBuild(BlueprintBuilder.SIMPLE_BUILD(138000), "Cluster Missile")
+            )
+            .addFunction("onBattleInvoked", ({ battle }) => {
+                const dmg = 7 + ~~(battle.Friendly.getStat("w") / 2);
+                battle.Enemy.damage(dmg);
+                return { success: true, message: `Cluster Missile: ${dmg} damage.` };
+            })
+            .Build(),
+
+        new AttachmentBuilder({
+            name: "Armour Rocket",
+            description:
+                "A rocket that is extra effective against armour. Damage: 1 per 2 engine energy. Double damage to hull.",
+            strength: 14,
+            techLevel: 3,
+            type: AttachmentType.HEAVY,
+            energyCost: [8, 12, 0],
+            cooldown: 1,
+        })
+            .EnableSellable(245000)
+            .EnableBuildable(
+                new BlueprintBuilder().DefinedBuild(BlueprintBuilder.SIMPLE_BUILD(157000), "Armour Rocket")
+            )
+            .addFunction("onBattleInvoked", ({ battle }) => {
+                const base = ~~(battle.Friendly.getStat("e") / 2);
+                const shieldDamage = battle.Enemy.decreaseStat("shield", base);
+                const dmgRemaining = base - shieldDamage;
+                const hullDamage = battle.Enemy.hullDamage(dmgRemaining * 2);
+
+                const dmg = shieldDamage + hullDamage;
+
+                return { success: true, message: `Armour Rocket: ${dmg} total damage.` };
+            })
+            .Build(),
+
+        new AttachmentBuilder({
+            name: "EMP Mk1",
+            description:
+                "A missile that primarily disables ship systems. Damage: 10. Removes 5 of each opponent energy type (including shield).",
+            strength: 14,
+            techLevel: 4,
+            type: AttachmentType.HEAVY,
+            energyCost: [6, 8, 6],
+            cooldown: 1,
+        })
+            .EnableSellable(398000)
+            .EnableBuildable(new BlueprintBuilder().DefinedBuild(BlueprintBuilder.SIMPLE_BUILD(281000), "EMP Mk1"))
+            .addFunction("onBattleInvoked", ({ battle }) => {
+                battle.Enemy.multiDecrease({ shield: 5, w: 5, e: 5, c: 5 });
+                const dmg = battle.Enemy.damage(10);
+
+                return { success: true, message: `EMP Mk1: Energy types reduced by 5. +${dmg} damage.` };
+            })
+            .Build(),
+
+        new AttachmentBuilder({
+            name: "Laser Cannon",
+            description: "A powerful laser blast. Damage: 20.",
+            strength: 16,
+            techLevel: 4,
+            type: AttachmentType.HEAVY,
+            energyCost: [8, 0, 12],
+            cooldown: 1,
+        })
+            .EnableSellable(462000)
+            .EnableBuildable(new BlueprintBuilder().DefinedBuild(BlueprintBuilder.SIMPLE_BUILD(301000), "Laser Cannon"))
+            .addFunction("onBattleInvoked", ({ battle }) => {
+                const dmg = battle.Enemy.damage(20);
+                return { success: true, message: `Laser Cannon: +${dmg} damage.` };
+            })
+            .Build(),
+
+        new AttachmentBuilder({
+            name: "Tracking Cluster Missile",
+            description:
+                "A missile that breaks up and aggressively tracks opponent ships. Damage: 15 + 1 per 4 engine and weapon energy.",
+            strength: 24,
+            techLevel: 5,
+            type: AttachmentType.HEAVY,
+            energyCost: [16, 11, 0],
+            cooldown: 1,
+        })
+            .EnableSellable(610000)
+            .EnableBuildable(
+                new BlueprintBuilder().DefinedBuild(BlueprintBuilder.MODERATE_BUILD(504000), "Tracking Cluster Missile")
+            )
+            .addFunction("onBattleInvoked", ({ battle }) => {
+                const dmg = 15 + ~~(battle.Friendly.getStat("w") / 4) + ~~(battle.Friendly.getStat("e") / 4);
+                battle.Enemy.damage(dmg);
+                return {
+                    success: true,
+                    message: `Tracking Cluster Missile: +${dmg} damage.`,
+                };
+            })
+            .Build(),
+
+        new AttachmentBuilder({
+            name: "Disruptor Laser",
+            description:
+                "A powerful laser blast especially effective against shields. 20 damage + 20 more if target has any shield remaining.",
+            strength: 50,
+            techLevel: 6,
+            type: AttachmentType.HEAVY,
+            energyCost: [12, 0, 14],
+            cooldown: 1,
+        })
+            .EnableSellable(906000)
+            .EnableBuildable(
+                new BlueprintBuilder().DefinedBuild(BlueprintBuilder.MODERATE_BUILD(700000), "Disruptor Laser")
+            )
+            .addFunction("onBattleInvoked", ({ battle }) => {
+                let dmg = 0;
+                dmg += battle.Enemy.damage(20);
+                if (battle.Enemy.getStat("shield")) {
+                    dmg += battle.Enemy.damage(20);
+                }
+                return { success: true, message: `Disruptor Laser: +${dmg} damage.` };
+            })
+            .Build(),
+
+        new AttachmentBuilder({
+            name: "Ionizing Jet",
+            description:
+                "A powerful missile especially effective against damaged ships. 10-40 damage based on target missing hull.",
+            strength: 39,
+            techLevel: 5,
+            type: AttachmentType.HEAVY,
+            energyCost: [14, 12, 0],
+            cooldown: 1,
+        })
+            .EnableSellable(765000)
+            .EnableBuildable(
+                new BlueprintBuilder().DefinedBuild(BlueprintBuilder.MODERATE_BUILD(620000), "Ionizing Jet")
+            )
+            .addFunction("onBattleInvoked", ({ battle }) => {
+                const percentHp = battle.Enemy.getStat("hp") / battle.Enemy.getMaxOfStat("hp");
+                const dmg = 40 - percentHp * 30;
+                battle.Enemy.damage(dmg);
+                return { success: true, message: `Ionizing Jet: +${dmg} damage.` };
+            })
+            .Build(),
+
+        new AttachmentBuilder({
+            name: "Nuke",
+            description: "A classic nuclear warhead. 30 hull damage.",
+            strength: 59,
+            techLevel: 6,
+            type: AttachmentType.HEAVY,
+            energyCost: [20, 4, 0],
+            cooldown: 1,
+        })
+            .EnableSellable(1080000)
+            .EnableBuildable(new BlueprintBuilder().DefinedBuild(BlueprintBuilder.MODERATE_BUILD(840000), "Nuke"))
+            .addFunction("onBattleInvoked", ({ battle }) => {
+                const dmg = battle.Enemy.hullDamage(30);
+                return { success: true, message: `Nuke: +${dmg} hull damage.` };
+            })
+            .Build(),
+
+        new AttachmentBuilder({
+            name: "EMP Mk2",
+            description:
+                "An enhanced EMP missile. Damage: 15. Removes 8 of each opponent energy type (including shield).",
+            strength: 48,
+            techLevel: 5,
+            type: AttachmentType.HEAVY,
+            energyCost: [9, 14, 9],
+            cooldown: 1,
+        })
+            .EnableSellable(692000)
+            .EnableBuildable(new BlueprintBuilder().DefinedBuild(BlueprintBuilder.MODERATE_BUILD(503000), "EMP Mk2"))
+            .addFunction("onBattleInvoked", ({ battle }) => {
+                battle.Enemy.multiDecrease({ shield: 8, w: 8, e: 8, c: 8 });
+                const dmg = battle.Enemy.damage(15);
+
+                return { success: true, message: `EMP Mk2: Energy types reduced by 8. +${dmg} damage.` };
+            })
+            .Build(),
+
+        new AttachmentBuilder({
+            name: "Liberator",
+            description: "A much larger and much more explosive nuke. 40 hull damage.",
+            strength: 83,
+            techLevel: 7,
+            type: AttachmentType.HEAVY,
+            energyCost: [28, 8, 0],
+            cooldown: 1,
+        })
+            .EnableSellable(1832000)
+            .EnableBuildable(new BlueprintBuilder().DefinedBuild(BlueprintBuilder.ADVANCED_BUILD(1532000), "Liberator"))
+            .addFunction("onBattleInvoked", ({ battle }) => {
+                const dmg = battle.Enemy.hullDamage(40);
+                return { success: true, message: `Liberator: +${dmg} hull damage.` };
+            })
+            .Build(),
+
+        new AttachmentBuilder({
+            name: "Smart Rocket",
+            description:
+                "A rocket that leverages computational energy to find the best strike location. Damage: 30 + 1 per 4 CPU energy",
+            strength: 96,
+            techLevel: 8,
+            type: AttachmentType.HEAVY,
+            energyCost: [16, 4, 16],
+            cooldown: 1,
+        })
+            .EnableSellable(1498000)
+            .EnableBuildable(
+                new BlueprintBuilder().DefinedBuild(BlueprintBuilder.ADVANCED_BUILD(1298000), "Smart Rocket")
+            )
+            .addFunction("onBattleInvoked", ({ battle }) => {
+                const base = 30 + ~~battle.Friendly.getStat("c");
+                const dmg = battle.Enemy.hullDamage(base);
+                return { success: true, message: `Smart Rocket: +${dmg} damage.` };
+            })
+            .Build(),
+
+        new AttachmentBuilder({
+            name: "Eviscerator",
+            description: "A missile that targets the vulnerability of shield technologies. Damage: 100 to shield.",
+            strength: 101,
+            techLevel: 8,
+            type: AttachmentType.HEAVY,
+            energyCost: [12, 12, 12],
+            cooldown: 1,
+        })
+            .EnableSellable(2080000)
+            .EnableBuildable(
+                new BlueprintBuilder().DefinedBuild(BlueprintBuilder.ADVANCED_BUILD(1780000), "Eviscerator")
+            )
+            .addFunction("onBattleInvoked", ({ battle }) => {
+                const dmg = battle.Enemy.decreaseStat("shield", 100);
+                return { success: true, message: `Eviscerator: +${dmg} shield damage.` };
+            })
+            .Build(),
+
+        new AttachmentBuilder({
+            name: "EMP Mk3",
+            description:
+                "Superior EMP missile. Damage: 25. Removes 12 of each opponent energy type (including shield).",
+            strength: 90,
+            techLevel: 7,
+            type: AttachmentType.HEAVY,
+            energyCost: [12, 16, 12],
+            cooldown: 1,
+        })
+            .EnableSellable(1780000)
+            .EnableBuildable(new BlueprintBuilder().DefinedBuild(BlueprintBuilder.ADVANCED_BUILD(1420000), "EMP Mk3"))
+            .addFunction("onBattleInvoked", ({ battle }) => {
+                battle.Enemy.multiDecrease({ shield: 12, w: 12, e: 12, c: 12 });
+                const dmg = battle.Enemy.damage(25);
+                return { success: true, message: `EMP Mk3: Energy types reduced by 12. +${dmg} damage.` };
+            })
+            .Build(),
+
+        new AttachmentBuilder({
+            name: "Quargic Dark Matter Field",
+            description:
+                "Advanced space-time manipulation weapon. Damage: 30. Drains all CPU from both players, dealing 1 more damage per point drained.",
+            strength: 126,
+            techLevel: 9,
+            type: AttachmentType.HEAVY,
+            energyCost: [14, 0, 25],
+            cooldown: 1,
+        })
+            .EnableSellable(3760000)
+            .EnableBuildable(
+                new BlueprintBuilder().DefinedBuild(
+                    BlueprintBuilder.ADVANCED_BUILD(3160000),
+                    "Quargic Dark Matter Field"
+                )
+            )
+            .addFunction("onBattleInvoked", ({ battle }) => {
+                const cFriendDrain = battle.Friendly.minimizeStat("c");
+                const eFriendDrain = battle.Enemy.minimizeStat("c");
+                const base = 30 + cFriendDrain + eFriendDrain;
+                const dmg = battle.Enemy.damage(base);
+                return {
+                    success: true,
+                    message: `Quargic Dark Matter Field: +${dmg} damage. Both ship's CPU drained.`,
+                };
+            })
+            .Build(),
+
+        new AttachmentBuilder({
+            name: "Ty'Linic Converging Beam",
+            description:
+                "Advanced beam that grows more precise as it is used. Damage: 15 - 60 based on times used (max damage at 4 uses)",
+            strength: 140,
+            techLevel: 9,
+            type: AttachmentType.HEAVY,
+            energyCost: [22, 6, 6],
+            cooldown: 1,
+        })
+            .EnableSellable(4150000)
+            .EnableBuildable(
+                new BlueprintBuilder().DefinedBuild(
+                    BlueprintBuilder.ADVANCED_BUILD(3750000),
+                    "Ty'Linic Converging Beam"
+                )
+            )
+            .addFunction("onBattleInvoked", ({ battle }) => {
+                let usages = Math.min((battle.Friendly.dynamicRetrieve("Ty'Linic Converging Beam") ?? 0) + 1, 4);
+                battle.Friendly.dynamicAssign("Ty'Linic Converging Beam", usages);
+                const base = 15 * usages;
+                const dmg = battle.Enemy.damage(base);
+                return { success: true, message: `Ty'Linic Converging Beam: +${dmg} damage.` };
+            })
+            .Build(),
+
+        new AttachmentBuilder({
+            name: "Oracle's Vision",
+            description: "The future favours you. If the opponent ship is below 30% hull, it is instantly destroyed.",
+            strength: 200,
+            techLevel: 10,
+            type: AttachmentType.HEAVY,
+            energyCost: [12, 40, 40],
+            cooldown: 1,
+        })
+            .EnableSellable(8790000)
+            .EnableBuildable(
+                new BlueprintBuilder().DefinedBuild(BlueprintBuilder.ADVANCED_BUILD(7390000), "Oracle's Vision")
+            )
+            .addFunction("onBattleInvoked", ({ battle }) => {
+                const percentHull = battle.Enemy.getStat("hp") / battle.Enemy.getMaxOfStat("hp");
+                let dmg = 0;
+                if (percentHull < 0.3) {
+                    dmg = battle.Enemy.minimizeStat("hp");
+                }
+                return { success: true, message: `Oracle's Vision: +${dmg} hull damage.` };
             })
             .Build(),
     ];
@@ -1164,7 +1554,7 @@ const ShieldGenerator = (): Attachment[] => {
     ];
 };
 
-const TierOneAbility = (): Attachment[] => {
+export const TierOneAbility = (): Attachment[] => {
     return [
         new AttachmentBuilder({
             name: "Disruption Burst",

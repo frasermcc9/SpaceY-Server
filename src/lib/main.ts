@@ -7,6 +7,6 @@ export { connect, disconnect } from "./Database/Database";
 
 export { AttachmentGenerator } from "../example/AttachmentGen";
 export { FactionGenerator } from "../example/FactionGen";
-export { MaterialGenerator } from "../example/MaterialGen";
+export { layerOneMaterials, layerTwoMaterials, layerThreeMaterials, layerFourMaterials } from "../example/MaterialGen";
 export { NodeGenerator } from "../example/NodeGen";
 export { ShipGenerator } from "../example/ShipGen";

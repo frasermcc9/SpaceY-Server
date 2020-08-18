@@ -39,7 +39,10 @@ export class Registry {
 
     private spacemap?: Spacemap;
     public get Spacemap() {
-        return util.throwUndefined(this.spacemap, "The spacemap has not been registered. Register a spacemap with registerSpacemap.");
+        return util.throwUndefined(
+            this.spacemap,
+            "The spacemap has not been registered. Register a spacemap with registerSpacemap."
+        );
     }
     public registerSpacemap(spacemap: Spacemap) {
         this.spacemap = spacemap;
@@ -185,6 +188,13 @@ export class Registry {
         if (!result) return undefined;
         return result;
     }
+    public ResolveMaterialsFromName(...names: string[]): Material[] {
+        const returnValue: Material[] = new Array();
+        names.forEach((n) => {
+            returnValue.push(util.throwUndefined(this.NameResolver<Material>(n, this.MaterialRegistry)));
+        });
+        return returnValue;
+    }
     public ResolveFactionFromName(name: string): Faction | undefined {
         const result = this.NameResolver<Faction>(name, this.FactionRegistry);
         if (!result) return undefined;
@@ -224,13 +234,14 @@ interface IMaterials {
     materials: Material[];
 }
 
-const BlankShip = new ShipBuilder({
+export const BlankShip = new ShipBuilder({
     name: "Recovered Shuttle",
-    description: "A small recovered shuttle that was found crashed on some planet. Not worth much but it can fly... a bit.",
+    description:
+        "A small recovered shuttle that was found crashed on some planet. Not worth much but it can fly... a bit.",
     techLevel: 0,
 })
-    .SetStats({ baseHp: 35, baseShield: 8, baseEnergy: [2, 2, 6], baseCargo: 30, baseHandling: 4 })
-    .SetWeapons({ primaryCap: 0, shieldCap: 0, heavyCap: 1, minerCap: 0, generalCap: 1 })
+    .SetStats({ baseHp: 100, baseShield: 100, baseEnergy: [0, 0, 0], baseCargo: 100, baseHandling: 10 })
+    .SetWeapons({ primaryCap: 1, shieldCap: 1, heavyCap: 1, minerCap: 1, generalCap: 1 })
     .EnableSell(59000)
     .SetMisc({ uri: "", subclass: "Shuttle" })
     .Build();

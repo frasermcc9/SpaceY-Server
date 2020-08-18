@@ -1,4 +1,4 @@
-import { Client, connect, disconnect } from "../lib/main";
+import { Client, connect, disconnect, NodeGenerator, layerOneMaterials, layerTwoMaterials, layerThreeMaterials, layerFourMaterials, ShipGenerator, AttachmentGenerator, FactionGenerator } from "../lib/main";
 import { Setup } from "../lib/Server/Setup";
 import { GenerateClientSet } from "./TestUtil";
 import { Spacemap } from "../lib/GameTypes/GameSpacemap/Spacemap";
@@ -11,16 +11,18 @@ import { AttachmentBuilder, AttachmentType, AttachmentReport } from "../lib/Game
 import { ShipWrapper } from "../lib/GameTypes/GameAsset/Ship/ShipWrapper";
 import { Asteroid } from "../lib/GameTypes/GameMechanics/Asteroid";
 import { PlayerModel } from "../lib/Database/Models/Player/PlayerModel";
+import { AttachmentAsteroid } from "../lib/GameTypes/GameMechanics/MutableAsteroid";
 
 before(async () => {
-    Setup.begin()
+/*     Setup.begin()
         .setupClient({
             databaseName: "testSpaceY",
             databaseUri: "mongodb://localhost:27017",
             testMode: true,
             consoleLogging: false,
         })
-        .addMaterials(MATERIALS.apply(null))
+        .addMaterialLayer(MATERIALS.apply(null))
+        .finishMaterials()
         .addShips(SHIPS.apply(null))
         .addAttachments(ATTACHMENTS.apply(null))
         .addFactions(FACTIONS.apply(null))
@@ -32,6 +34,41 @@ before(async () => {
         .defaultCredits(10000)
         .defaultLocation("Gemini")
         .defaultShip("Shuttle")
+        .maxMaterialRarity(10)
+        .maxTechLevel(10)
+        .finish(); */
+
+    Setup.begin()
+        .setupClient({
+            databaseName: "testSpaceY",
+            databaseUri: "mongodb://localhost:27017",
+            testMode: true,
+            consoleLogging: false,
+        })
+        .addMaterialLayer(layerOneMaterials())
+        .addMaterialLayer(layerTwoMaterials())
+        .addMaterialLayer(layerThreeMaterials())
+        .addMaterialLayer(layerFourMaterials())
+        .finishMaterials()
+        .addShips(ShipGenerator.apply(null))
+        .addAttachments(AttachmentGenerator.apply(null))
+        .addFactions(FactionGenerator.apply(null))
+        .addLocations(NodeGenerator.apply(null))
+        .addLink("Gemini", "Kalen")
+        .addLink("Kalen", "Lyra")
+        .addLink("Lyra", "Aries")
+        .addLink("Aries", "Auriga")
+        .addLink("Auriga", "Orion")
+        .addLink("Orion", "Kalen")
+        .addLink("Auriga", "Erisna")
+        .addLink("Erisna", "Ceti")
+        .addLink("Ceti", "Delphinus")
+        .addLink("Erisna", "Aquarius")
+        .finishMap()
+        .defaultAsteroidCooldown(300)
+        .defaultCredits(10000)
+        .defaultLocation("Gemini")
+        .defaultShip("Recovered Escape Pod")
         .maxMaterialRarity(10)
         .maxTechLevel(10)
         .finish();
@@ -126,10 +163,8 @@ const PlatingUnequip: ({ friendly }: { friendly: ShipWrapper }) => AttachmentRep
     friendly.decrementStatistics({ hp: 20 });
     return { message: `New Health: ${friendly.ShipStatistics.totalHp}`, success: true };
 };
-const LaserMine: ({ asteroid }: { asteroid: Asteroid }) => AttachmentReport = ({ asteroid }) => {
-    asteroid.forEach((val: number, key: any) => {
-        asteroid.set(key, val * 2);
-    });
+const LaserMine: ({ asteroid }: { asteroid: AttachmentAsteroid }) => AttachmentReport = ({ asteroid }) => {
+    asteroid.buffCollection(2);
     return { message: "Success", success: true };
 };
 const ATTACHMENTS = () => {

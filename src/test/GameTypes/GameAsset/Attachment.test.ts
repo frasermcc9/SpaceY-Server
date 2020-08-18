@@ -34,13 +34,17 @@ describe("Attachment Tests", async () => {
             })
                 .addFunction("onBattleStart", ({ battle }) => {
                     return {
-                        message: battle.Friendly.Hp + battle.Enemy.Ship.ShipStatistics.totalShield + "",
+                        message: battle.Friendly.getStat("hp") + battle.Enemy.getMaxOfStat("shield") + "",
                         success: true,
                     };
                 })
                 .Build()
                 .emit("onBattleStart", {
                     battle: {
+                        notify(): void {},
+                        getEnemyOf(p: Battleship) {
+                            return null;
+                        },
                         TurnNumber: 0,
                         Friendly: new Battleship(P1.getShipWrapper()),
                         Enemy: new Battleship(P2.getShipWrapper()),

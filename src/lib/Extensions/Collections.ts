@@ -38,7 +38,10 @@ export class MapCollection<K, V> extends Map<K, V> {
         if (typeof amount === "undefined") return util.chooseFromSeeded<V>(arr, seed).item;
         if (arr.length === 0 || !amount) return [];
         arr = arr.slice();
-        return Array.from({ length: amount }, (): V => arr.splice(Math.floor(util.seededRandom(0, 1, seed) * arr.length), 1)[0]);
+        return Array.from(
+            { length: amount },
+            (): V => arr.splice(Math.floor(util.seededRandom(0, 1, seed) * arr.length), 1)[0]
+        );
     }
 
     /**
@@ -112,6 +115,69 @@ export class MapCollection<K, V> extends Map<K, V> {
             if (fn(val, key, this)) results.set(key, val);
         }
         return results;
+    }
+
+    /**
+     * Applies a function to produce a single value. Identical in behavior to
+     * [Array.reduce()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce).
+     * @param {Function} fn Function used to reduce, taking four arguments; `accumulator`, `currentValue`, `currentKey`,
+     * and `collection`
+     * @param {*} [initialValue] Starting value for the accumulator
+     * @returns {*}
+     * @example collection.reduce((acc, guild) => acc + guild.memberCount, 0);
+     */
+    public reduce<T>(fn: (accumulator: T, value: V, key: K, collection: this) => T, initialValue?: T): T {
+        let accumulator!: T;
+
+        if (typeof initialValue !== "undefined") {
+            accumulator = initialValue;
+            for (const [key, val] of this) accumulator = fn(accumulator, val, key, this);
+            return accumulator;
+        }
+        let first = true;
+        for (const [key, val] of this) {
+            if (first) {
+                accumulator = (val as unknown) as T;
+                first = false;
+                continue;
+            }
+            accumulator = fn(accumulator, val, key, this);
+        }
+
+        // No items iterated.
+        if (first) {
+            throw new TypeError("Reduce of empty collection with no initial value");
+        }
+
+        return accumulator;
+    }
+
+    /**
+     * The sort method sorts the items of a collection in place and returns it.
+     * The sort is not necessarily stable. The default sort order is according to string Unicode code points.
+     * @param {Function} [compareFunction] Specifies a function that defines the sort order.
+     * If omitted, the collection is sorted according to each character's Unicode code point value,
+     * according to the string conversion of each element.
+     * @returns {Collection}
+     * @example collection.sort((userA, userB) => userA.createdTimestamp - userB.createdTimestamp);
+     */
+    public sort(
+        compareFunction: (firstValue: V, secondValue: V, firstKey: K, secondKey: K) => number = (x, y): number =>
+            Number(x > y) || Number(x === y) - 1
+    ): this {
+        const entries = [...this.entries()];
+        entries.sort((a, b): number => compareFunction(a[1], b[1], a[0], b[0]));
+
+        // Perform clean-up
+        super.clear();
+        this._array = null;
+        this._keyArray = null;
+
+        // Set the new entries
+        for (const [k, v] of entries) {
+            super.set(k, v);
+        }
+        return this;
     }
 }
 export class UniqueCollection<K> extends Set<K> {}

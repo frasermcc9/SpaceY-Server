@@ -1,9 +1,13 @@
 import { Asteroid } from "./Asteroid";
+import { MaterialCollection } from "../GameCollections/MaterialCollection";
 
-class MutableAsteroid extends Asteroid implements IMutableAsteroid {
+class MutableAsteroid implements IMutableAsteroid {
     constructor(asteroid: Asteroid, tags: Set<string>) {
-        super({ data: asteroid }, 0, false, "", tags);
+        this.asteroid = new MaterialCollection({ data: asteroid });
+        this.tags = tags;
     }
+    private tags: Set<string>;
+    private asteroid: MaterialCollection;
 
     /**
      * Modifies the collection, applying a random percent change to the values
@@ -11,13 +15,13 @@ class MutableAsteroid extends Asteroid implements IMutableAsteroid {
      * @param percent should be entered as '20' for 20%, not 0.2.
      */
     public applyDeviation(percent: number): void {
-        let mean = ~~(this.CollectionSize / this.size),
+        let mean = ~~(this.asteroid.CollectionSize / this.asteroid.size),
             deviation = Math.ceil(mean * (percent / 100)),
             max = mean + deviation,
             min = mean - deviation > 0 ? mean - deviation : 0;
-        this.forEach((el, key) => {
+        this.asteroid.forEach((el, key) => {
             const NewAmount = el + Math.ceil(Math.random() * (max - min) - (max - min) / 2);
-            if (el != 0) this.set(key, NewAmount);
+            if (el != 0) this.asteroid.set(key, NewAmount);
         });
     }
 
@@ -27,9 +31,20 @@ class MutableAsteroid extends Asteroid implements IMutableAsteroid {
      * increase the asteroid by a factor of 1.2.
      */
     public buffCollection(multiplier: number) {
-        this.forEach((val, key) => {
-            this.set(key, val * multiplier);
+        this.asteroid.forEach((val, key) => {
+            this.asteroid.set(key, val * multiplier);
         });
+    }
+
+    getCollection() {
+        return this.asteroid;
+    }
+    getSize() {
+        return this.asteroid.CollectionSize;
+    }
+
+    public hasTag(tag: string): boolean {
+        return this.tags.has(tag);
     }
 }
 
@@ -42,6 +57,8 @@ export interface AttachmentAsteroid {
     hasTag(tag: string): boolean;
 }
 
-export interface IMutableAsteroid extends AttachmentAsteroid, Map<string, number> {
+export interface IMutableAsteroid extends AttachmentAsteroid {
     applyDeviation(percent: number): void;
+    getCollection(): MaterialCollection;
+    getSize(): number;
 }

@@ -1,3 +1,7 @@
 .vscode
 node_modules
 asset
+Madge.js
+/build
+arkit.svg
+benchmark

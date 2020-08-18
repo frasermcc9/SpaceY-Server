@@ -76,7 +76,7 @@ export class Asteroid extends MaterialCollection {
         player: Player,
         percent?: number,
         cooldownOverride?: boolean
-    ): Promise<{ code: 200 | 403; cooldown?: number }> {
+    ): Promise<{ code: 200 | 403; cooldown?: number; asteroidSize?: number }> {
         if (this.autoCd) this.cooldown = Server.Reg.DefaultAsteroidCooldown;
         //check cooldown
         const cd = this.remainingCooldown(player);
@@ -90,8 +90,8 @@ export class Asteroid extends MaterialCollection {
         //set cooldown
         this.cooldownManager(player, this.cooldown);
         //add to player
-        await player.InventorySum("materials", mutableCollection);
-        return { code: 200 };
+        await player.InventorySum("materials", mutableCollection.getCollection());
+        return { code: 200, asteroidSize: mutableCollection.getSize() };
     }
 
     public clearCooldowns(): void {
@@ -116,7 +116,6 @@ export class Asteroid extends MaterialCollection {
     public PlayerMineAndSave(player: Player): void {
         player.InventorySum("materials", this);
     }
-
 
     public get Name(): string {
         return this.name;

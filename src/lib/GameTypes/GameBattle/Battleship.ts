@@ -67,7 +67,7 @@ export class Battleship extends EventEmitter implements IBattleship {
     }
 
     public maximizeStat(stat: keyof BattleStats): number {
-        return this[stat].minimise();
+        return this[stat].maximise();
     }
 
     public increaseMaxOfStat(stat: keyof BattleStats, n: number): void {
@@ -102,13 +102,14 @@ export class Battleship extends EventEmitter implements IBattleship {
     }
 
     public damage(n: number): number {
+        const base = n;
         if (n <= this.stats.shield.Value) this.decreaseStat("shield", n);
         else {
             n -= this.stats.shield.Value;
             this.minimizeStat("shield");
             this.decreaseStat("hp", n);
         }
-        return n;
+        return base;
     }
 
     public hullDamage(n: number): number {
@@ -152,6 +153,14 @@ export class Battleship extends EventEmitter implements IBattleship {
     public isReady(cost: [number, number, number]): boolean {
         return false;
         //TODO cooldown system
+    }
+
+    private dynamicFields: { [key: string]: number } = {};
+    public dynamicAssign(key: string, value: number) {
+        this.dynamicFields[key] = value;
+    }
+    public dynamicRetrieve(key: string): number | undefined {
+        return this.dynamicFields[key];
     }
 
     //#region Turn Start
@@ -295,7 +304,7 @@ export class Battleship extends EventEmitter implements IBattleship {
 export declare interface Battleship {
     on<K extends keyof BattleshipEventArgs>(event: K, listener: BattleshipEventArgs[K]): this;
 }
-interface BattleshipEventArgs {
+export interface BattleshipEventArgs {
     damageTaken: (...args: EventArgs["damageTaken"]) => void;
 
     criticalDamage: (...args: EventArgs["criticalDamage"]) => void;
@@ -335,7 +344,7 @@ interface EventArgs {
     hullDecrease: [Battleship, number];
 }
 
-interface IBattleStatsEffect {
+export interface IBattleStatsEffect {
     hp?: number;
     shield?: number;
 
@@ -372,9 +381,15 @@ export interface IBattleship {
     getMaxOfStat(stat: keyof BattleStats): number;
     increaseMaxOfStat(stat: keyof BattleStats, n: number): void;
     decreaseMaxOfStat(stat: keyof BattleStats, n: number): void;
-
+    /**Do *n* damage to this ship. */
     damage(n: number): number;
+    /**Do *n* damage direct to the hull. */
     hullDamage(n: number): number;
-
+    /**Reduce cooldowns by *n* amount. */
     reduceCooldowns(n?: number): void;
+    /**Assign a string-number property to this battleship for future reference. */
+    dynamicAssign(key: string, value: number): void;
+    /**Get the value number from a dynamically assigned field, from its string
+     * named. */
+    dynamicRetrieve(key: string): number | undefined;
 }

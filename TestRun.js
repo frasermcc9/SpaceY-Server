@@ -8,6 +8,10 @@ const {
     Client,
     AsteroidBuilder,
     PlayerModel,
+    layerOneMaterials,
+    layerTwoMaterials,
+    layerThreeMaterials,
+    layerFourMaterials,
 } = require("./build/lib/main");
 
 Setup.begin()
@@ -15,7 +19,11 @@ Setup.begin()
         databaseName: "spacey",
         databaseUri: "mongodb://localhost:27017",
     })
-    .addMaterials(MaterialGenerator.apply(null))
+    .addMaterialLayer(layerOneMaterials())
+    .addMaterialLayer(layerTwoMaterials())
+    .addMaterialLayer(layerThreeMaterials())
+    .addMaterialLayer(layerFourMaterials())
+    .finishMaterials()
     .addShips(ShipGenerator.apply(null))
     .addAttachments(AttachmentGenerator.apply(null))
     .addFactions(FactionGenerator.apply(null))

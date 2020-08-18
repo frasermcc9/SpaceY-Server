@@ -71,10 +71,13 @@ export class SocketManager extends EventEmitter {
             if (!asteroid)
                 return this.emitResult(client, false, player.raw(), { failMsg: "This asteroid doesn't exist here." });
 
-            const result = (await asteroid.mine(player)).code == 200;
+            const mineResult = await asteroid.mine(player);
+            const result = mineResult.code == 200;
 
             this.emitResult(client, result, player.raw(), {
-                successMsg: `Asteroid successfully mined! New cargo: ${player.cargoString()}.`,
+                successMsg: `Asteroid successfully mined! New cargo: ${player.cargoString()} (+ ${
+                    mineResult.asteroidSize
+                })`,
                 failMsg: `Asteroid cannot be mined. On cooldown for ${asteroid.remainingCooldown(
                     player
                 )} more seconds.`,
@@ -150,8 +153,6 @@ export class SocketManager extends EventEmitter {
         const emitObj: ServerEvents["res"] = { success: result, playerStringified: stringify(player), msg: msg };
         client.emit("res", emitObj);
     }
-
-    
 
     private async getPlayer(id: string) {
         return PlayerModel.findOneOrCreate({ uId: id });

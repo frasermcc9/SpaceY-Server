@@ -21,8 +21,11 @@ export class Setup {
 }
 
 class MaterialsAdder {
-    addMaterials(materials: Material[]): ShipAdder {
+    addMaterialLayer(materials: Material[]): this {
         Server.Reg.RegisterMaterials({ materials: materials });
+        return this;
+    }
+    finishMaterials(): ShipAdder {
         return new ShipAdder();
     }
 }

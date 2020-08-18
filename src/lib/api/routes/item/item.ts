@@ -1,6 +1,5 @@
 import { Request, Response } from "express";
 import { Client } from "../../../main";
-import stringify from "json-stringify-safe";
 import { BuildableDecorator } from "../../../GameTypes/GameAsset/AssetDecorators";
 
 /**
@@ -29,6 +28,7 @@ export const item_blueprint_get = (req: Request, res: Response) => {
     if (bpCheck == undefined) return res.send({ status: "404" });
 
     const blueprint = Object.fromEntries(bpCheck.filter((v) => v != 0));
+    const yields = bpCheck.Yield;
 
-    res.send({ status: "200", data: blueprint });
+    res.send({ status: "200", data: { materials: blueprint, yields: yields } });
 };

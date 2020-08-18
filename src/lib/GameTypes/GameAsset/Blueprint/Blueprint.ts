@@ -4,9 +4,11 @@ import { util } from "../../../Util/util";
 
 export class Blueprint extends MaterialCollection {
     private seed: number | undefined;
-    public constructor(materials: Map<string, number>, key?: string) {
+    private yields: number;
+    public constructor({ materials, key, yields }: { materials: Map<string, number>; key?: string; yields?: number }) {
         super({ data: materials });
         if (key) this.seed = util.hashCode(key);
+        this.yields = yields ?? 1;
     }
 
     public RandomNumber(): number {
@@ -21,14 +23,22 @@ export class Blueprint extends MaterialCollection {
         var rnd = this.seed / 233280;
         return min + rnd * (max - min);
     }
+
+    public get Yield() {
+        return this.yields;
+    }
 }
 
 export class BlueprintBuilder {
+    private yields?: number;
+    constructor(yields?: number) {
+        this.yields = yields;
+    }
     public ManualBuild(data: Map<string, number>): Blueprint {
-        return new Blueprint(data);
+        return new Blueprint({ materials: data, yields: this.yields });
     }
     public AutoBuild(options: IGenerationOptions): Blueprint {
-        return new Blueprint(new MaterialCollection().GenerateCollection(options));
+        return new Blueprint({ materials: new MaterialCollection().GenerateCollection(options), yields: this.yields });
     }
     /**
      * Will produce a random blueprint, that can be repeatedly produced with the same key and options.
@@ -39,7 +49,7 @@ export class BlueprintBuilder {
      * @param key the unique key for this blueprint
      */
     public DefinedBuild(options: IGenerationOptions, key: string): Blueprint {
-        const bp = new Blueprint(new Map<string, number>(), key);
+        const bp = new Blueprint({ materials: new Map<string, number>(), key: key, yields: this.yields });
         bp.GenerateCollection(options);
         return bp;
     }

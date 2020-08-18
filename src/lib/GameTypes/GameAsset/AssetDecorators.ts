@@ -87,7 +87,7 @@ export class BuildableDecorator extends GameAssetDecorator implements Buildable 
         const result = await player.InventorySubtract("materials", bp);
         if (result.code != 200) return { code: 403.1, failures: result.failures };
 
-        const editResult = await player.AutoInventoryEdit(this.asset.Name, 1);
+        const editResult = await player.AutoInventoryEdit(this.asset.Name, bp.Yield);
         if (editResult.success) return result;
         else return { code: 500, failures: [] };
     }

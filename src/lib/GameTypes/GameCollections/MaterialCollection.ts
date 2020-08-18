@@ -4,6 +4,7 @@ import { IMaterial, Material } from "../GameAsset/Material/Material";
 import { GameCollectionBase, IGenerationOptions, ICompatible } from "./GameCollectionBase";
 import { SellableDecorator } from "../GameAsset/AssetDecorators";
 import { MapCollection } from "../../Extensions/Collections";
+import { Client } from "../../main";
 
 export class MaterialCollection extends GameCollectionBase {
     public static WEIGHTS?: number[] = [];
@@ -17,18 +18,19 @@ export class MaterialCollection extends GameCollectionBase {
             else data = options.data;
 
             Server.Get().Registry.MaterialRegistry.forEach((material) => {
-                this.set(material.Name, data[material.Name] ?? 0);
+                super.set(material.Name, data[material.Name] ?? 0);
             });
         } else {
             Server.Get().Registry.MaterialRegistry.forEach((material) => {
-                this.set(material.Name, 0);
+                super.set(material.Name, 0);
             });
         }
     }
     /**@deprecated*/
     public DataFromName(name: string): IMaterialQuantity {
         const material = Server.Get().Registry.MaterialRegistry.get(name);
-        if (material == undefined) return { success: false, name: name, quantity: -1, material: null, error: MAT_NOT_FOUND };
+        if (material == undefined)
+            return { success: false, name: name, quantity: -1, material: null, error: MAT_NOT_FOUND };
 
         const quantity = this.get(material.Name);
         return { success: true, name: material.Name, quantity: quantity || 0, material: material };
@@ -63,6 +65,14 @@ export class MaterialCollection extends GameCollectionBase {
             total += (new SellableDecorator(Material).PriceData.cost || 0) * amount;
         });
         return total;
+    }
+
+    /**
+     * Gets the size of the collection (the sum of all the weights)
+     * @override
+     */
+    public get CollectionSize(): number {
+        return ~~this.reduce((acc, val, key) => acc + (Client.Reg.ResolveMaterialFromName(key)?.Weight ?? 0) * val, 0);
     }
 
     public static GenerateMineableCollection(value: number, central = 0): MaterialCollection {
@@ -100,7 +110,12 @@ export class MaterialCollection extends GameCollectionBase {
     }
 
     /** @override */
-    public GetCompatibleItems({ minRarity, maxRarity, minTech, maxTech }: ICompatible): MapCollection<string, Material> {
+    public GetCompatibleItems({
+        minRarity,
+        maxRarity,
+        minTech,
+        maxTech,
+    }: ICompatible): MapCollection<string, Material> {
         return Server.Reg.MaterialRegistry.filter(
             (val) =>
                 val.Cost != undefined &&

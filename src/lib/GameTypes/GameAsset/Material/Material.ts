@@ -4,12 +4,14 @@ import { Blueprint } from "../Blueprint/Blueprint";
 export class Material extends GameAsset implements IMaterial {
     private mineable: boolean;
     private rarity: number;
+    private weight: number;
 
     public constructor(materialOptions: IMaterialOptions) {
         super(materialOptions);
 
         this.mineable = materialOptions.mineable ?? false;
-        this.rarity = materialOptions.rarity || 1;
+        this.rarity = materialOptions.rarity ?? 1;
+        this.weight = materialOptions.weight ?? 1;
     }
 
     public IsMineable(): boolean {
@@ -18,6 +20,10 @@ export class Material extends GameAsset implements IMaterial {
 
     public GetMaterialRarity(): number {
         return this.rarity;
+    }
+
+    public get Weight(): number {
+        return this.weight;
     }
 }
 export interface IMaterial extends IGameAsset {
@@ -53,6 +59,7 @@ export class MaterialBuilder {
             rarity: this.options.rarity,
             blueprint: this.options.blueprint,
             cost: this.options.cost,
+            weight: this.options.weight,
         });
     }
 }
@@ -62,4 +69,6 @@ interface IMaterialOptions extends IGameAssetOptions {
     mineable?: boolean;
     /**The rarity of the material. Default: 1 */
     rarity?: number;
+    /**The weight of the material, in terms of cargo space. */
+    weight?: number;
 }

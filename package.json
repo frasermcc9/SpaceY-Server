@@ -7,7 +7,8 @@
     "test": "ts-mocha src/test/**/*.test.ts",
     "dependency-diagram": "npx arkit -d src/lib",
     "compile": "tsc",
-    "format": "prettier --write \"./**/*.{js,json,ts}\""
+    "format": "prettier --write \"./**/*.{js,json,ts}\"",
+    "madge": "node Madge"
   },
   "repository": {
     "type": "git",
@@ -32,6 +33,7 @@
     "@types/mocha": "^7.0.2",
     "@types/mongoose": "^5.7.27",
     "@types/socket.io": "^2.1.8",
+    "madge": "^3.9.2",
     "mocha": "^8.0.1",
     "must": "^0.13.4",
     "nyc": "^15.1.0",

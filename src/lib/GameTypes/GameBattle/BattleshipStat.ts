@@ -14,7 +14,7 @@ class BattleshipStat extends EventEmitter implements IBattleshipStat {
     public minimise(): number {
         const n = this.value;
         this.value = 0;
-        this.emit("reduced", n);
+        this.emit("decreased", n);
         return n;
     }
 
@@ -43,7 +43,7 @@ class BattleshipStat extends EventEmitter implements IBattleshipStat {
             n = this.value;
         }
         this.value -= n;
-        this.emit("reduced", n);
+        this.emit("decreased", n);
         return n;
     }
 

@@ -129,7 +129,13 @@ export class Player {
 
     //#region - Credits
 
-    public async CreditsIncrement({ amount, implicitSave = true }: { amount: number; implicitSave?: boolean }): Promise<boolean> {
+    public async CreditsIncrement({
+        amount,
+        implicitSave = true,
+    }: {
+        amount: number;
+        implicitSave?: boolean;
+    }): Promise<boolean> {
         if (amount < 0)
             throw new Error(
                 "Only positive values can be passed to the incrementCredits method. Consider using decrement to remove credits."
@@ -140,9 +146,17 @@ export class Player {
         }
         return success;
     }
-    public async CreditsDecrement({ amount, implicitSave = true }: { amount: number; implicitSave?: boolean }): Promise<boolean> {
+    public async CreditsDecrement({
+        amount,
+        implicitSave = true,
+    }: {
+        amount: number;
+        implicitSave?: boolean;
+    }): Promise<boolean> {
         if (amount < 0)
-            throw new Error("Only positive values can be passed to the decrementCredits method. Consider using increment to add credits.");
+            throw new Error(
+                "Only positive values can be passed to the decrementCredits method. Consider using increment to add credits."
+            );
         const success: boolean = this.inventory.AddCredits({ amount: -amount });
         if (success && implicitSave) {
             await this.save();
@@ -427,7 +441,9 @@ export class Player {
      * @param quantity the amount to change by (positive or negative)
      * @return codes: 1-Success, 2-Item Not Found, 3-Not enough items
      */
-    public async BatchAutoInventoryEdit(pairs: { name: string; quantity: number }[]): Promise<{ success: boolean; code: 1 | 2 | 3 }> {
+    public async BatchAutoInventoryEdit(
+        pairs: { name: string; quantity: number }[]
+    ): Promise<{ success: boolean; code: 1 | 2 | 3 }> {
         const ValidTest = this.BatchSufficientToDecrease(pairs);
         if (!ValidTest.success) return { success: false, code: ValidTest.code };
 
@@ -442,7 +458,10 @@ export class Player {
                     if (quantity >= 0) {
                         intermediateResult = this.inventory[Player.InventoryTypes[i]].Increase(name, quantity);
                     } else {
-                        intermediateResult = this.inventory[Player.InventoryTypes[i]].ReduceToNonNegative(name, Math.abs(quantity));
+                        intermediateResult = this.inventory[Player.InventoryTypes[i]].ReduceToNonNegative(
+                            name,
+                            Math.abs(quantity)
+                        );
                     }
                     if (intermediateResult.success == true) {
                         break;
@@ -534,7 +553,8 @@ export class Player {
     public async setShip(ship: Ship | string): Promise<void> {
         if (typeof ship == "string") {
             const candidate = Server.Reg.ResolveShipFromName(ship);
-            if (candidate == undefined) throw new TypeError(`Ship with name ${ship} does not exist in registry, despite trying to set it`);
+            if (candidate == undefined)
+                throw new TypeError(`Ship with name ${ship} does not exist in registry, despite trying to set it`);
             ship = candidate;
         }
         const oldItems = this.ship.changeShip(ship);
@@ -746,7 +766,9 @@ export class Player {
 
         const Ship = Server.Reg.ResolveShipFromName(data.ship.name);
         if (Ship == undefined)
-            throw new Error(`Mismatch between database and server. No item ${data.ship} exists in server, but does in db for ${this.uId}.`);
+            throw new Error(
+                `Mismatch between database and server. No item ${data.ship} exists in server, but does in db for ${this.uId}.`
+            );
 
         this.ship = new ShipWrapper(Ship, this);
 
@@ -789,6 +811,11 @@ export class Player {
         this.inventory.Materials.Owner = this;
     }
 
-    private static readonly RegistryTypes: RegistryNames[] = ["MaterialRegistry", "FactionRegistry", "AttachmentRegistry", "ShipRegistry"];
+    private static readonly RegistryTypes: RegistryNames[] = [
+        "MaterialRegistry",
+        "FactionRegistry",
+        "AttachmentRegistry",
+        "ShipRegistry",
+    ];
     private static readonly InventoryTypes: TRegistered[] = ["materials", "reputation", "attachments", "ships"];
 }

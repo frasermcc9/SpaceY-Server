@@ -11,7 +11,10 @@ export abstract class GameCollectionBase extends MapCollection<string, number> {
      * @returns codes: 1-Success, 2-Item Not Found, 3-Not Enough Resources
      */
     public ReduceToNonNegative(itemName: string, quantity: number): ReduceToNonNegativeOutput {
-        if (quantity < 0) throw new TypeError("A negative number has been passed when " + this.ReduceToNonNegative.name + " was called");
+        if (quantity < 0)
+            throw new TypeError(
+                "A negative number has been passed when " + this.ReduceToNonNegative.name + " was called"
+            );
         const amountOwned = this.get(itemName);
 
         if (amountOwned == undefined) {
@@ -36,7 +39,8 @@ export abstract class GameCollectionBase extends MapCollection<string, number> {
      * @returns codes: 1-Success, 2-Item Not Found
      */
     public Increase(itemName: string, quantity: number): IncreaseOutput {
-        if (quantity < 0) throw new TypeError("A negative number has been passed when " + this.Increase.name + " was called");
+        if (quantity < 0)
+            throw new TypeError("A negative number has been passed when " + this.Increase.name + " was called");
         const amountOwned = this.get(itemName);
         if (amountOwned == undefined) {
             return { success: false, code: 2, error: "The given item could not be found.", amount: 0 };
@@ -117,7 +121,8 @@ export abstract class GameCollectionBase extends MapCollection<string, number> {
         const Failed: string[] = new Array();
         gameCollection.forEach((val, key) => {
             if (val < 0) throw new Error(`Negative number '${val}' used in SubtractCollection function for ${key}.`);
-            if (this.get(key) == undefined) throw new Error(`Item with name ${key} does not exist when used in SumCollection function.`);
+            if (this.get(key) == undefined)
+                throw new Error(`Item with name ${key} does not exist when used in SumCollection function.`);
             if (this.get(key)! < val) Failed.push(key);
         });
         if (Failed.length > 0) return { code: 403, failures: Failed };
@@ -200,7 +205,9 @@ export abstract class GameCollectionBase extends MapCollection<string, number> {
         const Weights = this.GenerateWeights(ItemNames, options.centralRarity, options.minRarity, options.maxRarity);
         let FlatArray = new Array<GameAsset>();
         //Generates the flat array of probabilities. See benchmarks for why this method was used
-        if (options.rarity) for (let i = 0; i < ItemNames.length; ++i) for (let j = 0; j < Weights[i]; ++j) FlatArray.push(ItemNames[i]);
+        if (options.rarity)
+            for (let i = 0; i < ItemNames.length; ++i)
+                for (let j = 0; j < Weights[i]; ++j) FlatArray.push(ItemNames[i]);
         else FlatArray = CompatibleItems.array();
         //Generate the collection
         do {
@@ -226,7 +233,12 @@ export abstract class GameCollectionBase extends MapCollection<string, number> {
      * @param minRarity the minimum rarity that a valid item can be
      * @param maxRarity the maximum rarity that a valid item can be
      */
-    public abstract GetCompatibleItems({ minRarity, maxRarity, minTech, maxTech }: ICompatible): MapCollection<string, GameAsset>;
+    public abstract GetCompatibleItems({
+        minRarity,
+        maxRarity,
+        minTech,
+        maxTech,
+    }: ICompatible): MapCollection<string, GameAsset>;
     /**
      * Required method for GenerateCollection
      * @param items array of input items
@@ -234,7 +246,12 @@ export abstract class GameCollectionBase extends MapCollection<string, number> {
      * @returns should return an array with the weights of each GameAsset, such that the weight
      *          of a GameAsset at position *i* is in position *i* of the returned array.
      */
-    public abstract GenerateWeights(items: GameAsset[], centralRarity: number, minRarity: number, maxRarity: number): number[];
+    public abstract GenerateWeights(
+        items: GameAsset[],
+        centralRarity: number,
+        minRarity: number,
+        maxRarity: number
+    ): number[];
     /**
      * Optional method for GenerateCollection. Can be overridden if different behaviour is desired
      */

@@ -33,7 +33,7 @@
     "@types/mocha": "^7.0.2",
     "@types/mongoose": "^5.7.27",
     "@types/socket.io": "^2.1.8",
-    "madge": "^3.9.2",
+    "madge": "^4.0.1",
     "mocha": "^8.0.1",
     "must": "^0.13.4",
     "nyc": "^15.1.0",

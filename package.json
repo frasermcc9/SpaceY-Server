@@ -21,7 +21,7 @@
   },
   "homepage": "https://github.com/frasermcc9/SpaceY#readme",
   "dependencies": {
-    "express": "^4.17.1",
+    "express": "^4.17.3",
     "json-stringify-safe": "^5.0.1",
     "mnemonist": "^0.38.0",
     "mongoose": "^5.9.19",
